@@ -341,16 +341,16 @@
 
 .beam {
     position: absolute;
-    height: 6px;
+    height: 10px; /* Increased beam height for visibility */
     width: 0;
-    /* Reddish-orange gradient */
-    background: linear-gradient(to right, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.95)); /* OrangeRed to DarkOrange */
+    /* More intense reddish-orange gradient */
+    background: linear-gradient(to right, rgba(255, 100, 0, 0.9), rgba(255, 50, 0, 1)); 
     top: 50%;
     left: 50%;
     /* transform-origin will be set by JS */
     /* transform will be set by JS */
-    box-shadow: 0 0 30px rgba(255, 69, 0, 1); /* Matching reddish-orange glow */
-    border-radius: 3px;
+    box-shadow: 0 0 40px rgba(255, 50, 0, 1); /* More intense glow */
+    border-radius: 5px; /* Slightly larger border-radius for thicker beam */
     z-index: 4;
     opacity: 0;
     transition: width 0.1s linear, opacity 0.1s linear;
@@ -361,8 +361,8 @@
 }
 
 @keyframes beamPulse {
-    from { box-shadow: 0 0 20px rgba(255, 69, 0, 0.8); }
-    to { box-shadow: 0 0 40px 5px rgba(255, 140, 0, 1); }
+    from { box-shadow: 0 0 30px rgba(255, 100, 0, 0.8); } /* More intense pulse glow */
+    to { box-shadow: 0 0 60px 8px rgba(255, 50, 0, 1); } /* More intense pulse glow */
 }
 
 .patient-table {
@@ -398,14 +398,15 @@
             }
 
             nav.nav-links {
-                flex-direction: column; /* Stack links vertically */
+                /* Removed flex-direction: column; to keep links horizontal */
                 gap: 0.5rem; /* Reduced gap between links */
                 margin-top: 0.3rem; /* Reduced margin from title */
+                /* flex-wrap: wrap is already there, so links will wrap if too wide */
             }
 
             nav a {
                 font-size: 0.85rem; /* Smaller font for nav links */
-                padding: 3px 0; /* Reduced vertical padding */
+                padding: 3px 0.2rem; /* Reduced vertical and horizontal padding for tighter fit */
             }
 
             .container {
@@ -844,9 +845,6 @@ async function startRadiationAnimation() {
     // Gantry head's current position (relative to container center, then accounting for its offset)
     // When gantry is rotated 270 degrees, the head (which is at top:-27px relative to gantry center)
     // moves to the left side of the gantry circle.
-    // The gantry circle's center is at containerRect.width / 2, containerRect.height / 2.
-    // The head's offset of -27px means it's 27px *above* the gantry circle's center when at 0 deg.
-    // At 270 deg (clockwise rotation from 0), the head rotates to the left.
     // Its X coordinate relative to gantry center becomes -27px.
     // Its Y coordinate relative to gantry center becomes 0px.
     // So, gantry head is at (containerCenter.x - 27, containerCenter.y).
@@ -947,7 +945,7 @@ startAnimationBtn.addEventListener('click', throttle(startRadiationAnimation, 60
             document.querySelectorAll('nav a').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    document.querySelector(this.getAttribute('href')).scrollInView({
                         behavior: 'smooth'
                     });
                 });
