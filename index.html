@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>samRad Health Technologies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: linear-gradient(to right, #f8fbff, #e9f0f8); /* Softer, lighter gradient */
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(to right, #001f3f, #003366); /* Deeper blue gradient */
+            color: #fff;
+            padding: 0.3rem 1.5rem; /* Constant, minimal padding */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; /* Stacks title and nav vertically for desktop */
+            align-items: center;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0; /* Remove default margin to reduce vertical space */
+            font-size: 2.0rem; /* Fixed, minimal font size for constant header */
+            color: #c9e6ff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3),
+                         4px 4px 8px rgba(0,0,0,0.2),
+                         6px 6px 12px rgba(0,0,0,0.1);
+            letter-spacing: 0.05rem;
+            line-height: 1.2; /* Adjust line height to reduce space above/below text */
+        }
+        
+        /* Navigation (Desktop) */
+        nav.nav-links {
+            margin-top: 0.5rem; /* Minimal margin from title */
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #e0f2f7;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            white-space: nowrap;
+            padding-bottom: 5px;
+            transition: color 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #89cff0;
+            transition: width 0.2s ease-in-out;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #fff;
+        }
+
+        nav a:hover::after,
+        nav a.active::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu Toggle (hidden by default on desktop) */
+        .menu-toggle {
+            display: none;  
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease, margin-top 0.2s ease-out;
+        }
+
+        /* Main Container */
+        .container {
+            padding: 3rem 6vw;
+            max-width: 1300px;
+            margin: 0 auto;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        /* Headings */
+        h1, h2 {
+            color: #001f3f;
+            margin-bottom: 1.2rem;
+        }
+
+        h2 {
+            color: #001f3f;
+            font-size: 2rem;
+            border-bottom: 2px solid #d0e0f0;
+            padding-bottom: 0.7rem;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2),
+                         2px 2px 4px rgba(0,0,0,0.15);
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #007bff;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 3.5rem;
+            padding: 2rem;
+            border-radius: 12px;
+            background-color: #ffffff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+        }
+
+        section.active-section {
+            background: #eef7ff;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .service-card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid #007bff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-card h3 {
+            margin-top: 0;
+            color: #001f3f;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .service-card p {
+            color: #555;
+        }
+
+        /* Buttons */
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-block;
+            margin-right: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Quiz Specific Styles */
+        #quiz-form label {
+            display: block;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            font-size: 1.05rem;
+            color: #444;
+            transition: color 0.2s ease;
+        }
+
+        #quiz-form label:hover {
+            color: #007bff;
+        }
+
+        #quiz-form label input[type="radio"] {
+            margin-right: 0.8rem;
+            transform: scale(1.2);
+        }
+
+        #quiz-result p {
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* Radiation Animation Styles */
+        #animation-container-horizontal {
+            position: relative;
+            width: 100%;
+            max-width: 450px; /* Adjusted to fit table better horizontally */
+            height: 300px; /* Reduced height to make room for table below */
+            margin: 2.5rem auto;
+            background: #f0f7ff;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #cce0f0;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .gantry-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg); /* Initial state: 0deg */
+            width: 240px;
+            height: 240px;
+            border: 10px solid #555;
+            border-radius: 50%;
+            z-index: 4;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            /* This transition ensures smooth rotation when JS changes transform */
+            transition: transform 0.1s linear; 
+        }
+
+        .gantry-head {
+            width: 35px;
+            height: 35px;
+            background: #222;
+            border-radius: 50%;
+            position: absolute;
+            top: -18px; /* Positioned relative to gantry-circle */
+            left: calc(50% - 17.5px);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .body-section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #ffe0c2 50%, #d9a78b 100%);
+            border-radius: 50%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .tumor {
+            width: 60px; /* Larger initial size */
+            height: 60px; /* Larger initial size */
+            background: radial-gradient(circle, #cc0000, #800000);
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: 0 0 15px rgba(200,0,0,0.8); /* More prominent shadow */
+            transform: scale(1); /* Ensure initial scale is 1 (large) */
+            opacity: 1;
+            /* Add transition for smooth shrink/grow */
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        .beam {
+            position: absolute;
+            height: 6px; /* Thinner beam */
+            width: 0;
+            background: linear-gradient(to right, rgba(255,255,0,0.8), rgba(255,0,0,0.95));
+            top: 50%;
+            left: 50%; /* Start from center */
+            transform-origin: left center; /* Pivot point for rotation */
+            transform: translateY(-50%) rotate(0deg); /* Initial state, will be rotated by JS */
+            box-shadow: 0 0 30px rgba(255,0,0,1); /* More intense glow */
+            border-radius: 3px;
+            z-index: 4;
+            opacity: 0; /* Hidden by default */
+            transition: width 0.1s linear, opacity 0.1s linear; /* Smooth beam appearance */
+        }
+
+        .patient-table {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px; /* Height of the table */
+            background-color: #777;
+            border-top: 10px solid #555;
+            z-index: 1; /* Below gantry and body */
+        }
+        .patient-table::before {
+            content: '';
+            position: absolute;
+            top: -10px; /* Position above the table */
+            left: 20%;
+            width: 60%;
+            height: 10px;
+            background-color: #aaa; /* Lighter top surface */
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Mobile Layout Adjustments (below 768px) --- */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: row;  
+                justify-content: center;
+                flex-wrap: wrap;
+                align-items: center;
+                padding: 0.5rem 1rem;
+                position: sticky;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+                text-align: center;
+                flex-grow: 0;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .menu-toggle {
+                display: none !important;
+            }
+
+            nav.nav-links {
+                display: flex !important;
+                flex-direction: row;
+                justify-content: center;
+                gap: 0.8rem;
+                margin-top: 0;
+                width: 100%;
+                background: transparent;
+                padding: 0;
+                box-shadow: none;
+                position: static;
+                top: auto;
+                left: auto;
+                z-index: auto;
+                max-height: none;
+                overflow: visible;
+                opacity: 1;
+                transform: none;
+                flex-wrap: wrap;
+            }
+
+            nav.nav-links a {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.8rem;
+                text-align: center;
+            }
+
+            .container {
+                padding: 2rem 4vw;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: auto;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            button:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            nav.nav-links {
+                gap: 0.6rem;
+            }
+
+            nav.nav-links a {
+                font-size: 0.75rem;
+            }
+
+            .container {
+                padding: 1.5rem 3vw;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            section {
+                padding: 1.2rem;
+            }
+
+            button {
+                font-size: 0.95rem;
+                padding: 0.8rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>samRad Health Technologies</h1>
+        <nav class="nav-links">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#continuous-improvement">Advancements</a>
+            <a href="#certifications">Certifications</a>
+            <a href="#quiz">Imaging & Quiz</a>
+            <a href="#radiation-animation">Radiation Simulation</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="about">
+            <h2>About Us</h2>
+            <p>samRad Health Technologies is a visionary cancer research and healthtech enterprise. Our mission is to pioneer intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with precision and ease. Our AI pipelines are open, transparent, and designed to speed up diagnostics and enhance medical research.</p>
+            <p>Founded by Samuel B. Takwirira, a Zimbabwean PhD student in Physics at the University of New Hampshire in the United States, the initiative is rooted in a passion for oncology and a heartfelt commitment to expanding access to care. Coming from a background marked by economic hardship and limited access to advanced healthcare, Takwirira has firsthand experience of the challenges faced by most African communities.<p>
+                        
+            </p> Through resilience and a relentless pursuit of education, he now seeks to transform lives&mdash;not just through innovation, but by creating pathways for others from similar circumstances. samRad Health Technologies aspires to forge partnerships with hospitals across Zimbabwe and Southern Africa, uplifting cancer care through technological excellence and shared knowledge.</p>
+        </section>
+
+        <section id="services">
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>AI Tumor Detection</h3>
+                    <p>Instant analysis of medical scan images (DICOM) to assess cancer risk using trained AI models.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Clinical Pipeline Tooling</h3>
+                    <p>Command-line tools for clinical researchers to process imaging data and patient datasets efficiently at scale.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Data Integration & Interoperability</h3>
+                    <p>Robust support for structured CSV metadata, clinical tagging, and export-ready research formats. Seamlessly integrate with existing hospital systems.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="continuous-improvement">
+            <h2>Advancements</h2>
+            <p>At samRad Health Technologies, relentless progress is not just a goal&mdash;it is a mindset. We are unwavering in our pursuit of precision and performance, constantly pushing the boundaries of what's possible in cancer detection. Every challenge is met with determination, every limitation with innovation. Our commitment to iterative advancement ensures our systems evolve with cutting-edge science, always moving forward, never settling, and always focused on delivering the best for clinicians and the patients they serve.</p>
+        </section>
+
+        <section id="certifications">
+            <h2>Certifications & Research Ethics</h2>
+            <ul>
+                <li>Fully compliant with **HIPAA** data handling protocols to ensure patient data privacy and security.</li>
+                <li>Model validation on ethically sourced, anonymized datasets to maintain integrity and prevent bias.</li>
+                <li>Strict adherence to **IRB** (Institutional Review Board) and institutional ethics review processes for all research and development.</li>
+            </ul>
+        </section>
+
+        <section id="quiz">
+            <h2>Imaging and Quiz</h2>
+            <p>Radiology is more than just images on a screen&mdash;it’s often the first glimpse into a life forever changed. For those touched by cancer, whether through personal battle, the struggle of a loved one, or even the fear of the unknown, the journey is deeply personal. In those moments of waiting and worry, tools like MRI, CT, and PET scans become lifelines&mdash;windows into hope, clarity, and action. Understanding these tools can bring comfort, courage, and a sense of control when everything else feels uncertain. This is for everyone who has sat in silence, prayed for answers, or stood beside someone fighting with all they have.</p>
+
+            <p><strong>Test your knowledge:</strong></p>
+            <button id="start-quiz-btn">Start Quiz</button>
+            <form id="quiz-form" style="display:none; margin-top:1.5rem;"></form>
+            <div id="quiz-result" style="margin-top:1.5rem; font-weight:bold;"></div>
+        </section>
+
+        <section id="radiation-animation">
+            <h2>Radiation Beam Simulation</h2>
+            <p>The precision of radiation therapy is incredible. Watch this simplified simulation to understand how a gantry rotates to deliver a targeted beam, minimizing exposure to healthy tissue while effectively treating the tumor. This animation showcases the critical role of accurate targeting in modern cancer treatment.</p>
+            <p>This precision is at the heart of samRad Health Technologies' mission. Our founder, a PhD student in Physics, specializes in developing the intelligent, automated systems that enable this exact level of accuracy. Through our **AI Tumor Detection** and **Clinical Pipeline Tooling**, we empower clinicians to pinpoint tumors with unparalleled precision, ensuring that the treatment, much like the beam shown here, is delivered exactly where it's needed most, minimizing impact on healthy tissue. This commitment to advanced, targeted solutions drives our efforts to revolutionize cancer care.</p>
+            
+            <div id="animation-container-horizontal">
+                <div class="gantry-circle">
+                    <div class="gantry-head"></div>
+                </div>
+                <div class="body-section">
+                    <div class="tumor"></div>
+                </div>
+                <div class="beam"></div>
+                <div class="patient-table"></div> </div>
+            <button id="start-animation-btn">Start Simulation</button>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>Email: <a href="mailto:takwirira@proton.me">takwirira@proton.me</a></p>
+            <p>GitHub: <a href="https://takwirira25.github.io/samRad-Health-Technologies/" target="_blank" rel="noopener noreferrer">https://takwirira25.github.io/samRad-Health-Technologies/</a></p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 samRad Health Technologies. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Utility function for throttling (kept for potential future use or other scroll listeners, but not for header now)
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const headerTitle = document.querySelector('header h1');
+            const navLinks = document.querySelector('nav.nav-links');
+            const menuToggle = document.querySelector('.menu-toggle'); 
+            const header = document.querySelector('header');
+
+            if (!headerTitle || !navLinks || !header) {
+                console.warn('Required header elements for mobile menu not found.');
+            }
+
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                });
+            });
+
+            // --- Quiz Data and Logic ---
+            const quizData = [
+                { question: "What does MRI primarily use to generate images?", options: ["X-rays", "Magnetic fields & radio waves", "Sound waves", "Gamma rays"], answer: 1 },
+                { question: "What tracer is commonly used in PET scans?", options: ["Iodine-131", "Technetium-99m", "Fluorodeoxyglucose (FDG)", "Gadolinium"], answer: 2 },
+                { question: "CT scans are best for visualizing:", options: ["Soft tissues", "Bone fractures", "Ligaments", "Muscle tears"], answer: 1 },
+                { question: "Radiation therapy aims to:", options: ["Cure viral infections", "Kill cancer cells using ionizing radiation", "Deliver chemotherapy", "Visualize tumors"], answer: 1 },
+                { question: "Which imaging technique does NOT use ionizing radiation?", options: ["CT", "PET", "MRI", "X-ray"], answer: 2 },
+                { question: "PET-CT combines functional imaging with:", options: ["MRI detail", "CT detail", "Ultrasound mapping", "Bone scan"], answer: 1 },
+                { question: "Which of the following is a late side effect of radiation therapy?", options: ["Hair loss", "Skin redness", "Fibrosis", "Nausea"], answer: 2 },
+                { question: "MRI contrast agents often contain:", options: ["Lead", "Barium", "Gadolinium", "Iodine"], answer: 2 },
+                { question: "Which scan is most sensitive for brain soft tissue detail?", options: ["X-ray", "CT", "PET", "MRI"], answer: 3 },
+                { question: "Which of the following improves MRI resolution?", options: ["Higher magnetic field strength", "More X-ray dose", "Lower radiofrequency", "Using ultrasound gel"], answer: 0 }
+            ];
+
+            const startQuizBtn = document.getElementById("start-quiz-btn");
+            const quizForm = document.getElementById("quiz-form");
+            const quizResult = document.getElementById("quiz-result");
+
+            function getFeedback(score, total) {
+                const percent = (score / total) * 100;
+                if (percent === 100) return "Outstanding! You're a radiology genius!";
+                if (percent >= 80) return "Great job! You really know your imaging.";
+                if (percent >= 50) return "Nice effort! A bit more study and you'll master this.";
+                return "Keep learning — knowledge saves lives!";
+            }
+
+            function getFeedbackColor(percent) {
+                if (percent >= 80) return "green";
+                else if (percent >= 50) return "orange";
+                else return "red";
+            }
+
+            function saveScore(score, total) {
+                const entry = { score, total, timestamp: new Date().toISOString() };
+                const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
+                scores.push(entry);
+                localStorage.setItem("quizScores", JSON.stringify(scores));
+            }
+
+            function renderQuestion(index, answers, next) {
+                quizForm.innerHTML = "";
+                const q = quizData[index];
+
+                const qElem = document.createElement("p");
+                qElem.textContent = `${index + 1}. ${q.question}`;
+                quizForm.appendChild(qElem);
+
+                q.options.forEach((opt, i) => {
+                    const label = document.createElement("label");
+                    const input = document.createElement("input");
+                    input.type = "radio";
+                    input.name = `q${index}`;
+                    input.value = i;
+                    input.id = `q${index}-option${i}`;
+
+                    label.appendChild(input);
+                    label.append(` ${opt}`);
+                    quizForm.appendChild(label);
+
+                    input.addEventListener("change", () => {
+                        answers[index] = parseInt(input.value);
+                        setTimeout(next, 300);
+                    });
+                });
+            }
+
+            function runQuiz() {
+                let currentIndex = 0;
+                const answers = {};
+                quizForm.style.display = "block";
+                quizResult.innerHTML = "";
+                startQuizBtn.style.display = "none";
+
+                function nextQuestion() {
+                    currentIndex++;
+                    if (currentIndex < quizData.length) {
+                        renderQuestion(currentIndex, answers, nextQuestion);
+                    } else {
+                        finishQuiz(answers);
+                    }
+                }
+                renderQuestion(currentIndex, answers, nextQuestion);
+            }
+
+            function finishQuiz(answers) {
+                let score = 0;
+                quizData.forEach((q, idx) => {
+                    if (answers[idx] === q.answer) score++;
+                });
+
+                const total = quizData.length;
+                const percent = (score / total) * 100;
+                const feedback = getFeedback(score, total);
+                const color = getFeedbackColor(percent);
+                saveScore(score, total);
+
+                quizForm.style.display = "none";
+                startQuizBtn.style.display = "inline-block";
+                startQuizBtn.textContent = "Retake Quiz";
+
+                quizResult.innerHTML = `
+                    <p>You scored ${score} out of ${total}.</p>
+                    <p style="color:${color};">${feedback}</p>
+                    <button id="exit-quiz-btn">Exit Quiz</button>
+                    <button id="show-stats-btn">Show Highest Score</button>
+                    <button id="reset-stats-btn">Reset Stats</button>
+                `;
+
+                document.getElementById("exit-quiz-btn").addEventListener("click", () => {
+                    quizResult.innerHTML = "";
+                    startQuizBtn.textContent = "Start Quiz";
+                });
+
+                document.getElementById("show-stats-btn").addEventListener("click", () => {
+                    const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
+                    const statsMessage = document.createElement("p");
+                    if (scores.length === 0) {
+                        statsMessage.textContent = "No scores recorded yet.";
+                        statsMessage.style.color = "gray";
+                    } else {
+                        const maxScore = Math.max(...scores.map(s => s.score));
+                        const percentMax = (maxScore / quizData.length) * 100;
+                        statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of ${quizData.length}.`;
+                        statsMessage.style.color = getFeedbackColor(percentMax);
+                    }
+                    quizResult.appendChild(statsMessage);
+                    document.getElementById("show-stats-btn").disabled = true;
+                });
+
+                document.getElementById("reset-stats-btn").addEventListener("click", () => {
+                    localStorage.removeItem("quizScores");
+                    Array.from(quizResult.children).forEach(el => {
+                        const text = el.textContent.trim();
+                        if (
+                            text.startsWith("Your Highest Score so far") ||
+                            text.startsWith("No scores recorded yet.")
+                        ) {
+                            el.remove();
+                        }
+                    });
+                    const confirmMsg = document.createElement("p");
+                    confirmMsg.textContent = "Stats reset successfully.";
+                    confirmMsg.style.color = "green";
+                    quizResult.appendChild(confirmMsg);
+                    setTimeout(() => {
+                        confirmMsg.remove();
+                        document.getElementById("show-stats-btn").disabled = false;
+                    }, 5000);
+                });
+            }
+
+            startQuizBtn.addEventListener("click", runQuiz);
+
+
+            // --- Radiation Animation Script ---
+            const gantry = document.querySelector('.gantry-circle');
+            const gantryHead = document.querySelector('.gantry-head');
+            const beam = document.querySelector('.beam');
+            const tumor = document.querySelector('.tumor');
+            const startAnimationBtn = document.getElementById('start-animation-btn');
+
+            let gantryCurrentAngle = 0; // Keep track of current gantry angle
+
+            // Function to set gantry rotation directly (used for continuous movement)
+            function setGantryRotation(angle) {
+                gantryCurrentAngle = angle % 360; // Keep angle within 0-359
+                gantry.style.transform = `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)`;
+            }
+
+            function resetAnimations() {
+                // Stop any ongoing animations
+                gantry.getAnimations().forEach(anim => anim.cancel());
+                beam.getAnimations().forEach(anim => anim.cancel());
+                tumor.getAnimations().forEach(anim => anim.cancel());
+
+                // Reset elements to initial state
+                setGantryRotation(0); // Gantry starts at 0 degrees (top)
+                beam.style.width = '0';
+                beam.style.opacity = '0';
+                beam.style.transformOrigin = 'left center'; // Ensure origin is correct
+                tumor.style.transform = 'scale(1)'; // Tumor is large
+                tumor.style.opacity = '1';
+
+                // Ensure no lingering animation properties
+                gantry.style.animation = 'none';
+                beam.style.animation = 'none';
+                tumor.style.animation = 'none';
+                void gantry.offsetWidth; // Force reflow
+                void beam.offsetWidth;
+                void tumor.offsetWidth;
+
+                startAnimationBtn.disabled = false;
+                startAnimationBtn.textContent = "Start Simulation";
+            }
+
+            async function startRadiationAnimation() {
+                startAnimationBtn.disabled = true;
+                startAnimationBtn.textContent = "Simulating...";
+                resetAnimations(); // Ensure everything is reset to natural state
+
+                const INITIAL_ALIGN_ANGLE = 90; // Start gantry from left (90 degrees)
+                const BEAM_FIRE_ANGLE = 270; // Angle from which beam will fire (from right, hitting tumor)
+                const GANTRY_ROTATION_SPEED = 0.08; // Degrees per millisecond (approx 80 degrees/sec)
+                const BEAM_FIRE_DURATION = 600; // Time for beam to extend/retract
+                const TUMOR_SHRINK_DURATION = 500; // Time for tumor to shrink
+
+                // Calculate beam properties dynamically based on gantry head and tumor position
+                // Assuming gantry head (beam origin) is at the top of the gantry circle, and tumor is at the center
+                // Gantry circle top is at -120px from center (half its height) relative to body-section center
+
+                // Function to get absolute position of gantry head (approximate)
+                const containerRect = document.getElementById('animation-container-horizontal').getBoundingClientRect();
+                const gantryRect = gantry.getBoundingClientRect();
+                const headRect = gantryHead.getBoundingClientRect();
+                const tumorRect = tumor.getBoundingClientRect();
+                
+                const containerCenterX = containerRect.width / 2;
+                const containerCenterY = containerRect.height / 2;
+
+                // Function to set beam's position and rotation based on gantry's current angle
+                function setBeamTransform(angle) {
+                    // Convert degrees to radians for sin/cos
+                    const rad = (angle - 90) * (Math.PI / 180); // Adjust for 0deg being upwards
+
+                    // Gantry head is 120px radius from center of gantry-circle
+                    const gantryRadius = gantry.offsetWidth / 2;
+                    const headOffsetFromGantryCenter = gantryRadius - (gantryHead.offsetHeight / 2); // Distance from gantry center to gantry head center
+
+                    // Calculate gantry head's position relative to container's center
+                    const headX = containerCenterX + headOffsetFromGantryCenter * Math.cos(rad);
+                    const headY = containerCenterY + headOffsetFromGantryCenter * Math.sin(rad);
+
+                    // Tumor is at container center (approx)
+                    const tumorX = containerCenterX;
+                    const tumorY = containerCenterY;
+
+                    // Calculate angle from gantry head to tumor
+                    const deltaX = tumorX - headX;
+                    const deltaY = tumorY - headY;
+                    const beamAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+                    // Set beam's origin to the gantry head's current position, and rotate it
+                    // This is tricky with `position: absolute` and `transform: translate(-50%, -50%)` for body/tumor.
+                    // Let's simplify: beam starts at the exact center of the gantry, and we rotate it.
+                    // The visual effect of it "coming from" the head is implied by setting beam.style.transformOrigin = '0 50%';
+                    // and rotating it to the gantry's current orientation.
+
+                    // The beam's actual rotation should match the gantry's head direction.
+                    // If gantry 0deg is up, then 90deg is right, 180deg is down, 270deg is left.
+                    // A beam from the head should point inwards.
+                    // The beam element is horizontal, so its rotation is relative to horizontal.
+                    // If gantry is at angle `A`, the head is at `A`.
+                    // The beam needs to point from `A` towards the center.
+                    // This means beam rotation should be `A + 180` (or `A - 180`) relative to its origin.
+
+                    // For simplicity, let's just make the beam's rotation mirror the gantry's head rotation,
+                    // but originating from the center of the gantry-circle.
+                    beam.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+                    beam.style.transformOrigin = '120px 50%'; // Pivot at the edge of the gantry circle
+                                                              // (half of gantry's width)
+                }
+
+                // Simulate continuous gantry rotation until it reaches the target angle for firing
+                let currentAngle = gantryCurrentAngle;
+                const rotationPromise = new Promise(resolve => {
+                    const rotate = () => {
+                        // If currentAngle has passed BEAM_FIRE_ANGLE (e.g., went from 260 to 280), stop.
+                        // Handle circular rotation for target.
+                        const targetReached = Math.abs(currentAngle - BEAM_FIRE_ANGLE) < (GANTRY_ROTATION_SPEED * 10); // A small buffer
+                        if (targetReached) {
+                             setGantryRotation(BEAM_FIRE_ANGLE); // Snap to exact target
+                             resolve();
+                             return;
+                        }
+
+                        currentAngle += GANTRY_ROTATION_SPEED * 10; // Increment angle
+                        setGantryRotation(currentAngle);
+                        requestAnimationFrame(rotate);
+                    };
+                    rotate();
+                });
+
+                // Start gantry rotation to the target angle (e.g., 270 degrees for beam from left)
+                // This animation will rotate towards BEAM_FIRE_ANGLE and then stop.
+                let animationDuration = (BEAM_FIRE_ANGLE - gantryCurrentAngle + 360) % 360 / (GANTRY_ROTATION_SPEED * 10);
+                if (animationDuration < 0) animationDuration += 360 / (GANTRY_ROTATION_SPEED * 10);
+                
+                gantryAnimation = gantry.animate(
+                    [
+                        { transform: `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)` },
+                        { transform: `translate(-50%, -50%) rotate(${BEAM_FIRE_ANGLE}deg)` }
+                    ],
+                    {
+                        duration: 3000, // Fixed duration for initial spin towards target
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-in-out'
+                    }
+                );
+                await gantryAnimation.finished;
+                setGantryRotation(BEAM_FIRE_ANGLE); // Ensure it's exactly at the target angle
+
+                // Short pause for "setup" before firing
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                // Step 2: Fire beam and shrink tumor
+                // Position beam correctly based on the gantry head's final angle
+                // The beam element itself needs to be rotated to align with the gantry head's current orientation (BEAM_FIRE_ANGLE)
+                // and its origin moved to align with the gantry head.
+                
+                // Let's simplify beam origin for demonstration. We'll make it originate from the edge of the gantry.
+                // The beam element is horizontal by default. To point it from BEAM_FIRE_ANGLE (270, left) towards center:
+                beam.style.transform = `translate(-50%, -50%) rotate(${BEAM_FIRE_ANGLE}deg)`;
+                beam.style.transformOrigin = 'calc(50% - 120px) 50%'; // Start beam from the left edge of gantry (120px left of center)
+
+
+                beamAnimation = beam.animate(
+                    [
+                        { width: '0%', opacity: 0 },
+                        { width: 'calc(100% - 120px)', opacity: 1 }, // Extend towards tumor (center of animation container)
+                        { width: '0%', opacity: 0 }
+                    ],
+                    {
+                        duration: BEAM_FIRE_DURATION,
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-in-out'
+                    }
+                );
+
+                tumorAnimation = tumor.animate(
+                    [
+                        { transform: 'scale(1)', opacity: 1 },
+                        { transform: 'scale(0.4)', opacity: 0.6 } // Shrink to 40%, opacity 60%
+                    ],
+                    {
+                        duration: TUMOR_SHRINK_DURATION,
+                        delay: BEAM_FIRE_DURATION * 0.3, // Start shrinking slightly after beam hits the center (30% of beam fire duration)
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-out'
+                    }
+                );
+
+                await Promise.all([beamAnimation.finished, tumorAnimation.finished]);
+
+                // Step 3: Gantry continues full rotation after firing
+                gantryAnimation = gantry.animate(
+                    [
+                        { transform: `translate(-50%, -50%) rotate(${BEAM_FIRE_ANGLE}deg)` },
+                        { transform: 'translate(-50%, -50%) rotate(360deg)' } // Continue to a full rotation (or further)
+                    ],
+                    {
+                        duration: 1500, // Time for remaining rotation
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-out'
+                    }
+                );
+                await gantryAnimation.finished;
+
+                // Final small pause before resetting
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Reset all elements back to their initial, large tumor state
+                resetAnimations();
+                startAnimationBtn.textContent = "Restart Simulation";
+            }
+
+            startAnimationBtn.addEventListener('click', startRadiationAnimation);
+
+            // Initial reset when the page loads to show large tumor and correct gantry position
+            resetAnimations();
+        });
+    </script>
+</body>
+</html>
