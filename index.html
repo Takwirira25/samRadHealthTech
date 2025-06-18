@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>samRad Health Technologies</title>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=Cursive" rel="stylesheet">
     <style>
         /* Base Styles */
         body {
@@ -343,12 +343,13 @@
     position: absolute;
     height: 6px;
     width: 0;
-    background: linear-gradient(to right, rgba(255,255,0,0.8), rgba(255,0,0,0.95));
+    /* Reddish-orange gradient */
+    background: linear-gradient(to right, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.95)); /* OrangeRed to DarkOrange */
     top: 50%;
     left: 50%;
     /* transform-origin will be set by JS */
     /* transform will be set by JS */
-    box-shadow: 0 0 30px rgba(255,0,0,1);
+    box-shadow: 0 0 30px rgba(255, 69, 0, 1); /* Matching reddish-orange glow */
     border-radius: 3px;
     z-index: 4;
     opacity: 0;
@@ -360,8 +361,8 @@
 }
 
 @keyframes beamPulse {
-    from { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
-    to { box-shadow: 0 0 40px 5px rgba(255,50,50,1); }
+    from { box-shadow: 0 0 20px rgba(255, 69, 0, 0.8); }
+    to { box-shadow: 0 0 40px 5px rgba(255, 140, 0, 1); }
 }
 
 .patient-table {
@@ -386,6 +387,50 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.3rem 1rem; /* Reduced padding for mobile */
+            }
+
+            header h1 {
+                font-size: 1.6rem; /* Smaller font for mobile header */
+            }
+
+            nav.nav-links {
+                flex-direction: column; /* Stack links vertically */
+                gap: 0.5rem; /* Reduced gap between links */
+                margin-top: 0.3rem; /* Reduced margin from title */
+            }
+
+            nav a {
+                font-size: 0.85rem; /* Smaller font for nav links */
+                padding: 3px 0; /* Reduced vertical padding */
+            }
+
+            .container {
+                padding: 2rem 4vw; /* Slightly less padding on sides for mobile */
+            }
+
+            h2 {
+                font-size: 1.7rem; /* Smaller headings on mobile */
+                padding-bottom: 0.5rem;
+            }
+
+            section {
+                padding: 1.5rem; /* Reduced section padding */
+            }
+
+            .service-card {
+                padding: 1.5rem; /* Reduced service card padding */
+            }
+
+            button {
+                padding: 0.7rem 1.4rem; /* Smaller button padding */
+                font-size: 0.95rem; /* Smaller button font */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -753,44 +798,19 @@ async function startRadiationAnimation() {
     resetAnimations(); // Ensure a clean slate before starting
 
     const INITIAL_GANTRY_ANGLE = 0; // Starting from the right
-    const BEAM_DELIVERY_ANGLE = 90; // When gantry head is at the left side, ready to fire right
+    // Gantry needs to rotate clockwise to 270 degrees for the head to be on the left.
+    const BEAM_DELIVERY_GANTRY_ANGLE = 270; 
     const FINAL_GANTRY_ANGLE = 360; // Complete revolution back to 0
     
-    const GANTRY_HALF_ROTATION_DURATION = 2000; // Time for gantry to rotate 180 degrees
-    const GANTRY_SECOND_HALF_ROTATION_DURATION = 2000; // Time for gantry to complete revolution
+    const GANTRY_HALF_ROTATION_DURATION = 2000; // Time for gantry to rotate 270 degrees
+    const GANTRY_SECOND_HALF_ROTATION_DURATION = 1000; // Time for gantry to complete revolution (270 to 360)
     const BEAM_FIRE_DURATION = 1200; // Total time the beam is active (from appearing to disappearing)
     const BEAM_EXPAND_TIME = 300; // Time for beam to expand
     const BEAM_RETRACT_TIME = 300; // Time for beam to retract
     const TUMOR_SHRINK_DURATION = 800; // Time for tumor to shrink
     const APERTURE_DELAY = 100; // Delay before aperture appears
 
-    // 1. Rotate gantry halfway clockwise (0 to 180 degrees, then 180 to 90 for beam delivery)
-    // The gantry head starts at 0 degrees (top-right, if we consider 0 as 3 o'clock).
-    // To deliver from the left towards tumor, the gantry head needs to be at the 270-degree mark
-    // (or -90 degrees, relative to the horizontal axis where 0 is right).
-    // Let's make the beam come from the 90-degree mark for 'from the left towards tumor'
-    // if the gantry rotates to 90 (bottom) then the head is at bottom.
-    // Given the previous setup where 0 is right, 90 is down, 180 is left, 270 is up.
-    // If the beam is to be delivered "from the left towards tumor", the gantry head (which is at the top of the circle)
-    // needs to move to the LEFT side of the circle. This corresponds to the gantry body rotating to 180 degrees.
-    // At gantry body 180, gantry head is at top-left. To fire beam horizontally to the right:
-    // the beam's rotation should be 180 degrees. Its origin will be the gantry head.
-
-    // Let's reconsider: The gantry head is physically fixed to the gantry circle.
-    // If the gantry circle rotates, the head rotates with it.
-    // If gantry circle's rotation is 0, head is at top (as per current CSS).
-    // To deliver beam from the left towards the tumor:
-    // The gantry circle needs to rotate such that the gantry head is on the left side of the human target.
-    // Given 'top: -27px' for gantry-head, it's relative to the gantry-circle's center.
-    // If the gantry-circle rotates 90 degrees clockwise, the head moves to the right.
-    // If it rotates 180 degrees clockwise, the head moves to the bottom.
-    // If it rotates 270 degrees clockwise, the head moves to the left.
-    // So the 'BEAM_DELIVERY_ANGLE' must be 270 degrees for the head to be on the left.
-
-    const BEAM_DELIVERY_GANTRY_ANGLE = 270; // Gantry rotates clockwise to 270 degrees (head is on the left)
-    const BEAM_FIRE_DIRECTION_ANGLE = 0; // Beam fires horizontally to the right (relative to screen)
-
-    // First half of rotation: from 0 to BEAM_DELIVERY_GANTRY_ANGLE (270 degrees clockwise)
+    // 1. Rotate gantry halfway clockwise (0 to 270 degrees)
     const gantryFirstHalfAnimation = gantry.animate(
         [
             { transform: `translate(-50%, -50%) rotate(${INITIAL_GANTRY_ANGLE}deg)` },
@@ -808,40 +828,39 @@ async function startRadiationAnimation() {
 
     await new Promise(resolve => setTimeout(resolve, 600)); // Pause after first half rotation
 
-    // 2. Fire beam and shrink tumor
+    // 2. Fire beam from left towards tumor and start tumor glow
     gantryHead.classList.add('active-aperture'); // Show aperture glow
     tumor.classList.add('glowing'); // Start tumor glow
 
-    // Calculate beam length to reach the tumor from the gantry head's current position
+    // Calculate beam length and position
     const animationContainer = document.getElementById('animation-container-horizontal');
     const containerRect = animationContainer.getBoundingClientRect();
     const tumorRect = tumor.getBoundingClientRect();
 
     // Tumor's center relative to container
     const tumorCenterX_relative = tumor.offsetLeft + tumor.offsetWidth / 2;
-    const tumorCenterY_relative = tumor.offsetTop + tumor.offsetHeight / 2;
+    // const tumorCenterY_relative = tumor.offsetTop + tumor.offsetHeight / 2; // Not strictly needed for horizontal beam
 
-    // Gantry head's current position relative to container center
-    // Gantry circle is centered. Head is -27px from top (center of gantry circle).
-    // When gantry is rotated 270 degrees, head is at (-27 * cos(270deg), -27 * sin(270deg)) relative to gantry center.
-    // Which is (0, 27) pixels from the gantry circle's center (0,0).
-    // So gantry head is at container's center_x, container's center_y + 27
-    const gantryHeadRelativeX = containerRect.width / 2;
-    const gantryHeadRelativeY = containerRect.height / 2 + 27; // +27 because at 270deg, head is 'below' center on the left arc
+    // Gantry head's current position (relative to container center, then accounting for its offset)
+    // When gantry is rotated 270 degrees, the head (which is at top:-27px relative to gantry center)
+    // moves to the left side of the gantry circle.
+    // The gantry circle's center is at containerRect.width / 2, containerRect.height / 2.
+    // The head's offset of -27px means it's 27px *above* the gantry circle's center when at 0 deg.
+    // At 270 deg (clockwise rotation from 0), the head rotates to the left.
+    // Its X coordinate relative to gantry center becomes -27px.
+    // Its Y coordinate relative to gantry center becomes 0px.
+    // So, gantry head is at (containerCenter.x - 27, containerCenter.y).
+    const gantryHeadRelativeX = (containerRect.width / 2) - 27; // 27px left from center
+    const gantryHeadRelativeY = containerRect.height / 2; // Remains at vertical center
 
-    // Adjust beam origin and rotation for firing from the LEFT towards tumor (horizontally right)
-    // The beam's transform origin needs to be adjusted based on the gantry head's position
-    // and the angle it's firing from.
-    // For a beam firing right (0 deg), from a head on the left side of the circle,
-    // the origin should be at the gantry head's coordinates.
+    // Set beam's starting position and origin
     beam.style.left = `${gantryHeadRelativeX}px`;
     beam.style.top = `${gantryHeadRelativeY}px`;
-    beam.style.transformOrigin = '0 50%'; // Beam expands from its 'left' end
-    beam.style.transform = `translateY(-50%) rotate(${BEAM_FIRE_DIRECTION_ANGLE}deg)`; // Angle for beam itself
+    beam.style.transformOrigin = '0 50%'; // Beam expands from its left end
+    beam.style.transform = `translateY(-50%) rotate(0deg)`; // Beam fires horizontally to the right (0 degrees)
 
-    // Length of the beam from gantry head to tumor
+    // Length of the beam from gantry head to tumor center
     const beamLength = tumorCenterX_relative - gantryHeadRelativeX;
-
 
     await new Promise(resolve => setTimeout(resolve, APERTURE_DELAY)); // Short delay for aperture effect
 
@@ -896,7 +915,7 @@ async function startRadiationAnimation() {
     );
 
     // 3. Gantry finishes revolution as tumor shrinks and beam retracts
-    // Gantry completes from BEAM_DELIVERY_GANTRY_ANGLE (270) to 360 (which is 0)
+    // Gantry completes from BEAM_DELIVERY_GANTRY_ANGLE (270) to FINAL_GANTRY_ANGLE (360)
     const gantrySecondHalfAnimation = gantry.animate(
         [
             { transform: `translate(-50%, -50%) rotate(${BEAM_DELIVERY_GANTRY_ANGLE}deg)` },
