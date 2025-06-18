@@ -239,225 +239,153 @@
         }
 
         /* Radiation Animation Styles */
-        #animation-container-horizontal {
-            position: relative;
-            width: 100%;
-            max-width: 450px; /* Adjusted to fit table better horizontally */
-            height: 300px; /* Reduced height to make room for table below */
-            margin: 2.5rem auto;
-            background: #f0f7ff;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid #cce0f0;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-        }
+#animation-container-horizontal {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    height: 300px;
+    margin: 2.5rem auto;
+    background: #f0f7ff; /* This is the background for the entire scene */
+    border-radius: 15px;
+    overflow: hidden;
+    border: 2px solid #cce0f0;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .gantry-circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(0deg); /* Initial state: 0deg */
-            width: 240px;
-            height: 240px;
-            border: 10px solid #555;
-            border-radius: 50%;
-            z-index: 4;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            /* This transition ensures smooth rotation when JS changes transform */
-            transition: transform 0.1s linear; 
-        }
+.gantry-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    width: 240px; /* This is now the OUTER diameter of the ring */
+    height: 240px; /* This is now the OUTER diameter of the ring */
+    border-radius: 50%;
+    z-index: 4;
+    transition: transform 0.1s linear;
+    /* --- CRITICAL CHANGE: Use multiple inset box-shadows to create the ring --- */
+    background: transparent; /* Ensures the center of the div is transparent */
+    border: none; /* Remove any default border */
+    box-shadow:
+        inset 0 0 0 15px #555, /* Innermost part of the ring */
+        inset 0 0 0 30px #444, /* Outer part of the ring for a gradient-like effect */
+        0 0 15px rgba(0,0,0,0.3); /* Outer shadow for depth */
+}
 
-        .gantry-head {
-            width: 35px;
-            height: 35px;
-            background: #222;
-            border-radius: 50%;
-            position: absolute;
-            top: -18px; /* Positioned relative to gantry-circle */
-            left: calc(50% - 17.5px);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
+.gantry-head {
+    width: 35px;
+    height: 35px;
+    background: #222;
+    border-radius: 50%;
+    position: absolute;
+    /* Adjust top to account for the new gantry ring thickness (approx 30px total for the visual ring) */
+    top: -27px; /* (Roughly: (gantry_visual_radius - head_radius/2) to place on outer edge of ring) */
+    left: calc(50% - 17.5px);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
 
-        .body-section {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, #ffe0c2 50%, #d9a78b 100%);
-            border-radius: 50%;
-            z-index: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid rgba(0,0,0,0.1);
-        }
+/* Styling for the container that holds the human figure */
+.human-body-silhouette {
+    position: relative;
+    width: 80px; /* Base width of the human figure's area */
+    height: 180px; /* Base height of the human figure's area */
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .tumor {
-            width: 60px; /* Larger initial size */
-            height: 60px; /* Larger initial size */
-            background: radial-gradient(circle, #cc0000, #800000);
-            border-radius: 50%;
-            z-index: 3;
-            box-shadow: 0 0 15px rgba(200,0,0,0.8); /* More prominent shadow */
-            transform: scale(1); /* Ensure initial scale is 1 (large) */
-            opacity: 1;
-            /* Add transition for smooth shrink/grow */
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-        }
-        .beam {
-            position: absolute;
-            height: 6px; /* Thinner beam */
-            width: 0;
-            background: linear-gradient(to right, rgba(255,255,0,0.8), rgba(255,0,0,0.95));
-            top: 50%;
-            left: 50%; /* Start from center */
-            transform-origin: left center; /* Pivot point for rotation */
-            transform: translateY(-50%) rotate(0deg); /* Initial state, will be rotated by JS */
-            box-shadow: 0 0 30px rgba(255,0,0,1); /* More intense glow */
-            border-radius: 3px;
-            z-index: 4;
-            opacity: 0; /* Hidden by default */
-            transition: width 0.1s linear, opacity 0.1s linear; /* Smooth beam appearance */
-        }
+/* Styling for the SVG element itself within the container */
+.human-body-silhouette svg {
+    width: 100%; /* Makes the SVG take up the full width of its container */
+    height: 100%; /* Makes the SVG take up the full height of its container */
+    stroke: #d9a78b; /* This is a fallback outline color, though the path will use the gradient */
+    stroke-width: 2px; /* This stroke-width applies to any other SVG paths, not the main stick figure */
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.2)); /* Subtle drop shadow for depth */
+}
 
-        .patient-table {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px; /* Height of the table */
-            background-color: #777;
-            border-top: 10px solid #555;
-            z-index: 1; /* Below gantry and body */
-        }
-        .patient-table::before {
-            content: '';
-            position: absolute;
-            top: -10px; /* Position above the table */
-            left: 20%;
-            width: 60%;
-            height: 10px;
-            background-color: #aaa; /* Lighter top surface */
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
+/* --- THIS IS THE KEY PART FOR THE STICK FIGURE'S THICKNESS --- */
+/* Styling specifically for the <path> element that draws the stick figure */
+.human-body-silhouette svg path:first-of-type {
+    fill: none; /* Ensures the stick figure is just lines, not filled */
+    stroke: url(#humanGradient); /* Applies the cool-toned gradient to the lines */
+    stroke-width: 25; /* <<-- MUCH THICKER NOW! */
+}
 
-        /* Keyframe Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.tumor {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, #cc0000, #800000);
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 8px rgba(200,0,0,0.8);
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+}
 
-        /* --- Mobile Layout Adjustments (below 768px) --- */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: row;  
-                justify-content: center;
-                flex-wrap: wrap;
-                align-items: center;
-                padding: 0.5rem 1rem;
-                position: sticky;
-            }
-            
-            header h1 {
-                font-size: 1.5rem;
-                text-align: center;
-                flex-grow: 0;
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-            
-            .menu-toggle {
-                display: none !important;
-            }
+.tumor.glowing {
+    animation: tumorGlow 0.8s infinite alternate ease-in-out;
+}
 
-            nav.nav-links {
-                display: flex !important;
-                flex-direction: row;
-                justify-content: center;
-                gap: 0.8rem;
-                margin-top: 0;
-                width: 100%;
-                background: transparent;
-                padding: 0;
-                box-shadow: none;
-                position: static;
-                top: auto;
-                left: auto;
-                z-index: auto;
-                max-height: none;
-                overflow: visible;
-                opacity: 1;
-                transform: none;
-                flex-wrap: wrap;
-            }
+@keyframes tumorGlow {
+    from { box-shadow: 0 0 8px rgba(200,0,0,0.8); }
+    to { box-shadow: 0 0 15px 3px rgba(255,50,50,0.9); } /* Brighter, larger glow */
+}
 
-            nav.nav-links a {
-                padding: 0.2rem 0.4rem;
-                font-size: 0.8rem;
-                text-align: center;
-            }
+.beam {
+    position: absolute;
+    height: 6px;
+    width: 0;
+    background: linear-gradient(to right, rgba(255,255,0,0.8), rgba(255,0,0,0.95));
+    top: 50%;
+    left: 50%;
+    transform-origin: left center;
+    transform: translateY(-50%) rotate(0deg);
+    box-shadow: 0 0 30px rgba(255,0,0,1);
+    border-radius: 3px;
+    z-index: 4;
+    opacity: 0;
+    transition: width 0.1s linear, opacity 0.1s linear;
+}
 
-            .container {
-                padding: 2rem 4vw;
-            }
+.beam.firing {
+    animation: beamPulse 0.3s infinite alternate; /* Pulsating effect */
+}
 
-            h2 {
-                font-size: 1.8rem;
-            }
+@keyframes beamPulse {
+    from { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
+    to { box-shadow: 0 0 40px 5px rgba(255,50,50,1); }
+}
 
-            section {
-                padding: 1.5rem;
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-
-            button {
-                width: auto;
-                margin-right: 10px;
-                margin-bottom: 10px;
-                display: block;
-            }
-
-            button:last-of-type {
-                margin-bottom: 0;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.3rem;
-            }
-
-            nav.nav-links {
-                gap: 0.6rem;
-            }
-
-            nav.nav-links a {
-                font-size: 0.75rem;
-            }
-
-            .container {
-                padding: 1.5rem 3vw;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-            }
-
-            section {
-                padding: 1.2rem;
-            }
-
-            button {
-                font-size: 0.95rem;
-                padding: 0.8rem 1.2rem;
-            }
-        }
+.patient-table {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: #777;
+    border-top: 10px solid #555;
+    z-index: 1;
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.2); /* Inner shadow for depth */
+}
+.patient-table::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 20%;
+    width: 60%;
+    height: 10px;
+    background-color: #aaa;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
     </style>
 </head>
 <body>
@@ -504,7 +432,7 @@
 
         <section id="continuous-improvement">
             <h2>Advancements</h2>
-            <p>At samRad Health Technologies, relentless progress is not just a goal&mdash;it is a mindset. We are unwavering in our pursuit of precision and performance, constantly pushing the boundaries of what's possible in cancer detection. Every challenge is met with determination, every limitation with innovation. Our commitment to iterative advancement ensures our systems evolve with cutting-edge science, always moving forward, never settling, and always focused on delivering the best for clinicians and the patients they serve.</p>
+           <p>At samRad Health Technologies, our mission centers on <strong>precision</strong>&mdash;a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the <strong>crucial role of accurate targeting</strong> in modern cancer treatment and is a core example of the advancements we are working to bring to cancer care.</p>
         </section>
 
         <section id="certifications">
@@ -518,7 +446,7 @@
 
         <section id="quiz">
             <h2>Imaging and Quiz</h2>
-            <p>Radiology is more than just images on a screen&mdash;it’s often the first glimpse into a life forever changed. For those touched by cancer, whether through personal battle, the struggle of a loved one, or even the fear of the unknown, the journey is deeply personal. In those moments of waiting and worry, tools like MRI, CT, and PET scans become lifelines&mdash;windows into hope, clarity, and action. Understanding these tools can bring comfort, courage, and a sense of control when everything else feels uncertain. This is for everyone who has sat in silence, prayed for answers, or stood beside someone fighting with all they have.</p>
+            <p>Radiology is more than just images on a screen&mdash;it’s often the first glimpse into a life forever changed. For those touched by cancer, whether through personal battle, the struggle of a loved one, or even the fear of the unknown, the journey is deeply personal. In those moments of waiting and worry, tools like MRI, CT, and PET scans become lifelines&mdash;windows into hope, clarity, and action. Understanding these tools can bring comfort, courage, and a sense of control when everything else feels uncertain.</p>
 
             <p><strong>Test your knowledge:</strong></p>
             <button id="start-quiz-btn">Start Quiz</button>
@@ -526,23 +454,40 @@
             <div id="quiz-result" style="margin-top:1.5rem; font-weight:bold;"></div>
         </section>
 
-        <section id="radiation-animation">
-            <h2>Radiation Beam Simulation</h2>
-            <p>The precision of radiation therapy is incredible. Watch this simplified simulation to understand how a gantry rotates to deliver a targeted beam, minimizing exposure to healthy tissue while effectively treating the tumor. This animation showcases the critical role of accurate targeting in modern cancer treatment.</p>
-            <p>This precision is at the heart of samRad Health Technologies' mission. Our founder, a PhD student in Physics, specializes in developing the intelligent, automated systems that enable this exact level of accuracy. Through our **AI Tumor Detection** and **Clinical Pipeline Tooling**, we empower clinicians to pinpoint tumors with unparalleled precision, ensuring that the treatment, much like the beam shown here, is delivered exactly where it's needed most, minimizing impact on healthy tissue. This commitment to advanced, targeted solutions drives our efforts to revolutionize cancer care.</p>
-            
-            <div id="animation-container-horizontal">
-                <div class="gantry-circle">
-                    <div class="gantry-head"></div>
-                </div>
-                <div class="body-section">
-                    <div class="tumor"></div>
-                </div>
-                <div class="beam"></div>
-                <div class="patient-table"></div> </div>
-            <button id="start-animation-btn">Start Simulation</button>
-        </section>
+        <div id="radiation-animation">
+    <h2>Radiation Beam Simulation</h2>
+    <p>Okay, I understand completely. You want **only** the requested statement rewritten to be more concise and directly tie samRad Health Technologies to the simulation from the start, as discussed previously, without including any additional code or other sections.
 
+---
+
+## Radiation Beam Simulation
+
+</p> At samRad Health Technologies, our mission centers on **precision**—a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the crucial role of accurate targeting in modern cancer treatment and is a core example of the advancements we bring to cancer care.</p>
+    
+    <div id="animation-container-horizontal">
+        <div class="gantry-circle">
+            <div class="gantry-head"></div>
+        </div>
+        <div class="human-body-silhouette" id="human-target">
+            <svg viewBox="0 0 100 200" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <linearGradient id="humanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#b0c4de;stop-opacity:1" /> <stop offset="50%" style="stop-color:#a0b4ce;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#90a4be;stop-opacity:1" /> </linearGradient>
+                </defs>
+                <path d="M50,20 A15,15 0 1 1 50,50 A15,15 0 1 1 50,20 Z 
+                         M50,50 L50,120 
+                         M50,70 L20,90 M50,70 L80,90 
+                         M50,120 L35,180 M50,120 L65,180"
+                      fill="none" stroke="url(#humanGradient)" stroke-width="4"></path>
+            </svg>
+            <div class="tumor"></div>
+        </div>
+        <div class="beam"></div>
+        <div class="patient-table"></div>
+    </div>
+    <button id="start-animation-btn">Start Simulation</button>
+</div>
         <section id="contact">
             <h2>Contact Us</h2>
             <p>Email: <a href="mailto:takwirira@proton.me">takwirira@proton.me</a></p>
@@ -555,7 +500,6 @@
     </footer>
 
     <script>
-        // Utility function for throttling (kept for potential future use or other scroll listeners, but not for header now)
         function throttle(func, limit) {
             let inThrottle;
             return function() {
@@ -743,35 +687,33 @@
             const gantryHead = document.querySelector('.gantry-head');
             const beam = document.querySelector('.beam');
             const tumor = document.querySelector('.tumor');
+            const humanTarget = document.getElementById('human-target'); // Get the human silhouette element
             const startAnimationBtn = document.getElementById('start-animation-btn');
 
-            let gantryCurrentAngle = 0; // Keep track of current gantry angle
+            let gantryCurrentAngle = 0; 
 
-            // Function to set gantry rotation directly (used for continuous movement)
             function setGantryRotation(angle) {
-                gantryCurrentAngle = angle % 360; // Keep angle within 0-359
+                gantryCurrentAngle = angle % 360;
                 gantry.style.transform = `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)`;
             }
 
             function resetAnimations() {
-                // Stop any ongoing animations
                 gantry.getAnimations().forEach(anim => anim.cancel());
                 beam.getAnimations().forEach(anim => anim.cancel());
                 tumor.getAnimations().forEach(anim => anim.cancel());
 
-                // Reset elements to initial state
-                setGantryRotation(0); // Gantry starts at 0 degrees (top)
+                setGantryRotation(0);
                 beam.style.width = '0';
                 beam.style.opacity = '0';
-                beam.style.transformOrigin = 'left center'; // Ensure origin is correct
-                tumor.style.transform = 'scale(1)'; // Tumor is large
+                beam.classList.remove('firing'); // Stop beam pulse
+                tumor.style.transform = 'translate(-50%, -50%) scale(1)'; // Ensure tumor is large and centered
                 tumor.style.opacity = '1';
+                tumor.classList.remove('glowing'); // Stop tumor glow
 
-                // Ensure no lingering animation properties
                 gantry.style.animation = 'none';
                 beam.style.animation = 'none';
                 tumor.style.animation = 'none';
-                void gantry.offsetWidth; // Force reflow
+                void gantry.offsetWidth;
                 void beam.offsetWidth;
                 void tumor.offsetWidth;
 
@@ -782,92 +724,14 @@
             async function startRadiationAnimation() {
                 startAnimationBtn.disabled = true;
                 startAnimationBtn.textContent = "Simulating...";
-                resetAnimations(); // Ensure everything is reset to natural state
+                resetAnimations();
 
-                const INITIAL_ALIGN_ANGLE = 90; // Start gantry from left (90 degrees)
-                const BEAM_FIRE_ANGLE = 270; // Angle from which beam will fire (from right, hitting tumor)
-                const GANTRY_ROTATION_SPEED = 0.08; // Degrees per millisecond (approx 80 degrees/sec)
-                const BEAM_FIRE_DURATION = 600; // Time for beam to extend/retract
-                const TUMOR_SHRINK_DURATION = 500; // Time for tumor to shrink
+                const BEAM_FIRE_ANGLE = 270; // Angle from which beam will fire (from left, hitting tumor)
+                const GANTRY_ROTATION_SPEED = 0.08; 
+                const BEAM_FIRE_DURATION = 1200; // Increased duration for beam to cross human body and impact
+                const TUMOR_SHRINK_DURATION = 800; // Longer shrink duration for dramatic effect
 
-                // Calculate beam properties dynamically based on gantry head and tumor position
-                // Assuming gantry head (beam origin) is at the top of the gantry circle, and tumor is at the center
-                // Gantry circle top is at -120px from center (half its height) relative to body-section center
-
-                // Function to get absolute position of gantry head (approximate)
-                const containerRect = document.getElementById('animation-container-horizontal').getBoundingClientRect();
-                const gantryRect = gantry.getBoundingClientRect();
-                const headRect = gantryHead.getBoundingClientRect();
-                const tumorRect = tumor.getBoundingClientRect();
-                
-                const containerCenterX = containerRect.width / 2;
-                const containerCenterY = containerRect.height / 2;
-
-                // Function to set beam's position and rotation based on gantry's current angle
-                function setBeamTransform(angle) {
-                    // Convert degrees to radians for sin/cos
-                    const rad = (angle - 90) * (Math.PI / 180); // Adjust for 0deg being upwards
-
-                    // Gantry head is 120px radius from center of gantry-circle
-                    const gantryRadius = gantry.offsetWidth / 2;
-                    const headOffsetFromGantryCenter = gantryRadius - (gantryHead.offsetHeight / 2); // Distance from gantry center to gantry head center
-
-                    // Calculate gantry head's position relative to container's center
-                    const headX = containerCenterX + headOffsetFromGantryCenter * Math.cos(rad);
-                    const headY = containerCenterY + headOffsetFromGantryCenter * Math.sin(rad);
-
-                    // Tumor is at container center (approx)
-                    const tumorX = containerCenterX;
-                    const tumorY = containerCenterY;
-
-                    // Calculate angle from gantry head to tumor
-                    const deltaX = tumorX - headX;
-                    const deltaY = tumorY - headY;
-                    const beamAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-
-                    // Set beam's origin to the gantry head's current position, and rotate it
-                    // This is tricky with `position: absolute` and `transform: translate(-50%, -50%)` for body/tumor.
-                    // Let's simplify: beam starts at the exact center of the gantry, and we rotate it.
-                    // The visual effect of it "coming from" the head is implied by setting beam.style.transformOrigin = '0 50%';
-                    // and rotating it to the gantry's current orientation.
-
-                    // The beam's actual rotation should match the gantry's head direction.
-                    // If gantry 0deg is up, then 90deg is right, 180deg is down, 270deg is left.
-                    // A beam from the head should point inwards.
-                    // The beam element is horizontal, so its rotation is relative to horizontal.
-                    // If gantry is at angle `A`, the head is at `A`.
-                    // The beam needs to point from `A` towards the center.
-                    // This means beam rotation should be `A + 180` (or `A - 180`) relative to its origin.
-
-                    // For simplicity, let's just make the beam's rotation mirror the gantry's head rotation,
-                    // but originating from the center of the gantry-circle.
-                    beam.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-                    beam.style.transformOrigin = '120px 50%'; // Pivot at the edge of the gantry circle
-                                                              // (half of gantry's width)
-                }
-
-                // Simulate continuous gantry rotation until it reaches the target angle for firing
-                let currentAngle = gantryCurrentAngle;
-                const rotationPromise = new Promise(resolve => {
-                    const rotate = () => {
-                        // If currentAngle has passed BEAM_FIRE_ANGLE (e.g., went from 260 to 280), stop.
-                        // Handle circular rotation for target.
-                        const targetReached = Math.abs(currentAngle - BEAM_FIRE_ANGLE) < (GANTRY_ROTATION_SPEED * 10); // A small buffer
-                        if (targetReached) {
-                             setGantryRotation(BEAM_FIRE_ANGLE); // Snap to exact target
-                             resolve();
-                             return;
-                        }
-
-                        currentAngle += GANTRY_ROTATION_SPEED * 10; // Increment angle
-                        setGantryRotation(currentAngle);
-                        requestAnimationFrame(rotate);
-                    };
-                    rotate();
-                });
-
-                // Start gantry rotation to the target angle (e.g., 270 degrees for beam from left)
-                // This animation will rotate towards BEAM_FIRE_ANGLE and then stop.
+                // Step 1: Rotate gantry to target angle
                 let animationDuration = (BEAM_FIRE_ANGLE - gantryCurrentAngle + 360) % 360 / (GANTRY_ROTATION_SPEED * 10);
                 if (animationDuration < 0) animationDuration += 360 / (GANTRY_ROTATION_SPEED * 10);
                 
@@ -877,34 +741,50 @@
                         { transform: `translate(-50%, -50%) rotate(${BEAM_FIRE_ANGLE}deg)` }
                     ],
                     {
-                        duration: 3000, // Fixed duration for initial spin towards target
+                        duration: 2500, // Slightly faster initial spin
                         iterations: 1,
                         fill: 'forwards',
                         easing: 'ease-in-out'
                     }
                 );
                 await gantryAnimation.finished;
-                setGantryRotation(BEAM_FIRE_ANGLE); // Ensure it's exactly at the target angle
+                setGantryRotation(BEAM_FIRE_ANGLE);
 
-                // Short pause for "setup" before firing
-                await new Promise(resolve => setTimeout(resolve, 800));
+                await new Promise(resolve => setTimeout(resolve, 600)); // Short pause for "setup"
 
                 // Step 2: Fire beam and shrink tumor
-                // Position beam correctly based on the gantry head's final angle
-                // The beam element itself needs to be rotated to align with the gantry head's current orientation (BEAM_FIRE_ANGLE)
-                // and its origin moved to align with the gantry head.
-                
-                // Let's simplify beam origin for demonstration. We'll make it originate from the edge of the gantry.
-                // The beam element is horizontal by default. To point it from BEAM_FIRE_ANGLE (270, left) towards center:
-                beam.style.transform = `translate(-50%, -50%) rotate(${BEAM_FIRE_ANGLE}deg)`;
-                beam.style.transformOrigin = 'calc(50% - 120px) 50%'; // Start beam from the left edge of gantry (120px left of center)
+                tumor.classList.add('glowing'); // Start tumor glowing when beam fires
+                beam.classList.add('firing'); // Start beam pulsating
 
+                const containerRect = document.getElementById('animation-container-horizontal').getBoundingClientRect();
+                const containerCenterX = containerRect.width / 2;
+                const containerCenterY = containerRect.height / 2;
+
+                const gantryRadius = gantry.offsetWidth / 2;
+                const headOffsetFromGantryCenter = gantryRadius - (gantryHead.offsetHeight / 2);
+
+                const A_rad = (BEAM_FIRE_ANGLE - 90) * (Math.PI / 180); 
+                const gantryHeadRelativeX = headOffsetFromGantryCenter * Math.cos(A_rad);
+                const gantryHeadRelativeY = headOffsetFromGantryCenter * Math.sin(A_rad);
+
+                const beamOriginX = containerCenterX + gantryHeadRelativeX;
+                const beamOriginY = containerCenterY + gantryHeadRelativeY;
+
+                const dx = containerCenterX - beamOriginX; // Tumor is at container center
+                const dy = containerCenterY - beamOriginY; 
+                const beamLength = Math.sqrt(dx * dx + dy * dy);
+                const beamAngle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+                beam.style.left = `${beamOriginX}px`;
+                beam.style.top = `${beamOriginY}px`;
+                beam.style.transform = `translateY(-50%) rotate(${beamAngle}deg)`;
+                beam.style.transformOrigin = '0% 50%'; 
 
                 beamAnimation = beam.animate(
                     [
-                        { width: '0%', opacity: 0 },
-                        { width: 'calc(100% - 120px)', opacity: 1 }, // Extend towards tumor (center of animation container)
-                        { width: '0%', opacity: 0 }
+                        { width: '0px', opacity: 0 },
+                        { width: `${beamLength}px`, opacity: 1 }, 
+                        { width: '0px', opacity: 0 } 
                     ],
                     {
                         duration: BEAM_FIRE_DURATION,
@@ -916,12 +796,12 @@
 
                 tumorAnimation = tumor.animate(
                     [
-                        { transform: 'scale(1)', opacity: 1 },
-                        { transform: 'scale(0.4)', opacity: 0.6 } // Shrink to 40%, opacity 60%
+                        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                        { transform: 'translate(-50%, -50%) scale(0.3)', opacity: 0.5 } // Shrink to 30%, opacity 50%
                     ],
                     {
                         duration: TUMOR_SHRINK_DURATION,
-                        delay: BEAM_FIRE_DURATION * 0.3, // Start shrinking slightly after beam hits the center (30% of beam fire duration)
+                        delay: BEAM_FIRE_DURATION * 0.4, // Start shrinking closer to mid-beam
                         iterations: 1,
                         fill: 'forwards',
                         easing: 'ease-out'
@@ -929,15 +809,17 @@
                 );
 
                 await Promise.all([beamAnimation.finished, tumorAnimation.finished]);
+                tumor.classList.remove('glowing'); // Stop glowing after treatment
+                beam.classList.remove('firing'); // Stop beam pulse after firing
 
                 // Step 3: Gantry continues full rotation after firing
                 gantryAnimation = gantry.animate(
                     [
                         { transform: `translate(-50%, -50%) rotate(${BEAM_FIRE_ANGLE}deg)` },
-                        { transform: 'translate(-50%, -50%) rotate(360deg)' } // Continue to a full rotation (or further)
+                        { transform: 'translate(-50%, -50%) rotate(360deg)' } 
                     ],
                     {
-                        duration: 1500, // Time for remaining rotation
+                        duration: 1000, // Faster post-treatment rotation
                         iterations: 1,
                         fill: 'forwards',
                         easing: 'ease-out'
@@ -945,17 +827,14 @@
                 );
                 await gantryAnimation.finished;
 
-                // Final small pause before resetting
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 800)); // Final small pause
                 
-                // Reset all elements back to their initial, large tumor state
                 resetAnimations();
                 startAnimationBtn.textContent = "Restart Simulation";
             }
 
             startAnimationBtn.addEventListener('click', startRadiationAnimation);
 
-            // Initial reset when the page loads to show large tumor and correct gantry position
             resetAnimations();
         });
     </script>
