@@ -118,7 +118,7 @@
         }
 
         /* Sections */
-        section {
+        section, #radiation-animation { /* Apply to radiation animation div as well */
             margin-bottom: 4rem; /* More space between sections */
             padding: 2.5rem; /* More internal padding */
             border-radius: 15px; /* More rounded corners */
@@ -127,7 +127,7 @@
             transition: all 0.5s ease;
         }
 
-        section.active-section {
+        section.active-section, #radiation-animation.active-section {
             background: #e6f0fa; /* Slightly more saturated active background */
             box-shadow: 0 12px 40px rgba(0,0,0,0.2); /* Even deeper shadow */
         }
@@ -247,6 +247,7 @@
             align-items: center;
         }
 
+        /* RESTORED ORIGINAL GANTRY STYLE */
         .gantry-circle {
             position: absolute;
             top: 50%;
@@ -257,18 +258,9 @@
             border-radius: 50%;
             z-index: 4;
             transition: transform 0.1s linear;
-            background: transparent;
-            border: none;
-            /* Using multiple background layers and masks to create segmented ring */
-            background-image: 
-                radial-gradient(circle at center, transparent 80%, #4a4a4a 80%, #4a4a4a 85%, transparent 85%), /* Darker core */
-                radial-gradient(circle at center, transparent 70%, #666 70%, #666 75%, transparent 75%), /* Lighter segment */
-                radial-gradient(circle at center, transparent 60%, #555 60%, #555 65%, transparent 65%); /* Even lighter segment */
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4); /* Stronger outer shadow */
-            mask-image: radial-gradient(circle at center, transparent 80%, black 80%); /* Define ring shape */
-            -webkit-mask-image: radial-gradient(circle at center, transparent 80%, black 80%); /* For webkit browsers */
+            background: rgba(180, 200, 220, 0.2); /* Light transparent fill */
+            border: 3px solid #607d8b; /* A subtle, visible border */
+            box-shadow: 0 0 15px rgba(0,0,0,0.3); /* Soft shadow for depth */
         }
         
         .gantry-circle.no-transition {
@@ -531,8 +523,7 @@
                 <div class="beam"></div>
                 <div class="patient-table"></div>
             </div>
-            <button id="start-animation-btn">Start Simulation</button>
-        </div>
+            <button id="start-animation-btn" style="margin-top: 1.5rem;">Start Simulation</button> </div>
         <section id="contact">
             <h2>Contact Us</h2>
             <p>Email: <a href="mailto:takwirira@proton.me">takwirira@proton.me</a></p>
