@@ -239,153 +239,166 @@
         }
 
         /* Radiation Animation Styles */
-#animation-container-horizontal {
-    position: relative;
-    width: 100%;
-    max-width: 450px;
-    height: 300px;
-    margin: 2.5rem auto;
-    background: #f0f7ff; /* This is the background for the entire scene */
-    border-radius: 15px;
-    overflow: hidden;
-    border: 2px solid #cce0f0;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        #animation-container-horizontal {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 300px;
+            margin: 2.5rem auto;
+            background: #f0f7ff; /* This is the background for the entire scene */
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #cce0f0;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.gantry-circle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
-    width: 240px; /* This is now the OUTER diameter of the ring */
-    height: 240px; /* This is now the OUTER diameter of the ring */
-    border-radius: 50%;
-    z-index: 4;
-    transition: transform 0.1s linear;
-    /* --- CRITICAL CHANGE: Use multiple inset box-shadows to create the ring --- */
-    background: transparent; /* Ensures the center of the div is transparent */
-    border: none; /* Remove any default border */
-    box-shadow:
-        inset 0 0 0 15px #555, /* Innermost part of the ring */
-        inset 0 0 0 30px #444, /* Outer part of the ring for a gradient-like effect */
-        0 0 15px rgba(0,0,0,0.3); /* Outer shadow for depth */
-}
+        .gantry-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            width: 240px; /* This is now the OUTER diameter of the ring */
+            height: 240px; /* This is now the OUTER diameter of the ring */
+            border-radius: 50%;
+            z-index: 4;
+            transition: transform 0.1s linear;
+            /* --- CRITICAL CHANGE: Use multiple inset box-shadows to create the ring --- */
+            background: transparent; /* Ensures the center of the div is transparent */
+            border: none; /* Remove any default border */
+            box-shadow:
+                inset 0 0 0 15px #555, /* Innermost part of the ring */
+                inset 0 0 0 30px #444, /* Outer part of the ring for a gradient-like effect */
+                0 0 15px rgba(0,0,0,0.3); /* Outer shadow for depth */
+        }
 
-.gantry-head {
-    width: 35px;
-    height: 35px;
-    background: #222;
-    border-radius: 50%;
-    position: absolute;
-    /* Adjust top to account for the new gantry ring thickness (approx 30px total for the visual ring) */
-    top: -27px; /* (Roughly: (gantry_visual_radius - head_radius/2) to place on outer edge of ring) */
-    left: calc(50% - 17.5px);
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
+        .gantry-circle.no-transition {
+            transition: none !important;
+        }
 
-/* Styling for the container that holds the human figure */
-.human-body-silhouette {
-    position: relative;
-    width: 80px; /* Base width of the human figure's area */
-    height: 180px; /* Base height of the human figure's area */
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .gantry-head {
+            width: 35px;
+            height: 35px;
+            background: #222;
+            border-radius: 50%;
+            position: absolute;
+            /* Adjust top to account for the new gantry ring thickness (approx 30px total for the visual ring) */
+            top: -27px; /* (Roughly: (gantry_visual_radius - head_radius/2) to place on outer edge of ring) */
+            left: calc(50% - 17.5px);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
 
-/* Styling for the SVG element itself within the container */
-.human-body-silhouette svg {
-    width: 100%; /* Makes the SVG take up the full width of its container */
-    height: 100%; /* Makes the SVG take up the full height of its container */
-    stroke: #d9a78b; /* This is a fallback outline color, though the path will use the gradient */
-    stroke-width: 2px; /* This stroke-width applies to any other SVG paths, not the main stick figure */
-    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.2)); /* Subtle drop shadow for depth */
-}
+        /* Styling for the container that holds the human figure */
+        .human-body-silhouette {
+            position: relative;
+            width: 80px; /* Base width of the human figure's area */
+            height: 180px; /* Base height of the human figure's area */
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* --- THIS IS THE KEY PART FOR THE STICK FIGURE'S THICKNESS --- */
-/* Styling specifically for the <path> element that draws the stick figure */
-.human-body-silhouette svg path:first-of-type {
-    fill: none; /* Ensures the stick figure is just lines, not filled */
-    stroke: url(#humanGradient); /* Applies the cool-toned gradient to the lines */
-    stroke-width: 25; /* <<-- MUCH THICKER NOW! */
-}
+        /* Styling for the SVG element itself within the container */
+        .human-body-silhouette svg {
+            width: 100%; /* Makes the SVG take up the full width of its container */
+            height: 100%; /* Makes the SVG take up the full height of its container */
+            stroke: #d9a78b; /* This is a fallback outline color, though the path will use the gradient */
+            stroke-width: 2px; /* This stroke-width applies to any other SVG paths, not the main stick figure */
+            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.2)); /* Subtle drop shadow for depth */
+        }
 
-.tumor {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: radial-gradient(circle, #cc0000, #800000);
-    border-radius: 50%;
-    z-index: 3;
-    box-shadow: 0 0 8px rgba(200,0,0,0.8);
-    transform: scale(1);
-    opacity: 1;
-    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1);
-}
+        /* --- THIS IS THE KEY PART FOR THE STICK FIGURE'S THICKNESS --- */
+        /* Styling specifically for the <path> element that draws the stick figure */
+        .human-body-silhouette svg path:first-of-type {
+            fill: none; /* Ensures the stick figure is just lines, not filled */
+            stroke: url(#humanGradient); /* Applies the cool-toned gradient to the lines */
+            stroke-width: 25; /* <<-- MUCH THICKER NOW! */
+        }
 
-.tumor.glowing {
-    animation: tumorGlow 0.8s infinite alternate ease-in-out;
-}
+        .tumor {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #cc0000, #800000);
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: 0 0 8px rgba(200,0,0,0.8);
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+        }
 
-@keyframes tumorGlow {
-    from { box-shadow: 0 0 8px rgba(200,0,0,0.8); }
-    to { box-shadow: 0 0 15px 3px rgba(255,50,50,0.9); } /* Brighter, larger glow */
-}
+        .tumor.glowing {
+            animation: tumorGlow 0.8s infinite alternate ease-in-out;
+        }
 
-.beam {
-    position: absolute;
-    height: 6px;
-    width: 0;
-    background: linear-gradient(to right, rgba(255,255,0,0.8), rgba(255,0,0,0.95));
-    top: 50%;
-    left: 50%;
-    transform-origin: left center;
-    transform: translateY(-50%) rotate(0deg);
-    box-shadow: 0 0 30px rgba(255,0,0,1);
-    border-radius: 3px;
-    z-index: 4;
-    opacity: 0;
-    transition: width 0.1s linear, opacity 0.1s linear;
-}
+        .tumor.shrinking {
+            animation: tumorShrink 0.8s forwards; /* Added for shrinking */
+        }
 
-.beam.firing {
-    animation: beamPulse 0.3s infinite alternate; /* Pulsating effect */
-}
+        @keyframes tumorGlow {
+            from { box-shadow: 0 0 8px rgba(200,0,0,0.8); }
+            to { box-shadow: 0 0 15px 3px rgba(255,50,50,0.9); } /* Brighter, larger glow */
+        }
 
-@keyframes beamPulse {
-    from { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
-    to { box-shadow: 0 0 40px 5px rgba(255,50,50,1); }
-}
+        @keyframes tumorShrink {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            to { transform: translate(-50%, -50%) scale(0.1); opacity: 0; }
+        }
 
-.patient-table {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    background-color: #777;
-    border-top: 10px solid #555;
-    z-index: 1;
-    box-shadow: inset 0 5px 10px rgba(0,0,0,0.2); /* Inner shadow for depth */
-}
-.patient-table::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 20%;
-    width: 60%;
-    height: 10px;
-    background-color: #aaa;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
+        .beam {
+            position: absolute;
+            height: 6px;
+            width: 0;
+            background: linear-gradient(to right, rgba(255,255,0,0.8), rgba(255,0,0,0.95));
+            top: 50%;
+            left: 50%;
+            transform-origin: left center;
+            transform: translateY(-50%) rotate(0deg);
+            box-shadow: 0 0 30px rgba(255,0,0,1);
+            border-radius: 3px;
+            z-index: 4;
+            opacity: 0;
+            transition: width 0.1s linear, opacity 0.1s linear;
+        }
+
+        .beam.firing {
+            animation: beamPulse 0.3s infinite alternate; /* Pulsating effect */
+        }
+
+        @keyframes beamPulse {
+            from { box-shadow: 0 0 20px rgba(255,0,0,0.8); }
+            to { box-shadow: 0 0 40px 5px rgba(255,50,50,1); }
+        }
+
+        .patient-table {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background-color: #777;
+            border-top: 10px solid #555;
+            z-index: 1;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.2); /* Inner shadow for depth */
+        }
+        .patient-table::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 20%;
+            width: 60%;
+            height: 10px;
+            background-color: #aaa;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -408,7 +421,6 @@
             <h2>About Us</h2>
             <p>samRad Health Technologies is a visionary cancer research and healthtech enterprise. Our mission is to pioneer intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with precision and ease. Our AI pipelines are open, transparent, and designed to speed up diagnostics and enhance medical research.</p>
             <p>Founded by Samuel B. Takwirira, a Zimbabwean PhD student in Physics at the University of New Hampshire in the United States, the initiative is rooted in a passion for oncology and a heartfelt commitment to expanding access to care. Coming from a background marked by economic hardship and limited access to advanced healthcare, Takwirira has firsthand experience of the challenges faced by most African communities.<p>
-                        
             </p> Through resilience and a relentless pursuit of education, he now seeks to transform lives&mdash;not just through innovation, but by creating pathways for others from similar circumstances. samRad Health Technologies aspires to forge partnerships with hospitals across Zimbabwe and Southern Africa, uplifting cancer care through technological excellence and shared knowledge.</p>
         </section>
 
@@ -432,15 +444,15 @@
 
         <section id="continuous-improvement">
             <h2>Advancements</h2>
-           <p>At samRad Health Technologies, our mission centers on <strong>precision</strong>&mdash;a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the <strong>crucial role of accurate targeting</strong> in modern cancer treatment and is a core example of the advancements we are working to bring to cancer care.</p>
+            <p>At samRad Health Technologies, our mission centers on <strong>precision</strong>&mdash;a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the <strong>crucial role of accurate targeting</strong> in modern cancer treatment and is a core example of the advancements we are working to bring to cancer care.</p>
         </section>
 
         <section id="certifications">
             <h2>Certifications & Research Ethics</h2>
             <ul>
-                <li>Fully compliant with **HIPAA** data handling protocols to ensure patient data privacy and security.</li>
+                <li>Fully compliant with <strong>HIPAA</strong> data handling protocols to ensure patient data privacy and security.</li>
                 <li>Model validation on ethically sourced, anonymized datasets to maintain integrity and prevent bias.</li>
-                <li>Strict adherence to **IRB** (Institutional Review Board) and institutional ethics review processes for all research and development.</li>
+                <li>Strict adherence to <strong>IRB</strong> (Institutional Review Board) and institutional ethics review processes for all research and development.</li>
             </ul>
         </section>
 
@@ -455,34 +467,36 @@
         </section>
 
         <div id="radiation-animation">
-    <h2>Radiation Beam Simulation</h2>
-    
-    <p>At samRad Health Technologies, our mission centers on <strong>precision</strong>—a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the crucial role of accurate targeting in modern cancer treatment and is a core example of the advancements we bring to cancer care.</p> 
-   
-    <div id="animation-container-horizontal">
-        <div class="gantry-circle">
-            <div class="gantry-head"></div>
+            <h2>Radiation Beam Simulation</h2>
+            
+            <p>At samRad Health Technologies, our mission centers on <strong>precision</strong>—a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the crucial role of accurate targeting in modern cancer treatment and is a core example of the advancements we bring to cancer care.</p>
+            
+            <div id="animation-container-horizontal">
+                <div class="gantry-circle">
+                    <div class="gantry-head"></div>
+                </div>
+                <div class="human-body-silhouette" id="human-target">
+                    <svg viewBox="0 0 100 200" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <linearGradient id="humanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#b0c4de;stop-opacity:1" /> 
+                                <stop offset="50%" style="stop-color:#a0b4ce;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#90a4be;stop-opacity:1" /> 
+                            </linearGradient>
+                        </defs>
+                        <path d="M50,20 A15,15 0 1 1 50,50 A15,15 0 1 1 50,20 Z 
+                                  M50,50 L50,120 
+                                  M50,70 L20,90 M50,70 L80,90 
+                                  M50,120 L35,180 M50,120 L65,180"
+                             fill="none" stroke="url(#humanGradient)" stroke-width="4"></path>
+                    </svg>
+                    <div class="tumor"></div>
+                </div>
+                <div class="beam"></div>
+                <div class="patient-table"></div>
+            </div>
+            <button id="start-animation-btn">Start Simulation</button>
         </div>
-        <div class="human-body-silhouette" id="human-target">
-            <svg viewBox="0 0 100 200" preserveAspectRatio="xMidYMid meet">
-                <defs>
-                    <linearGradient id="humanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#b0c4de;stop-opacity:1" /> <stop offset="50%" style="stop-color:#a0b4ce;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#90a4be;stop-opacity:1" /> </linearGradient>
-                </defs>
-                <path d="M50,20 A15,15 0 1 1 50,50 A15,15 0 1 1 50,20 Z 
-                         M50,50 L50,120 
-                         M50,70 L20,90 M50,70 L80,90 
-                         M50,120 L35,180 M50,120 L65,180"
-                      fill="none" stroke="url(#humanGradient)" stroke-width="4"></path>
-            </svg>
-            <div class="tumor"></div>
-        </div>
-        <div class="beam"></div>
-        <div class="patient-table"></div>
-    </div>
-    <button id="start-animation-btn">Start Simulation</button>
-</div>
         <section id="contact">
             <h2>Contact Us</h2>
             <p>Email: <a href="mailto:takwirira@proton.me">takwirira@proton.me</a></p>
@@ -495,19 +509,6 @@
     </footer>
 
     <script>
-        function throttle(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             const headerTitle = document.querySelector('header h1');
             const navLinks = document.querySelector('nav.nav-links');
@@ -520,8 +521,41 @@
 
             navLinks.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
+                    // This is where you would typically handle navigation,
+                    // e.g., smooth scrolling to sections.
+                    // The 'scroll-behavior: smooth;' in CSS handles this basic functionality.
+                    // You might add an 'active' class here if you want to highlight the current section.
+                    navLinks.querySelectorAll('a').forEach(nav => nav.classList.remove('active'));
+                    link.classList.add('active');
                 });
             });
+
+            // Highlight active section on scroll
+            const sections = document.querySelectorAll('section, #radiation-animation');
+            const highlightActiveSection = () => {
+                let currentActive = null;
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - header.offsetHeight - 50; // Offset for sticky header
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                        currentActive = section.id;
+                    }
+                    section.classList.remove('active-section');
+                });
+
+                if (currentActive) {
+                    document.getElementById(currentActive).classList.add('active-section');
+                    navLinks.querySelectorAll('a').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${currentActive}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            };
+
+            window.addEventListener('scroll', highlightActiveSection);
+            highlightActiveSection(); // Initial call on load
 
             // --- Quiz Data and Logic ---
             const quizData = [
@@ -634,11 +668,22 @@
                 document.getElementById("exit-quiz-btn").addEventListener("click", () => {
                     quizResult.innerHTML = "";
                     startQuizBtn.textContent = "Start Quiz";
+                    // Re-enable show-stats-btn if it was disabled
+                    const showStatsButton = document.getElementById("show-stats-btn");
+                    if (showStatsButton) {
+                        showStatsButton.disabled = false;
+                    }
                 });
 
                 document.getElementById("show-stats-btn").addEventListener("click", () => {
                     const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
                     const statsMessage = document.createElement("p");
+                    // Remove existing stats message if any
+                    const existingStats = quizResult.querySelector('.stats-message');
+                    if (existingStats) {
+                        existingStats.remove();
+                    }
+
                     if (scores.length === 0) {
                         statsMessage.textContent = "No scores recorded yet.";
                         statsMessage.style.color = "gray";
@@ -648,178 +693,220 @@
                         statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of ${quizData.length}.`;
                         statsMessage.style.color = getFeedbackColor(percentMax);
                     }
+                    statsMessage.classList.add('stats-message'); // Add a class for easy removal
                     quizResult.appendChild(statsMessage);
                     document.getElementById("show-stats-btn").disabled = true;
                 });
 
                 document.getElementById("reset-stats-btn").addEventListener("click", () => {
                     localStorage.removeItem("quizScores");
+                    // Remove all dynamically added paragraphs in quizResult, except for the score and feedback
                     Array.from(quizResult.children).forEach(el => {
                         const text = el.textContent.trim();
                         if (
                             text.startsWith("Your Highest Score so far") ||
-                            text.startsWith("No scores recorded yet.")
+                            text.startsWith("No scores recorded yet.") ||
+                            el.classList.contains('stats-message') || // Remove element with this class
+                            text.startsWith("Stats reset successfully.") // Remove old confirmation message
                         ) {
                             el.remove();
                         }
                     });
+
                     const confirmMsg = document.createElement("p");
                     confirmMsg.textContent = "Stats reset successfully.";
                     confirmMsg.style.color = "green";
                     quizResult.appendChild(confirmMsg);
                     setTimeout(() => {
                         confirmMsg.remove();
-                        document.getElementById("show-stats-btn").disabled = false;
+                        const showStatsButton = document.getElementById("show-stats-btn");
+                        if (showStatsButton) {
+                            showStatsButton.disabled = false;
+                        }
                     }, 5000);
                 });
             }
 
             startQuizBtn.addEventListener("click", runQuiz);
 
+            // --- Radiation Animation Script ---
+            const gantry = document.querySelector('.gantry-circle');
+            const gantryHead = document.querySelector('.gantry-head');
+            const beam = document.querySelector('.beam');
+            const tumor = document.querySelector('.tumor');
+            const humanTarget = document.getElementById('human-target');
+            const startAnimationBtn = document.getElementById('start-animation-btn');
 
-            /* existing javascript */
+            let gantryCurrentAngle = 0; // Keep track of the current angle
 
-// --- Radiation Animation Script ---
-const gantry = document.querySelector('.gantry-circle');
-const gantryHead = document.querySelector('.gantry-head');
-const beam = document.querySelector('.beam');
-const tumor = document.querySelector('.tumor');
-const humanTarget = document.getElementById('human-target');
-const startAnimationBtn = document.getElementById('start-animation-btn');
+            function setGantryRotation(angle, withTransition = true) {
+                if (!withTransition) {
+                    gantry.classList.add('no-transition');
+                }
+                gantryCurrentAngle = angle % 360;
+                gantry.style.transform = `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)`;
+                if (!withTransition) {
+                    // Force reflow
+                    void gantry.offsetWidth;
+                    gantry.classList.remove('no-transition');
+                }
+            }
 
-let gantryCurrentAngle = 0;
+            function resetAnimations() {
+                // Cancel any ongoing animations
+                gantry.getAnimations().forEach(anim => anim.cancel());
+                beam.getAnimations().forEach(anim => anim.cancel());
+                tumor.getAnimations().forEach(anim => anim.cancel());
 
-function setGantryRotation(angle) {
-    gantryCurrentAngle = angle % 360;
-    // Ensure the transformation directly sets the rotation without a transition for resets
-    gantry.style.transform = `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)`;
-}
+                setGantryRotation(0, false); // Reset angle instantly without transition
+                beam.style.width = '0';
+                beam.style.opacity = '0';
+                beam.classList.remove('firing');
+                tumor.style.transform = 'translate(-50%, -50%) scale(1)';
+                tumor.style.opacity = '1';
+                tumor.classList.remove('glowing', 'shrinking'); // Remove both classes
 
-function resetAnimations() {
-    // Temporarily remove transition for instant reset
-    gantry.classList.add('no-transition');
+                startAnimationBtn.disabled = false;
+                startAnimationBtn.textContent = "Start Simulation";
+            }
 
-    gantry.getAnimations().forEach(anim => anim.cancel());
-    beam.getAnimations().forEach(anim => anim.cancel());
-    tumor.getAnimations().forEach(anim => anim.cancel());
+            async function startRadiationAnimation() {
+                startAnimationBtn.disabled = true;
+                startAnimationBtn.textContent = "Simulating...";
+                resetAnimations(); // Ensure a clean slate before starting
 
-    setGantryRotation(0); // Set angle to 0 instantly
-    beam.style.width = '0';
-    beam.style.opacity = '0';
-    beam.classList.remove('firing');
-    tumor.style.transform = 'translate(-50%, -50%) scale(1)';
-    tumor.style.opacity = '1';
-    tumor.classList.remove('glowing');
+                const BEAM_FIRE_ANGLE = 270; // Angle where the gantry should fire
+                const GANTRY_ROTATION_DURATION = 2500; // Duration for gantry rotation
+                const BEAM_FIRE_DURATION = 1200; // How long the beam is active
+                const TUMOR_SHRINK_DURATION = 800; // Duration for tumor to shrink
 
-    // Re-enable transition after reset (important for subsequent animations)
-    // Use a tiny timeout to ensure the 'no-transition' class is applied and then removed after the style reset
-    setTimeout(() => {
-        gantry.classList.remove('no-transition');
-    }, 50); // A small delay is often needed for the browser to register the class removal
+                // Step 1: Rotate gantry to target angle
+                // Calculate the shortest path for rotation
+                let angleDiff = BEAM_FIRE_ANGLE - gantryCurrentAngle;
+                if (angleDiff > 180) angleDiff -= 360;
+                if (angleDiff < -180) angleDiff += 360;
+                const targetAngleForAnimation = gantryCurrentAngle + angleDiff;
 
-    startAnimationBtn.disabled = false;
-    startAnimationBtn.textContent = "Start Simulation";
-}
+                const gantryAnimation = gantry.animate(
+                    [
+                        { transform: `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)` },
+                        { transform: `translate(-50%, -50%) rotate(${targetAngleForAnimation}deg)` }
+                    ],
+                    {
+                        duration: GANTRY_ROTATION_DURATION,
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-in-out'
+                    }
+                );
 
-async function startRadiationAnimation() {
-    startAnimationBtn.disabled = true;
-    startAnimationBtn.textContent = "Simulating...";
-    resetAnimations(); // Ensure reset before starting new animation
+                await gantryAnimation.finished;
+                setGantryRotation(BEAM_FIRE_ANGLE, false); // Lock in the final angle precisely
 
-    const BEAM_FIRE_ANGLE = 270;
-    const GANTRY_ROTATION_SPEED = 0.08;
-    const BEAM_FIRE_DURATION = 1200;
-    const TUMOR_SHRINK_DURATION = 800;
+                await new Promise(resolve => setTimeout(resolve, 600)); // Short pause after rotation
 
-    // Step 1: Rotate gantry to target angle
-    // Calculate the shortest path for rotation
-    let angleDiff = BEAM_FIRE_ANGLE - gantryCurrentAngle;
-    // Normalize angleDiff to be between -180 and 180 to find the shortest path
-    if (angleDiff > 180) angleDiff -= 360;
-    if (angleDiff < -180) angleDiff += 360;
+                // Step 2: Fire beam and shrink tumor
+                tumor.classList.add('glowing');
+                beam.classList.add('firing');
+                beam.style.opacity = '1'; // Make beam visible
 
-    const targetAngleForAnimation = gantryCurrentAngle + angleDiff; // This ensures it rotates in the shortest direction
+                // Calculate beam length to reach the tumor
+                const animationContainer = document.getElementById('animation-container-horizontal');
+                const containerRect = animationContainer.getBoundingClientRect();
+                const tumorRect = tumor.getBoundingClientRect();
 
-    const gantryAnimation = gantry.animate(
-        [
-            { transform: `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)` },
-            { transform: `translate(-50%, -50%) rotate(${targetAngleForAnimation}deg)` }
-        ],
-        {
-            duration: 2500,
-            iterations: 1,
-            fill: 'forwards',
-            easing: 'ease-in-out'
-        }
-    );
-    await gantryAnimation.finished;
-    setGantryRotation(BEAM_FIRE_ANGLE); // Set the final state precisely
+                // Tumor's center relative to the animation container's top-left corner
+                const tumorCenterX = tumorRect.left + tumorRect.width / 2 - containerRect.left;
+                const tumorCenterY = tumorRect.top + tumorRect.height / 2 - containerRect.top;
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+                // Gantry head's initial position relative to container center (approximate, since gantry rotates)
+                // Assuming gantry center is container center, and gantry head is at radius 120px from center (half of 240px width)
+                // and initially at top (-27px from 50% height, which is 50% - 27px of container height)
+                const gantryRadius = 120; // Half of gantry-circle width
+                // For a 270deg rotation (pointing downwards from the gantry head's original top position):
+                // Initial gantry head (0deg): x=0, y=-radius
+                // Rotated to 270deg: x=-radius, y=0
+                const beamStartX = containerRect.width / 2; // Beam starts from gantry's center
+                const beamStartY = containerRect.height / 2;
 
-    // Step 2: Fire beam and shrink tumor
-    tumor.classList.add('glowing');
-    beam.classList.add('firing');
+                const beamLength = Math.sqrt(
+                    Math.pow(tumorCenterX - beamStartX, 2) +
+                    Math.pow(tumorCenterY - beamStartY, 2)
+                );
 
-    const containerRect = document.getElementById('animation-container-horizontal').getBoundingClientRect();
-    const containerCenterX = containerRect.width / 2;
-    const containerCenterY = containerRect.height / 2;
+                beam.style.transform = `translateY(-50%) rotate(${BEAM_FIRE_ANGLE}deg)`;
+                beam.style.transformOrigin = 'left center'; // Crucial for correct rotation from origin
 
-    const tumorRect = tumor.getBoundingClientRect();
-    const tumorCenterX = tumorRect.left + tumorRect.width / 2 - containerRect.left;
-    const tumorCenterY = tumorRect.top + tumorRect.height / 2 - containerRect.top;
+                const beamAnimation = beam.animate(
+                    [
+                        { width: '0px' },
+                        { width: `${beamLength}px` }
+                    ],
+                    {
+                        duration: 300, // Quick beam appearance
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-out'
+                    }
+                );
 
-    const angleRad = (BEAM_FIRE_ANGLE - 90) * Math.PI / 180; // Convert to radians for trigonometric functions, adjust for CSS angle origin
-    const distanceToTumor = Math.sqrt(
-        Math.pow(tumorCenterX - containerCenterX, 2) +
-        Math.pow(tumorCenterY - containerCenterY, 2)
-    );
+                await beamAnimation.finished;
 
-    beam.style.transform = `translateY(-50%) rotate(${BEAM_FIRE_ANGLE}deg)`;
-    beam.style.transformOrigin = 'left center'; // Ensure rotation around its left edge
+                // Begin tumor shrinking and continue beam for a duration
+                tumor.classList.add('shrinking');
+                const tumorShrinkAnimation = tumor.animate(
+                    [
+                        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                        { transform: 'translate(-50%, -50%) scale(0.1)', opacity: 0 }
+                    ],
+                    {
+                        duration: TUMOR_SHRINK_DURATION,
+                        fill: 'forwards',
+                        easing: 'ease-out'
+                    }
+                );
 
-    const beamAnimation = beam.animate(
-        [
-            { width: '0px', opacity: 0 },
-            { width: `${distanceToTumor + 10}px`, opacity: 1 } // Extend beam slightly past tumor
-        ],
-        {
-            duration: BEAM_FIRE_DURATION,
-            easing: 'ease-out',
-            fill: 'forwards'
-        }
-    );
+                await Promise.all([
+                    tumorShrinkAnimation.finished,
+                    new Promise(resolve => setTimeout(resolve, BEAM_FIRE_DURATION))
+                ]);
 
-    const tumorAnimation = tumor.animate(
-        [
-            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
-            { transform: 'translate(-50%, -50%) scale(0.1)', opacity: 0 }
-        ],
-        {
-            duration: TUMOR_SHRINK_DURATION,
-            easing: 'ease-in',
-            fill: 'forwards',
-            delay: BEAM_FIRE_DURATION * 0.7 // Start shrinking when beam is almost fully extended
-        }
-    );
+                // Step 3: Retract beam
+                const beamRetractAnimation = beam.animate(
+                    [
+                        { width: `${beamLength}px`, opacity: 1 },
+                        { width: '0px', opacity: 0 }
+                    ],
+                    {
+                        duration: 300, // Quick beam retraction
+                        iterations: 1,
+                        fill: 'forwards',
+                        easing: 'ease-in'
+                    }
+                );
+                await beamRetractAnimation.finished;
 
-    await Promise.all([beamAnimation.finished, tumorAnimation.finished]);
+                beam.classList.remove('firing');
+                tumor.classList.remove('glowing', 'shrinking');
+                tumor.style.transform = 'translate(-50%, -50%) scale(1)'; // Reset tumor for next run
+                tumor.style.opacity = '1';
 
-    tumor.classList.remove('glowing');
-    beam.classList.remove('firing');
+                startAnimationBtn.disabled = false;
+                startAnimationBtn.textContent = "Start Simulation";
+            }
 
-    await new Promise(resolve => setTimeout(resolve, 800)); // Short pause after treatment
+            startAnimationBtn.addEventListener('click', startRadiationAnimation);
 
-    // Step 3: Gantry returns to original position instantly
-    // The resetAnimations function now handles the instant return to 0 degrees
-    resetAnimations();
-}
+            // Add smooth scrolling for navigation links
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
 
-startAnimationBtn.addEventListener('click', startRadiationAnimation);
-
-}); // End of DOMContentLoaded
-
-            resetAnimations();
         });
     </script>
 </body>
