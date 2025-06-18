@@ -483,6 +483,7 @@
                 <div class="service-card">
                     <h3>Clinical Pipeline Tooling</h3>
                     <p>Command-line tools for clinical researchers to process imaging data and patient datasets efficiently at scale.</p>
+                 fungicide</p>
                 </div>
                 <div class="service-card">
                     <h3>Data Integration & Interoperability</h3>
@@ -607,7 +608,7 @@
                 }
             };
 
-            window.addEventListener('scroll', highlightActiveSection);
+            window.addEventListener('scroll', throttle(highlightActiveSection, 100)); // Throttled for performance
             highlightActiveSection(); // Initial call on load
 
             // --- Quiz Data and Logic ---
