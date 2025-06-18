@@ -714,33 +714,33 @@ const startAnimationBtn = document.getElementById('start-animation-btn');
 
 let gantryCurrentAngle = 0;
 
-function setGantryRotation(angle) {
+function setGantryRotation(angle, withTransition = true) {
+    if (!withTransition) {
+        gantry.classList.add('no-transition');
+    }
     gantryCurrentAngle = angle % 360;
-    // Ensure the transformation directly sets the rotation without a transition for resets
     gantry.style.transform = `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)`;
+    if (!withTransition) {
+        // Force reflow to apply the no-transition class before removing it
+        void gantry.offsetWidth; 
+        gantry.classList.remove('no-transition');
+    }
 }
 
 function resetAnimations() {
-    // Temporarily remove transition for instant reset
-    gantry.classList.add('no-transition');
-
     gantry.getAnimations().forEach(anim => anim.cancel());
     beam.getAnimations().forEach(anim => anim.cancel());
     tumor.getAnimations().forEach(anim => anim.cancel());
 
-    setGantryRotation(0); // Set angle to 0 instantly
+    setGantryRotation(0, false); // Instantly set gantry to 0 degrees
     beam.style.width = '0';
     beam.style.opacity = '0';
     beam.classList.remove('firing');
+    gantryHead.classList.remove('active-aperture'); // Hide aperture glow
+
     tumor.style.transform = 'translate(-50%, -50%) scale(1)';
     tumor.style.opacity = '1';
-    tumor.classList.remove('glowing');
-
-    // Re-enable transition after reset (important for subsequent animations)
-    // Use a tiny timeout to ensure the 'no-transition' class is applied and then removed after the style reset
-    setTimeout(() => {
-        gantry.classList.remove('no-transition');
-    }, 50); // A small delay is often needed for the browser to register the class removal
+    tumor.classList.remove('glowing', 'shrinking', 'impact-glow'); // Remove all tumor animation classes
 
     startAnimationBtn.disabled = false;
     startAnimationBtn.textContent = "Start Simulation";
@@ -749,78 +749,87 @@ function resetAnimations() {
 async function startRadiationAnimation() {
     startAnimationBtn.disabled = true;
     startAnimationBtn.textContent = "Simulating...";
-    resetAnimations(); // Ensure reset before starting new animation
+    resetAnimations(); // Ensure a clean slate before starting
 
-    const BEAM_FIRE_ANGLE = 270;
-    const GANTRY_ROTATION_SPEED = 0.08;
-    const BEAM_FIRE_DURATION = 1200;
-    const TUMOR_SHRINK_DURATION = 800;
+    const BEAM_FIRE_ANGLE = 270; // 270 degrees is straight down (from 0 at right)
+    const GANTRY_ROTATION_DURATION = 2500; // Time for gantry to rotate
+    const BEAM_FIRE_DURATION = 1200; // Total time the beam is active (from appearing to disappearing)
+    const BEAM_EXPAND_TIME = 300; // Time for beam to expand
+    const BEAM_RETRACT_TIME = 300; // Time for beam to retract
+    const TUMOR_SHRINK_DURATION = 800; // Time for tumor to shrink
+    const APERTURE_DELAY = 100; // Delay before aperture appears
 
-    // Step 1: Rotate gantry to target angle
-    // Calculate the shortest path for rotation
+    // Calculate the shortest path for gantry rotation
     let angleDiff = BEAM_FIRE_ANGLE - gantryCurrentAngle;
-    // Normalize angleDiff to be between -180 and 180 to find the shortest path
     if (angleDiff > 180) angleDiff -= 360;
     if (angleDiff < -180) angleDiff += 360;
+    const targetAngleForAnimation = gantryCurrentAngle + angleDiff;
 
-    const targetAngleForAnimation = gantryCurrentAngle + angleDiff; // This ensures it rotates in the shortest direction
-
+    // 1. Rotate gantry to target angle
     const gantryAnimation = gantry.animate(
         [
             { transform: `translate(-50%, -50%) rotate(${gantryCurrentAngle}deg)` },
             { transform: `translate(-50%, -50%) rotate(${targetAngleForAnimation}deg)` }
         ],
         {
-            duration: 2500,
+            duration: GANTRY_ROTATION_DURATION,
             iterations: 1,
             fill: 'forwards',
             easing: 'ease-in-out'
         }
     );
     await gantryAnimation.finished;
-    setGantryRotation(BEAM_FIRE_ANGLE); // Set the final state precisely
+    setGantryRotation(BEAM_FIRE_ANGLE, false); // Lock final angle instantly
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise(resolve => setTimeout(resolve, 600)); // Pause after rotation
 
-    // Step 2: Fire beam and shrink tumor
-    tumor.classList.add('glowing');
-    beam.classList.add('firing');
+    // 2. Fire beam and shrink tumor
+    gantryHead.classList.add('active-aperture'); // Show aperture glow
+    tumor.classList.add('glowing'); // Start tumor glow
 
-    const containerRect = document.getElementById('animation-container-horizontal').getBoundingClientRect();
-    const containerCenterX = containerRect.width / 2;
-    const containerCenterY = containerRect.height / 2;
-
+    // Calculate beam length to reach the tumor
+    const animationContainer = document.getElementById('animation-container-horizontal');
+    const containerRect = animationContainer.getBoundingClientRect();
     const tumorRect = tumor.getBoundingClientRect();
+
     const tumorCenterX = tumorRect.left + tumorRect.width / 2 - containerRect.left;
     const tumorCenterY = tumorRect.top + tumorRect.height / 2 - containerRect.top;
 
-    const angleRad = (BEAM_FIRE_ANGLE - 90) * Math.PI / 180; // Convert to radians for trigonometric functions, adjust for CSS angle origin
-    const distanceToTumor = Math.sqrt(
-        Math.pow(tumorCenterX - containerCenterX, 2) +
-        Math.pow(tumorCenterY - containerCenterY, 2)
+    const beamStartX = containerRect.width / 2;
+    const beamStartY = containerRect.height / 2;
+
+    const beamLength = Math.sqrt(
+        Math.pow(tumorCenterX - beamStartX, 2) +
+        Math.pow(tumorCenterY - beamStartY, 2)
     );
 
-    // Set initial beam properties before animating width
     beam.style.transform = `translateY(-50%) rotate(${BEAM_FIRE_ANGLE}deg)`;
-    beam.style.transformOrigin = 'left center'; // Beam expands from the gantry center
+    beam.style.transformOrigin = 'left center';
 
-    const beamAnimation = beam.animate(
+    await new Promise(resolve => setTimeout(resolve, APERTURE_DELAY)); // Short delay for aperture effect
+
+    beam.classList.add('firing'); // Start beam pulse animation
+    beam.style.opacity = '1'; // Make beam visible
+
+    const beamExpandAnimation = beam.animate(
         [
-            { width: '0px', opacity: '1' },
-            { width: `${distanceToTumor}px`, opacity: '1' }
+            { width: '0px' },
+            { width: `${beamLength}px` }
         ],
         {
-            duration: 300,
+            duration: BEAM_EXPAND_TIME,
             iterations: 1,
             fill: 'forwards',
             easing: 'ease-out'
         }
     );
-    await beamAnimation.finished;
+    await beamExpandAnimation.finished; // Wait for beam to reach tumor
 
-    // Start tumor shrinking simultaneously with beam retracting
-    tumor.classList.remove('glowing');
-    tumor.animate(
+    // Trigger tumor impact glow and shrinking immediately after beam reaches it
+    tumor.classList.remove('glowing'); // Stop continuous glow
+    tumor.classList.add('impact-glow'); // Trigger impact glow animation
+
+    const tumorShrinkAnimation = tumor.animate(
         [
             { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
             { transform: 'translate(-50%, -50%) scale(0.1)', opacity: 0 }
@@ -831,17 +840,19 @@ async function startRadiationAnimation() {
             easing: 'ease-out'
         }
     );
+    await tumorShrinkAnimation.finished; // Wait for tumor to finish shrinking
 
-    // Retract beam after a brief hold
-    await new Promise(resolve => setTimeout(resolve, BEAM_FIRE_DURATION - 300)); // Hold beam for (BEAM_FIRE_DURATION - beam_expand_duration)ms
+    // Beam holds, then retracts
+    const beamHoldTime = BEAM_FIRE_DURATION - BEAM_EXPAND_TIME - BEAM_RETRACT_TIME;
+    await new Promise(resolve => setTimeout(resolve, Math.max(0, beamHoldTime))); // Ensure positive delay
 
     const beamRetractAnimation = beam.animate(
         [
-            { width: `${distanceToTumor}px`, opacity: '1' },
-            { width: '0px', opacity: '0' }
+            { width: `${beamLength}px`, opacity: 1 },
+            { width: '0px', opacity: 0 }
         ],
         {
-            duration: 300, // Retraction speed
+            duration: BEAM_RETRACT_TIME,
             iterations: 1,
             fill: 'forwards',
             easing: 'ease-in'
@@ -849,18 +860,14 @@ async function startRadiationAnimation() {
     );
     await beamRetractAnimation.finished;
 
-    // Reset all states after animations
-    beam.classList.remove('firing');
-    tumor.style.transform = 'translate(-50%, -50%) scale(1)'; // Reset tumor size
-    tumor.style.opacity = '1'; // Reset tumor opacity
-
-    startAnimationBtn.disabled = false;
-    startAnimationBtn.textContent = "Start Simulation";
+    // 3. Reset to normal state
+    resetAnimations(); // This will put everything back to its initial state
 }
 
-startAnimationBtn.addEventListener('click', throttle(startRadiationAnimation, 4000)); // Throttle to prevent rapid clicks
+// Ensure reset is called on page load to set initial state correctly
+resetAnimations(); 
 
-
+startAnimationBtn.addEventListener('click', throttle(startRadiationAnimation, 5000)); // Throttle to prevent rapid clicks
             // Add smooth scrolling for navigation links
             document.querySelectorAll('nav a').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
