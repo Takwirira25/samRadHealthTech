@@ -40,6 +40,7 @@
                          6px 6px 12px rgba(0,0,0,0.1);
             letter-spacing: 0.05rem;
             line-height: 1.2; /* Adjust line height to reduce space above/below text */
+            white-space: nowrap; /* Keep the title on one line */
         }
         
         /* Navigation (Desktop) */
@@ -341,16 +342,16 @@
 
 .beam {
     position: absolute;
-    height: 10px; /* Increased beam height for visibility */
+    height: 12px; /* Increased beam height for visibility */
     width: 0;
     /* More intense reddish-orange gradient */
-    background: linear-gradient(to right, rgba(255, 100, 0, 0.9), rgba(255, 50, 0, 1)); 
+    background: linear-gradient(to right, rgba(255, 100, 0, 0.95), rgba(255, 20, 0, 1)); 
     top: 50%;
     left: 50%;
     /* transform-origin will be set by JS */
     /* transform will be set by JS */
-    box-shadow: 0 0 40px rgba(255, 50, 0, 1); /* More intense glow */
-    border-radius: 5px; /* Slightly larger border-radius for thicker beam */
+    box-shadow: 0 0 50px rgba(255, 50, 0, 1.2); /* More intense glow */
+    border-radius: 6px; /* Slightly larger border-radius for thicker beam */
     z-index: 4;
     opacity: 0;
     transition: width 0.1s linear, opacity 0.1s linear;
@@ -361,8 +362,8 @@
 }
 
 @keyframes beamPulse {
-    from { box-shadow: 0 0 30px rgba(255, 100, 0, 0.8); } /* More intense pulse glow */
-    to { box-shadow: 0 0 60px 8px rgba(255, 50, 0, 1); } /* More intense pulse glow */
+    from { box-shadow: 0 0 40px rgba(255, 100, 0, 1); } /* More intense pulse glow */
+    to { box-shadow: 0 0 80px 10px rgba(255, 20, 0, 1.5); } /* More intense pulse glow */
 }
 
 .patient-table {
@@ -394,19 +395,23 @@
             }
 
             header h1 {
-                font-size: 1.6rem; /* Smaller font for mobile header */
+                font-size: 1.5rem; /* Smaller font for mobile header */
+                white-space: nowrap; /* Ensure it stays on one line */
+                overflow: hidden; /* Hide overflow if it somehow goes beyond */
+                text-overflow: ellipsis; /* Add ellipsis if hidden */
             }
 
             nav.nav-links {
-                /* Removed flex-direction: column; to keep links horizontal */
-                gap: 0.5rem; /* Reduced gap between links */
+                /* No flex-direction: column; to keep links horizontal */
+                gap: 0.3rem; /* Reduced gap between links */
                 margin-top: 0.3rem; /* Reduced margin from title */
-                /* flex-wrap: wrap is already there, so links will wrap if too wide */
+                justify-content: space-around; /* Distribute space more evenly */
+                flex-wrap: wrap; /* Allow wrapping if absolutely necessary, but try to prevent */
             }
 
             nav a {
-                font-size: 0.85rem; /* Smaller font for nav links */
-                padding: 3px 0.2rem; /* Reduced vertical and horizontal padding for tighter fit */
+                font-size: 0.75rem; /* Even smaller font for nav links */
+                padding: 3px 0.1rem; /* Reduced vertical and horizontal padding for tighter fit */
             }
 
             .container {
@@ -429,6 +434,17 @@
             button {
                 padding: 0.7rem 1.4rem; /* Smaller button padding */
                 font-size: 0.95rem; /* Smaller button font */
+            }
+        }
+        
+        /* Further optimization for very small screens */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.2rem; /* Even smaller font for very small mobile header */
+            }
+            nav a {
+                font-size: 0.65rem; /* Even smaller font for very small mobile nav links */
+                padding: 2px 0.05rem; /* Even tighter padding */
             }
         }
 
@@ -945,7 +961,7 @@ startAnimationBtn.addEventListener('click', throttle(startRadiationAnimation, 60
             document.querySelectorAll('nav a').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollInView({
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
                         behavior: 'smooth'
                     });
                 });
