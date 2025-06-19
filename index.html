@@ -520,8 +520,8 @@
 
 
             <button id="start-quiz-btn">Start Quiz</button>
-            <form id="quiz-form" style="display:none; margin-top:1.5rem;"></form>
-            <div id="quiz-result" style="margin-top:1.5rem; font-weight:bold;"></div>
+    <div id="quiz-form"></div>
+    <div id="quiz-result"></div>
         </section>
 
         <div id="radiation-animation">
@@ -578,33 +578,32 @@
         }
 
       document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded: Initializing quiz script.');
 
     const headerTitle = document.querySelector('header h1');
     const navLinks = document.querySelector('nav.nav-links');
-    const menuToggle = document.querySelector('.menu-toggle'); // Assuming this exists for mobile menu
+    const menuToggle = document.querySelector('.menu-toggle');
     const header = document.querySelector('header');
 
     if (!headerTitle || !navLinks || !header) {
         console.warn('Required header elements for mobile menu not found. Some header functionalities might be impacted.');
     }
 
-    // Attach event listeners for nav links (if applicable)
-    if (navLinks) { // Ensure navLinks exists before querying its children
+    if (navLinks) {
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                // Mobile menu toggle logic if needed here (e.g., close menu on link click)
+                // Mobile menu toggle logic if needed here
             });
         });
     }
 
-    // Highlight active section on scroll
     const sections = document.querySelectorAll('section, #radiation-animation');
     const highlightActiveSection = () => {
         let currentActive = null;
-        const headerHeight = header ? header.offsetHeight : 0; // Use header height if available
+        const headerHeight = header ? header.offsetHeight : 0;
 
         sections.forEach(section => {
-            const sectionTop = section.offsetTop - headerHeight - 50; // Offset for sticky header
+            const sectionTop = section.offsetTop - headerHeight - 50;
             const sectionBottom = sectionTop + section.offsetHeight;
 
             if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
@@ -615,10 +614,10 @@
 
         if (currentActive) {
             const activeSectionElement = document.getElementById(currentActive);
-            if (activeSectionElement) { // Ensure element exists before adding class
+            if (activeSectionElement) {
                 activeSectionElement.classList.add('active-section');
             }
-            if (navLinks) { // Ensure navLinks exists before querying its children
+            if (navLinks) {
                 navLinks.querySelectorAll('a').forEach(link => {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === `#${currentActive}`) {
@@ -629,7 +628,6 @@
         }
     };
 
-    // Simple throttle function for scroll events
     function throttle(func, delay) {
         let timeoutId;
         return function(...args) {
@@ -642,8 +640,8 @@
         };
     }
 
-    window.addEventListener('scroll', throttle(highlightActiveSection, 100)); // Throttled for performance
-    highlightActiveSection(); // Initial call on load
+    window.addEventListener('scroll', throttle(highlightActiveSection, 100));
+    highlightActiveSection();
 
     // --- Quiz Data and Logic ---
 
@@ -699,7 +697,6 @@
         { question: "What is the primary use of a cardiac MRI?", options: ["To visualize lung infections", "To assess heart structure and function", "To detect bone tumors", "To image the digestive tract"], answer: 1 },
         { question: "What is the typical effect of radiation on fast-dividing cells (like cancer cells)?", options: ["They become stronger", "They are more susceptible to radiation damage", "They stop dividing temporarily", "They absorb less radiation"], answer: 1 },
         { question: "Which type of biopsy is often guided by imaging (e.g., ultrasound or CT)?", options: ["Surgical biopsy", "Needle biopsy", "Punch biopsy", "Excisional biopsy"], answer: 1 },
-        // --- 50 Original questions + 20 from last update = 70. Adding 30 new questions below to reach 100 ---
         { question: "What is the purpose of a lead apron in X-ray procedures?", options: ["To keep the patient warm", "To protect the patient and staff from scattered radiation", "To enhance X-ray penetration", "To provide comfort"], answer: 1 },
         { question: "Which imaging modality is commonly used for evaluating breast tissue density?", options: ["CT Scan", "Ultrasound", "Mammography", "MRI"], answer: 2 },
         { question: "What is 'radiopaque' referring to in medical imaging?", options: ["Transparent to X-rays", "Opaque to X-rays", "Emitting sound waves", "Conducting electricity"], answer: 1 },
@@ -749,16 +746,15 @@
         { question: "Which imaging technique is often used to guide biopsies of organs like the liver or kidney?", options: ["Plain X-ray", "Mammography", "Ultrasound or CT", "DEXA scan"], answer: 2 },
         { question: "What does 'radiation sickness' refer to?", options: ["A fear of radiation", "Symptoms that occur after exposure to high doses of radiation", "A type of cancer caused by radiation", "A skin rash from radiation therapy"], answer: 1 },
         { question: "Which contrast agent is typically given orally for gastrointestinal studies?", options: ["Gadolinium", "Iodinated contrast", "Barium sulfate", "Saline"], answer: 2 },
-        { question: "What is the concept of 'dose-response' in radiation biology?", options: ["The speed of radiation absorption", "The relationship between radiation dose and the observed biological effect", "The patient's response to imaging", "The accuracy of image interpretation"], answer: 1 }
+        { question: "What is the concept of 'dose-response' in radiation biology?", options: ["The speed of radiation absorption", "A relationship between radiation dose and the observed biological effect", "The patient's response to imaging", "The accuracy of image interpretation"], answer: 1 }
     ];
 
-    let currentQuizQuestions = []; // This will hold the 5 random questions for the current quiz run
+    let currentQuizQuestions = [];
 
-    // Function to shuffle an array (Fisher-Yates algorithm)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
     }
@@ -767,10 +763,15 @@
     const quizForm = document.getElementById("quiz-form");
     const quizResult = document.getElementById("quiz-result");
 
-    // Add robust checks to ensure elements exist before adding event listeners or manipulating them
+    // CRITICAL: Log the elements immediately to see if they are found
+    console.log('startQuizBtn element:', startQuizBtn);
+    console.log('quizForm element:', quizForm);
+    console.log('quizResult element:', quizResult);
+
+    // Initial checks for essential elements
     if (!startQuizBtn) {
-        console.error("Initialization Error: HTML element with ID 'start-quiz-btn' not found. Quiz functionality will be limited.");
-        // We will *not* return here, as other parts of the script might still be useful,
+        console.error("Initialization Error: HTML element with ID 'start-quiz-btn' not found. Quiz functionality will be severely limited.");
+        // Do not return here to allow other parts of the script to potentially run,
         // but the quiz won't start without the button.
     }
     if (!quizForm) {
@@ -802,18 +803,17 @@
         localStorage.setItem("quizScores", JSON.stringify(scores));
     }
 
-    // This function now uses the `currentQuizQuestions` array
     function renderQuestion(index, answers, next) {
         if (!quizForm) {
             console.error("Render Error: Quiz form element is missing, cannot render question.");
             return;
         }
         quizForm.innerHTML = "";
-        const q = currentQuizQuestions[index]; // Use the currently selected question set
+        const q = currentQuizQuestions[index];
 
         if (!q) {
             console.error("Render Error: Question not found at index:", index, "in currentQuizQuestions:", currentQuizQuestions);
-            finishQuiz(answers); // Attempt to finish if something went wrong
+            finishQuiz(answers);
             return;
         }
 
@@ -834,32 +834,31 @@
 
             input.addEventListener("change", () => {
                 answers[index] = parseInt(input.value);
-                setTimeout(next, 300); // Small delay for user to see selection
+                setTimeout(next, 300);
             });
         });
     }
 
     function runQuiz() {
-        // Essential elements must be present for the quiz to run
+        console.log('runQuiz function called.');
         if (!quizForm || !startQuizBtn || !quizResult) {
             console.error("Run Quiz Error: Cannot start quiz, one or more essential HTML elements are missing.");
-            return; // Stop execution if critical elements are missing
+            return;
         }
 
-        // Shuffle the entire pool of questions and pick the first 5
-        const shuffledQuestions = shuffleArray([...allQuizData]); // Create a shallow copy to avoid modifying original
-        currentQuizQuestions = shuffledQuestions.slice(0, 5); // Select the first 5 questions for this quiz set
+        const shuffledQuestions = shuffleArray([...allQuizData]);
+        currentQuizQuestions = shuffledQuestions.slice(0, 5);
 
         let currentIndex = 0;
         const answers = {};
 
         quizForm.style.display = "block";
-        quizResult.innerHTML = ""; // Clear previous results
-        startQuizBtn.style.display = "none"; // Hide start button
+        quizResult.innerHTML = "";
+        startQuizBtn.style.display = "none";
 
         function nextQuestion() {
             currentIndex++;
-            if (currentIndex < currentQuizQuestions.length) { // Use currentQuizQuestions length
+            if (currentIndex < currentQuizQuestions.length) {
                 renderQuestion(currentIndex, answers, nextQuestion);
             } else {
                 finishQuiz(answers);
@@ -869,7 +868,6 @@
         renderQuestion(currentIndex, answers, nextQuestion);
     }
 
-    // This function now uses the `currentQuizQuestions` array
     function finishQuiz(answers) {
         if (!quizForm || !quizResult || !startQuizBtn) {
             console.error("Finish Quiz Error: Cannot complete quiz, one or more essential HTML elements are missing.");
@@ -877,11 +875,11 @@
         }
 
         let score = 0;
-        currentQuizQuestions.forEach((q, idx) => { // Iterate over the currently selected questions
+        currentQuizQuestions.forEach((q, idx) => {
             if (answers[idx] === q.answer) score++;
         });
 
-        const total = currentQuizQuestions.length; // Total questions for this specific quiz run (always 5)
+        const total = currentQuizQuestions.length;
         const percent = (score / total) * 100;
         const feedback = getFeedback(score, total);
         const color = getFeedbackColor(percent);
@@ -890,7 +888,7 @@
 
         quizForm.style.display = "none";
         startQuizBtn.style.display = "inline-block";
-        startQuizBtn.textContent = "Retake Quiz"; // Changed to "Retake Quiz" after first completion
+        startQuizBtn.textContent = "Retake Quiz";
 
         quizResult.innerHTML = `
             <p>You scored ${score} out of ${total}.</p>
@@ -900,7 +898,6 @@
             <button id="reset-stats-btn" class="quiz-btn">Reset Stats</button>
         `;
 
-        // Add event listeners to the new buttons, checking if they exist
         const exitQuizBtn = document.getElementById("exit-quiz-btn");
         if (exitQuizBtn) {
             exitQuizBtn.addEventListener("click", () => {
@@ -910,7 +907,6 @@
         } else {
             console.warn("Element 'exit-quiz-btn' not found after quiz completion.");
         }
-
 
         const showStatsBtn = document.getElementById("show-stats-btn");
         if (showStatsBtn) {
@@ -923,7 +919,7 @@
                     statsMessage.style.color = "gray";
                 } else {
                     const maxScore = Math.max(...scores.map(s => s.score));
-                    const percentMax = (maxScore / 5) * 100; // Always compare against 5 questions per run
+                    const percentMax = (maxScore / 5) * 100;
                     statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of 5.`;
                     statsMessage.style.color = getFeedbackColor(percentMax);
                 }
@@ -938,7 +934,6 @@
         } else {
             console.warn("Element 'show-stats-btn' not found after quiz completion.");
         }
-
 
         const resetStatsBtn = document.getElementById("reset-stats-btn");
         if (resetStatsBtn) {
@@ -964,12 +959,16 @@
         }
     }
 
-    // Attach the event listener to the start quiz button
-    // This check is crucial for the button to work.
-    if (startQuizBtn) {
-        startQuizBtn.addEventListener("click", runQuiz);
-    } else {
-        console.error("Final Setup Error: 'start-quiz-btn' not found, event listener could not be attached. Please ensure the HTML has <button id='start-quiz-btn'>.");
+    // Attempt to attach event listener with a try-catch for better error reporting
+    try {
+        if (startQuizBtn) {
+            startQuizBtn.addEventListener("click", runQuiz);
+            console.log('Event listener attached to startQuizBtn.');
+        } else {
+            console.error("Final Setup Error: 'start-quiz-btn' not found, event listener could not be attached. Please ensure the HTML has <button id='start-quiz-btn'> and it's present in the DOM.");
+        }
+    } catch (e) {
+        console.error("Error attaching event listener to startQuizBtn:", e);
     }
 
     // Initial check to reset "Retake Quiz" button if page is refreshed mid-quiz
@@ -978,6 +977,7 @@
     }
 
 });
+
 
 
 
