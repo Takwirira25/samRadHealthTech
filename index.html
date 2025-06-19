@@ -984,6 +984,8 @@
 
 // ... (your existing throttle function and DOMContentLoaded event listener setup)
 
+// ... (your existing throttle function and DOMContentLoaded event listener setup)
+
 // --- Radiation Animation Logic ---
 const gantryCircle = document.querySelector('.gantry-circle');
 const gantryHead = document.querySelector('.gantry-head');
@@ -1043,10 +1045,12 @@ function startRadiationAnimation() {
     animationInterval = setInterval(() => {
         currentAngle = (currentAngle + angleIncrement);
 
-        // Stop after one full rotation if tumor hasn't shrunk and beam didn't fire
-        if (currentAngle > 360 && !tumorShrunk) {
-            resetSimulation();
-            console.log("Animation completed one cycle without tumor shrinking.");
+        // Stop after one full rotation
+        if (currentAngle > 360) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+            startSimulationBtn.disabled = false;
+            startSimulationBtn.textContent = 'Restart Simulation';
             return;
         }
 
@@ -1057,22 +1061,13 @@ function startRadiationAnimation() {
         gantryCircle.style.transform = `translate(-50%, -50%) rotate(${displayAngle}deg)`;
 
         // Calculate gantry head position on the circle
-        // Math.cos for X and Math.sin for Y because 0deg in CSS transform rotate is usually "top",
-        // and a standard unit circle has 0deg on the positive X-axis.
-        // We want 0deg to be at the top of the circle, so we adjust.
-        // headX and headY are relative to the *center* of the gantryCircle.
         const headX = GANTRY_ROTATION_RADIUS * Math.sin(displayAngle * Math.PI / 180);
         const headY = -GANTRY_ROTATION_RADIUS * Math.cos(displayAngle * Math.PI / 180);
 
-        // Position the gantry head relative to its parent (.gantry-circle).
-        // Since .gantry-circle itself is centered, we add headX/Y to 50% for its position.
-        // Subtract 17.5px (half of gantry-head size) to truly center the head div.
         gantryHead.style.left = `calc(50% + ${headX}px - 17.5px)`;
         gantryHead.style.top = `calc(50% + ${headY}px - 17.5px)`;
 
         // Beam logic: Fire only when beam travels horizontally (e.g., gantry head is on the left or right)
-        // A horizontal beam means the gantry head is roughly at 90 or 270 degrees.
-        // We'll target the 270-degree position (left side) for simplicity.
         const targetAngle = 270; // Degrees for the gantry head to be on the left side
         const angleTolerance = 5; // Degrees tolerance for hitting the target angle
 
@@ -1081,14 +1076,14 @@ function startRadiationAnimation() {
             beamFired = true; // Set flag to true to fire beam only once
 
             // Beam always points towards the center (tumor)
-            // Calculate the angle the beam needs to be to point from the gantry head to the center.
-            // If the gantry head is at 270 degrees (left), it needs to point right (0 degrees relative to horizontal).
             const beamAngle = 0; // When gantry head is on the left, beam points right (0 degrees)
 
-            // Beam origin is the gantry head's absolute position on the container
-            // The 17.5px is half the gantry head size, to truly position the beam origin at its center.
             const beamOriginX = (containerCenterX + headX - 17.5);
             const beamOriginY = (containerCenterY + headY - 17.5);
+
+             // Change beam color to red
+            beam.style.background = 'linear-gradient(to right, rgba(255, 0, 0, 0.95), rgba(255, 0, 0, 1))'; // Red beam
+            beam.style.boxShadow = '0 0 50px rgba(255, 0, 0, 1.2)'; // Red glow
 
             beam.style.transformOrigin = `0% 50%`; // Set origin to the start of the beam
             beam.style.left = `${beamOriginX}px`;
@@ -1098,7 +1093,7 @@ function startRadiationAnimation() {
             beam.style.width = `${GANTRY_ROTATION_RADIUS + (tumor.offsetWidth / 2)}px`; // Extend beam to tumor center
             beam.style.opacity = '1';
             beam.classList.add('firing');
-            tumor.classList.add('glowing'); // Make tumor glow only when hit
+            tumor.classList.add('glowing');
             console.log('Beam Fired!');
 
             // Shrink tumor immediately when hit
@@ -1109,7 +1104,7 @@ function startRadiationAnimation() {
                 console.log('Tumor shrunk!');
             }
 
-            // End animation after the beam hits and tumor shrinks
+             // End animation after the beam hits and tumor shrinks
             clearInterval(animationInterval);
             animationInterval = null;
             startSimulationBtn.disabled = false;
@@ -1117,14 +1112,7 @@ function startRadiationAnimation() {
             beam.classList.remove('firing'); // Stop beam pulse
             beam.style.width = '0'; // Hide beam
             beam.style.opacity = '0';
-        }
 
-        // If a full rotation passes and the beam hasn't fired for some reason, stop the animation.
-        if (currentAngle >= 360 && !tumorShrunk && !beamFired) {
-             clearInterval(animationInterval);
-             animationInterval = null;
-             console.log("Animation completed a full rotation without hitting the target angle for beam.");
-             resetSimulation();
         }
 
 
@@ -1132,6 +1120,7 @@ function startRadiationAnimation() {
 }
 
 startSimulationBtn.addEventListener('click', startRadiationAnimation);
+// ... (rest of your quiz and other scripts)
 
 
             // Optional: Recalculate beam on window resize to keep it aligned
