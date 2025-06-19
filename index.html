@@ -578,202 +578,299 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const headerTitle = document.querySelector('header h1');
-            const navLinks = document.querySelector('nav.nav-links');
-            const menuToggle = document.querySelector('.menu-toggle'); 
-            const header = document.querySelector('header');
 
-            if (!headerTitle || !navLinks || !header) {
-                console.warn('Required header elements for mobile menu not found.');
+    const headerTitle = document.querySelector('header h1');
+    const navLinks = document.querySelector('nav.nav-links');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const header = document.querySelector('header');
+
+    if (!headerTitle || !navLinks || !header) {
+        console.warn('Required header elements for mobile menu not found.');
+    }
+
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            // Mobile menu toggle logic if needed here
+        });
+    });
+
+    // Highlight active section on scroll
+    const sections = document.querySelectorAll('section, #radiation-animation');
+    const highlightActiveSection = () => {
+        let currentActive = null;
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - header.offsetHeight - 50; // Offset for sticky header
+            const sectionBottom = sectionTop + section.offsetHeight;
+
+            if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                currentActive = section.id;
             }
+            section.classList.remove('active-section');
+        });
 
+        if (currentActive) {
+            document.getElementById(currentActive).classList.add('active-section');
             navLinks.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                });
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentActive}`) {
+                    link.classList.add('active');
+                }
             });
+        }
+    };
 
-            // Highlight active section on scroll
-            const sections = document.querySelectorAll('section, #radiation-animation');
-            const highlightActiveSection = () => {
-                let currentActive = null;
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop - header.offsetHeight - 50; // Offset for sticky header
-                    const sectionBottom = sectionTop + section.offsetHeight;
-                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
-                        currentActive = section.id;
-                    }
-                    section.classList.remove('active-section');
-                });
-
-                if (currentActive) {
-                    document.getElementById(currentActive).classList.add('active-section');
-                    navLinks.querySelectorAll('a').forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${currentActive}`) {
-                            link.classList.add('active');
-                        }
-                    });
-                }
-            };
-
-            window.addEventListener('scroll', throttle(highlightActiveSection, 100)); // Throttled for performance
-            highlightActiveSection(); // Initial call on load
-
-            // --- Quiz Data and Logic ---
-            const quizData = [
-                { question: "What does MRI primarily use to generate images?", options: ["X-rays", "Magnetic fields & radio waves", "Sound waves", "Gamma rays"], answer: 1 },
-                { question: "What tracer is commonly used in PET scans?", options: ["Iodine-131", "Technetium-99m", "Fluorodeoxyglucose (FDG)", "Gadolinium"], answer: 2 },
-                { question: "CT scans are best for visualizing:", options: ["Soft tissues", "Bone fractures", "Ligaments", "Muscle tears"], answer: 1 },
-                { question: "Radiation therapy aims to:", options: ["Cure viral infections", "Kill cancer cells using ionizing radiation", "Deliver chemotherapy", "Visualize tumors"], answer: 1 },
-                { question: "Which imaging technique does NOT use ionizing radiation?", options: ["CT", "PET", "MRI", "X-ray"], answer: 2 },
-                { question: "PET-CT combines functional imaging with:", options: ["MRI detail", "CT detail", "Ultrasound mapping", "Bone scan"], answer: 1 },
-                { question: "Which of the following is a late side effect of radiation therapy?", options: ["Hair loss", "Skin redness", "Fibrosis", "Nausea"], answer: 2 },
-                { question: "MRI contrast agents often contain:", options: ["Lead", "Barium", "Gadolinium", "Iodine"], answer: 2 },
-                { question: "Which scan is most sensitive for brain soft tissue detail?", options: ["X-ray", "CT", "PET", "MRI"], answer: 3 },
-                { question: "Which of the following improves MRI resolution?", options: ["Higher magnetic field strength", "More X-ray dose", "Lower radiofrequency", "Using ultrasound gel"], answer: 0 }
-            ];
-
-            const startQuizBtn = document.getElementById("start-quiz-btn");
-            const quizForm = document.getElementById("quiz-form");
-            const quizResult = document.getElementById("quiz-result");
-
-            function getFeedback(score, total) {
-                const percent = (score / total) * 100;
-                if (percent === 100) return "Outstanding! You're a radiology genius!";
-                if (percent >= 80) return "Great job! You really know your imaging.";
-                if (percent >= 50) return "Nice effort! A bit more study and you'll master this.";
-                return "Keep learning — knowledge saves lives!";
+    // Simple throttle function for scroll events
+    function throttle(func, delay) {
+        let timeoutId;
+        return function(...args) {
+            if (!timeoutId) {
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                    timeoutId = null;
+                }, delay);
             }
+        };
+    }
 
-            function getFeedbackColor(percent) {
-                if (percent >= 80) return "green";
-                else if (percent >= 50) return "orange";
-                else return "red";
-            }
 
-            function saveScore(score, total) {
-                const entry = { score, total, timestamp: new Date().toISOString() };
-                const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
-                scores.push(entry);
-                localStorage.setItem("quizScores", JSON.stringify(scores));
-            }
+    window.addEventListener('scroll', throttle(highlightActiveSection, 100)); // Throttled for performance
+    highlightActiveSection(); // Initial call on load
 
-            function renderQuestion(index, answers, next) {
-                quizForm.innerHTML = "";
-                const q = quizData[index];
+    // --- Quiz Data and Logic ---
 
-                const qElem = document.createElement("p");
-                qElem.textContent = `${index + 1}. ${q.question}`;
-                quizForm.appendChild(qElem);
+    // Full pool of 50 questions
+    const allQuizData = [
+        { question: "What does MRI primarily use to generate images?", options: ["X-rays", "Magnetic fields & radio waves", "Sound waves", "Gamma rays"], answer: 1 },
+        { question: "What tracer is commonly used in PET scans?", options: ["Iodine-131", "Technetium-99m", "Fluorodeoxyglucose (FDG)", "Gadolinium"], answer: 2 },
+        { question: "CT scans are best for visualizing:", options: ["Soft tissues", "Bone fractures", "Ligaments", "Muscle tears"], answer: 1 },
+        { question: "Radiation therapy aims to:", options: ["Cure viral infections", "Kill cancer cells using ionizing radiation", "Deliver chemotherapy", "Visualize tumors"], answer: 1 },
+        { question: "Which imaging technique does NOT use ionizing radiation?", options: ["CT", "PET", "MRI", "X-ray"], answer: 2 },
+        { question: "PET-CT combines functional imaging with:", options: ["MRI detail", "CT detail", "Ultrasound mapping", "Bone scan"], answer: 1 },
+        { question: "Which of the following is a late side effect of radiation therapy?", options: ["Hair loss", "Skin redness", "Fibrosis", "Nausea"], answer: 2 },
+        { question: "MRI contrast agents often contain:", options: ["Lead", "Barium", "Gadolinium", "Iodine"], answer: 2 },
+        { question: "Which scan is most sensitive for brain soft tissue detail?", options: ["X-ray", "CT", "PET", "MRI"], answer: 3 },
+        { question: "Which of the following improves MRI resolution?", options: ["Higher magnetic field strength", "More X-ray dose", "Lower radiofrequency", "Using ultrasound gel"], answer: 0 },
+        // New questions added below to reach 50
+        { question: "What is the primary danger associated with excessive exposure to ionizing radiation?", options: ["Dehydration", "Hearing loss", "Cellular damage and cancer risk", "Muscle atrophy"], answer: 2 },
+        { question: "Which imaging modality is commonly used to diagnose gallstones?", options: ["MRI", "CT Scan", "Ultrasound", "X-ray"], answer: 2 },
+        { question: "In X-ray imaging, what appears white on the image?", options: ["Air", "Fat", "Water", "Bone"], answer: 3 },
+        { question: "What does PACS stand for in radiology?", options: ["Patient Access Control System", "Picture Archiving and Communication System", "Physical Assessment and Clinical Study", "Portable Anatomy Classification System"], answer: 1 },
+        { question: "Which type of radiation is used in nuclear medicine scans?", options: ["Alpha particles", "Beta particles", "Gamma rays", "Neutrons"], answer: 2 },
+        { question: "What is a common use for a DEXA scan?", options: ["Brain imaging", "Bone density measurement", "Kidney function assessment", "Cardiac imaging"], answer: 1 },
+        { question: "Which organ is most sensitive to radiation?", options: ["Skin", "Brain", "Gonads", "Muscles"], answer: 2 },
+        { question: "What is an angiogram used to visualize?", options: ["Bones", "Blood vessels", "Muscles", "Nerves"], answer: 1 },
+        { question: "What does 'kVp' refer to in X-ray technology?", options: ["Kilovolt-peak", "Kilo-volume particle", "Kinetic velocity pressure", "Kelvin temperature peak"], answer: 0 },
+        { question: "What safety precaution is crucial when performing an MRI?", options: ["Wearing lead apron", "Removing all metallic objects", "Using ear protection", "Fasting before the scan"], answer: 1 },
+        { question: "What is the primary function of a radiologist?", options: ["Perform surgeries", "Interpret medical images", "Prescribe medication", "Conduct lab tests"], answer: 1 },
+        { question: "Which imaging technique uses sound waves?", options: ["CT", "MRI", "X-ray", "Ultrasound"], answer: 3 },
+        { question: "What is 'contrast media' used for in imaging?", options: ["To reduce radiation dose", "To enhance visibility of specific tissues or structures", "To speed up the imaging process", "To cool down the scanner"], answer: 1 },
+        { question: "Which condition is often diagnosed using a mammogram?", options: ["Heart disease", "Breast cancer", "Lung infection", "Kidney stones"], answer: 1 },
+        { question: "What is absorbed dose measured in?", options: ["Sieverts (Sv)", "Grays (Gy)", "Becquerels (Bq)", "Roentgens (R)"], answer: 1 },
+        { question: "What is a common application for fluoroscopy?", options: ["Static bone imaging", "Real-time imaging of body structures in motion", "Detailed soft tissue analysis", "Measuring brain activity"], answer: 1 },
+        { question: "What does 'ALARA' stand for in radiation safety?", options: ["As Little As Reasonably Achievable", "Always Limit All Radiation Avoidance", "Active Level And Radiation Alert", "Automated Localized Area Radiation Assessment"], answer: 0 },
+        { question: "Which imaging technique would be best for evaluating a torn meniscus in the knee?", options: ["X-ray", "CT scan", "MRI", "Ultrasound"], answer: 2 },
+        { question: "What is a nuclear stress test used to evaluate?", options: ["Bone strength", "Kidney function", "Heart blood flow", "Brain tumors"], answer: 2 },
+        { question: "What does SPECT stand for?", options: ["Single-Photon Emission Computed Tomography", "Specialized Particle Emission CT", "Surface Photonic Emission Camera Technique", "Systematic Proton Emission Capture Test"], answer: 0 },
+        { question: "Which type of imaging uses a rotating X-ray tube and detectors?", options: ["MRI", "Ultrasound", "CT scan", "PET scan"], answer: 2 },
+        { question: "What is the main advantage of open MRI over closed MRI?", options: ["Higher image quality", "Less claustrophobia for patients", "Faster scan times", "Lower cost"], answer: 1 },
+        { question: "What is a common risk of intravenous contrast administration?", options: ["Sunburn", "Allergic reaction", "Hair loss", "Weight gain"], answer: 1 },
+        { question: "Which imaging technique is often used for prenatal diagnosis?", options: ["CT scan", "X-ray", "Ultrasound", "PET scan"], answer: 2 },
+        { question: "What is the purpose of shielding in radiation therapy?", options: ["To increase radiation dose to the tumor", "To protect healthy tissues from radiation", "To make the patient more comfortable", "To improve image clarity"], answer: 1 },
+        { question: "Which body part is most commonly imaged with a barium swallow study?", options: ["Brain", "Lungs", "Esophagus and stomach", "Kidneys"], answer: 2 },
+        { question: "What is the typical magnetic field strength of a clinical MRI scanner?", options: ["0.1 Tesla", "1.5 - 3 Tesla", "10 Tesla", "100 Tesla"], answer: 1 },
+        { question: "What is the primary application of elastography?", options: ["Measuring blood flow", "Assessing tissue stiffness", "Visualizing bone fractures", "Detecting nerve damage"], answer: 1 },
+        { question: "What is the minimum number of X-ray views typically taken for a suspected bone fracture?", options: ["One", "Two (at 90 degrees to each other)", "Three", "Four"], answer: 1 },
+        { question: "What is a 'hot spot' on a nuclear medicine scan indicative of?", options: ["Area of reduced metabolic activity", "Area of increased metabolic activity or tracer uptake", "Area of infection only", "Artifact from metal"], answer: 1 },
+        { question: "Which type of imaging provides real-time functional information about metabolism?", options: ["CT", "MRI", "PET", "X-ray"], answer: 2 },
+        { question: "What is used to produce radioisotopes for medical imaging?", options: ["X-ray tube", "Particle accelerator (cyclotron)", "Large magnet", "Ultrasound transducer"], answer: 1 },
+        { question: "Which contrast agent is commonly used for CT scans?", options: ["Gadolinium", "Barium sulfate", "Iodinated contrast", "Saline"], answer: 2 },
+        { question: "What is a 'slice' in the context of CT or MRI imaging?", options: ["A portion of a bone", "A thin cross-sectional image of the body", "A type of contrast agent", "A measurement of radiation dose"], answer: 1 },
+        { question: "What is the main concern when using X-rays on pregnant patients?", options: ["Claustrophobia", "Risk of harm to the fetus", "Discomfort for the mother", "High cost"], answer: 1 },
+        { question: "What does 'mCi' stand for in nuclear medicine?", options: ["Microcurie", "Millicurie", "Mega-coulomb", "Meter-calorie"], answer: 1 },
+        { question: "Which imaging technique can assess blood flow and organ perfusion?", options: ["Standard X-ray", "Fluoroscopy", "Nuclear medicine scans", "Basic ultrasound"], answer: 2 },
+        { question: "What is the primary use of a cardiac MRI?", options: ["To visualize lung infections", "To assess heart structure and function", "To detect bone tumors", "To image the digestive tract"], answer: 1 },
+        { question: "What is the typical effect of radiation on fast-dividing cells (like cancer cells)?", options: ["They become stronger", "They are more susceptible to radiation damage", "They stop dividing temporarily", "They absorb less radiation"], answer: 1 },
+        { question: "Which type of biopsy is often guided by imaging (e.g., ultrasound or CT)?", options: ["Surgical biopsy", "Needle biopsy", "Punch biopsy", "Excisional biopsy"], answer: 1 }
+    ];
 
-                q.options.forEach((opt, i) => {
-                    const label = document.createElement("label");
-                    const input = document.createElement("input");
-                    input.type = "radio";
-                    input.name = `q${index}`;
-                    input.value = i;
-                    input.id = `q${index}-option${i}`;
+    let currentQuizQuestions = []; // This will hold the 5 random questions for the current quiz run
 
-                    label.appendChild(input);
-                    label.append(` ${opt}`);
-                    quizForm.appendChild(label);
+    // Function to shuffle an array (Fisher-Yates algorithm)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        }
+        return array;
+    }
 
-                    input.addEventListener("change", () => {
-                        answers[index] = parseInt(input.value);
-                        setTimeout(next, 300);
-                    });
-                });
-            }
+    const startQuizBtn = document.getElementById("start-quiz-btn");
+    const quizForm = document.getElementById("quiz-form");
+    const quizResult = document.getElementById("quiz-result");
 
-            function runQuiz() {
-                let currentIndex = 0;
-                const answers = {};
-                quizForm.style.display = "block";
-                quizResult.innerHTML = "";
-                startQuizBtn.style.display = "none";
+    function getFeedback(score, total) {
+        const percent = (score / total) * 100;
+        if (percent === 100) return "Outstanding! You're a radiology genius!";
+        if (percent >= 80) return "Great job! You really know your imaging.";
+        if (percent >= 50) return "Nice effort! A bit more study and you'll master this.";
+        return "Keep learning — knowledge saves lives!";
+    }
 
-                function nextQuestion() {
-                    currentIndex++;
-                    if (currentIndex < quizData.length) {
-                        renderQuestion(currentIndex, answers, nextQuestion);
-                    } else {
-                        finishQuiz(answers);
-                    }
-                }
+    function getFeedbackColor(percent) {
+        if (percent >= 80) return "green";
+        else if (percent >= 50) return "orange";
+        else return "red";
+    }
+
+    function saveScore(score, total) {
+        const entry = { score, total, timestamp: new Date().toISOString() };
+        const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
+        scores.push(entry);
+        localStorage.setItem("quizScores", JSON.stringify(scores));
+    }
+
+    // This function now uses the `currentQuizQuestions` array
+    function renderQuestion(index, answers, next) {
+        quizForm.innerHTML = "";
+        const q = currentQuizQuestions[index]; // Use the currently selected question set
+
+        if (!q) {
+            console.error("Question not found at index:", index, "in currentQuizQuestions:", currentQuizQuestions);
+            finishQuiz(answers); // Attempt to finish if something went wrong
+            return;
+        }
+
+        const qElem = document.createElement("p");
+        qElem.textContent = `${index + 1}. ${q.question}`;
+        quizForm.appendChild(qElem);
+
+        q.options.forEach((opt, i) => {
+            const label = document.createElement("label");
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = `q${index}`;
+            input.value = i;
+            input.id = `q${index}-option${i}`;
+            label.appendChild(input);
+            label.append(` ${opt}`);
+            quizForm.appendChild(label);
+
+            input.addEventListener("change", () => {
+                answers[index] = parseInt(input.value);
+                setTimeout(next, 300); // Small delay for user to see selection
+            });
+        });
+    }
+
+    function runQuiz() {
+        // Shuffle the entire pool of questions and pick the first 5
+        const shuffledQuestions = shuffleArray([...allQuizData]); // Create a shallow copy to avoid modifying original
+        currentQuizQuestions = shuffledQuestions.slice(0, 5); // Select the first 5 questions
+
+        let currentIndex = 0;
+        const answers = {};
+
+        quizForm.style.display = "block";
+        quizResult.innerHTML = "";
+        startQuizBtn.style.display = "none";
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuizQuestions.length) { // Use currentQuizQuestions length
                 renderQuestion(currentIndex, answers, nextQuestion);
+            } else {
+                finishQuiz(answers);
+            }
+        }
+
+        renderQuestion(currentIndex, answers, nextQuestion);
+    }
+
+    // This function now uses the `currentQuizQuestions` array
+    function finishQuiz(answers) {
+        let score = 0;
+        currentQuizQuestions.forEach((q, idx) => { // Iterate over the currently selected questions
+            if (answers[idx] === q.answer) score++;
+        });
+
+        const total = currentQuizQuestions.length; // Total questions for this specific quiz run
+        const percent = (score / total) * 100;
+        const feedback = getFeedback(score, total);
+        const color = getFeedbackColor(percent);
+
+        saveScore(score, total);
+
+        quizForm.style.display = "none";
+        startQuizBtn.style.display = "inline-block";
+        startQuizBtn.textContent = "Retake Quiz"; // Changed to "Retake Quiz" after first completion
+
+        quizResult.innerHTML = `
+            <p>You scored ${score} out of ${total}.</p>
+            <p style="color:${color};">${feedback}</p>
+            <button id="exit-quiz-btn" class="quiz-btn">Exit Quiz</button>
+            <button id="show-stats-btn" class="quiz-btn">Show Highest Score</button>
+            <button id="reset-stats-btn" class="quiz-btn">Reset Stats</button>
+        `;
+
+        document.getElementById("exit-quiz-btn").addEventListener("click", () => {
+            quizResult.innerHTML = "";
+            startQuizBtn.textContent = "Start Quiz";
+        });
+
+        document.getElementById("show-stats-btn").addEventListener("click", () => {
+            const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
+            const statsMessage = document.createElement("p");
+
+            if (scores.length === 0) {
+                statsMessage.textContent = "No scores recorded yet.";
+                statsMessage.style.color = "gray";
+            } else {
+                // When displaying highest score, it's based on the number of questions in a single quiz set (5)
+                const maxScore = Math.max(...scores.map(s => s.score));
+                const percentMax = (maxScore / 5) * 100; // Always compare against 5, the number of questions per quiz run
+                statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of 5.`;
+                statsMessage.style.color = getFeedbackColor(percentMax);
+            }
+            // Prevent adding multiple stats messages
+            const existingStatsMsg = quizResult.querySelector('.stats-message');
+            if (existingStatsMsg) {
+                existingStatsMsg.remove();
+            }
+            statsMessage.classList.add('stats-message'); // Add a class to identify
+            quizResult.appendChild(statsMessage);
+            document.getElementById("show-stats-btn").disabled = true;
+        });
+
+        document.getElementById("reset-stats-btn").addEventListener("click", () => {
+            localStorage.removeItem("quizScores");
+            // Remove any stats message that might be showing
+            const existingStatsMsg = quizResult.querySelector('.stats-message');
+            if (existingStatsMsg) {
+                existingStatsMsg.remove();
             }
 
-            function finishQuiz(answers) {
-                let score = 0;
-                quizData.forEach((q, idx) => {
-                    if (answers[idx] === q.answer) score++;
-                });
+            const confirmMsg = document.createElement("p");
+            confirmMsg.textContent = "Stats reset successfully.";
+            confirmMsg.style.color = "green";
+            quizResult.appendChild(confirmMsg);
 
-                const total = quizData.length;
-                const percent = (score / total) * 100;
-                const feedback = getFeedback(score, total);
-                const color = getFeedbackColor(percent);
-                saveScore(score, total);
+            setTimeout(() => {
+                confirmMsg.remove();
+                document.getElementById("show-stats-btn").disabled = false;
+            }, 3000); // Reduced timeout for quicker feedback
+        });
+    }
 
-                quizForm.style.display = "none";
-                startQuizBtn.style.display = "inline-block";
-                startQuizBtn.textContent = "Retake Quiz";
+    startQuizBtn.addEventListener("click", runQuiz);
 
-                quizResult.innerHTML = `
-                    <p>You scored ${score} out of ${total}.</p>
-                    <p style="color:${color};">${feedback}</p>
-                    <button id="exit-quiz-btn">Exit Quiz</button>
-                    <button id="show-stats-btn">Show Highest Score</button>
-                    <button id="reset-stats-btn">Reset Stats</button>
-                `;
+    // Initial check to reset "Retake Quiz" button if page is refreshed mid-quiz
+    if (quizForm.style.display !== "block") {
+        startQuizBtn.textContent = "Start Quiz";
+    }
 
-                document.getElementById("exit-quiz-btn").addEventListener("click", () => {
-                    quizResult.innerHTML = "";
-                    startQuizBtn.textContent = "Start Quiz";
-                });
-
-                document.getElementById("show-stats-btn").addEventListener("click", () => {
-                    const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
-                    const statsMessage = document.createElement("p");
-                    if (scores.length === 0) {
-                        statsMessage.textContent = "No scores recorded yet.";
-                        statsMessage.style.color = "gray";
-                    } else {
-                        const maxScore = Math.max(...scores.map(s => s.score));
-                        const percentMax = (maxScore / quizData.length) * 100;
-                        statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of ${quizData.length}.`;
-                        statsMessage.style.color = getFeedbackColor(percentMax);
-                    }
-                    quizResult.appendChild(statsMessage);
-                    document.getElementById("show-stats-btn").disabled = true;
-                });
-
-                document.getElementById("reset-stats-btn").addEventListener("click", () => {
-                    localStorage.removeItem("quizScores");
-                    Array.from(quizResult.children).forEach(el => {
-                        const text = el.textContent.trim();
-                        if (
-                            text.startsWith("Your Highest Score so far") ||
-                            text.startsWith("No scores recorded yet.")
-                        ) {
-                            el.remove();
-                        }
-                    });
-                    const confirmMsg = document.createElement("p");
-                    confirmMsg.textContent = "Stats reset successfully.";
-                    confirmMsg.style.color = "green";
-                    quizResult.appendChild(confirmMsg);
-                    setTimeout(() => {
-                        confirmMsg.remove();
-                        document.getElementById("show-stats-btn").disabled = false;
-                    }, 5000);
-                });
-            }
-
-            startQuizBtn.addEventListener("click", runQuiz);
+});
 
 
-            /* existing javascript */
 
 // --- Radiation Animation Script ---
 const gantry = document.querySelector('.gantry-circle');
