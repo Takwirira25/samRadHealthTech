@@ -577,7 +577,7 @@
             }
         }
 
-       document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => {
 
     const headerTitle = document.querySelector('header h1');
     const navLinks = document.querySelector('nav.nav-links');
@@ -589,11 +589,13 @@
     }
 
     // Attach event listeners for nav links (if applicable)
-    navLinks.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            // Mobile menu toggle logic if needed here (e.g., close menu on link click)
+    if (navLinks) { // Ensure navLinks exists before querying its children
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                // Mobile menu toggle logic if needed here (e.g., close menu on link click)
+            });
         });
-    });
+    }
 
     // Highlight active section on scroll
     const sections = document.querySelectorAll('section, #radiation-animation');
@@ -612,13 +614,18 @@
         });
 
         if (currentActive) {
-            document.getElementById(currentActive).classList.add('active-section');
-            navLinks.querySelectorAll('a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${currentActive}`) {
-                    link.classList.add('active');
-                }
-            });
+            const activeSectionElement = document.getElementById(currentActive);
+            if (activeSectionElement) { // Ensure element exists before adding class
+                activeSectionElement.classList.add('active-section');
+            }
+            if (navLinks) { // Ensure navLinks exists before querying its children
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentActive}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
         }
     };
 
@@ -640,7 +647,7 @@
 
     // --- Quiz Data and Logic ---
 
-    // Full pool of 70 questions (50 from before + 20 new ones)
+    // Full pool of 100 questions
     const allQuizData = [
         { question: "What does MRI primarily use to generate images?", options: ["X-rays", "Magnetic fields & radio waves", "Sound waves", "Gamma rays"], answer: 1 },
         { question: "What tracer is commonly used in PET scans?", options: ["Iodine-131", "Technetium-99m", "Fluorodeoxyglucose (FDG)", "Gadolinium"], answer: 2 },
@@ -692,7 +699,7 @@
         { question: "What is the primary use of a cardiac MRI?", options: ["To visualize lung infections", "To assess heart structure and function", "To detect bone tumors", "To image the digestive tract"], answer: 1 },
         { question: "What is the typical effect of radiation on fast-dividing cells (like cancer cells)?", options: ["They become stronger", "They are more susceptible to radiation damage", "They stop dividing temporarily", "They absorb less radiation"], answer: 1 },
         { question: "Which type of biopsy is often guided by imaging (e.g., ultrasound or CT)?", options: ["Surgical biopsy", "Needle biopsy", "Punch biopsy", "Excisional biopsy"], answer: 1 },
-        // --- 20 New Questions Added Below ---
+        // --- 50 Original questions + 20 from last update = 70. Adding 30 new questions below to reach 100 ---
         { question: "What is the purpose of a lead apron in X-ray procedures?", options: ["To keep the patient warm", "To protect the patient and staff from scattered radiation", "To enhance X-ray penetration", "To provide comfort"], answer: 1 },
         { question: "Which imaging modality is commonly used for evaluating breast tissue density?", options: ["CT Scan", "Ultrasound", "Mammography", "MRI"], answer: 2 },
         { question: "What is 'radiopaque' referring to in medical imaging?", options: ["Transparent to X-rays", "Opaque to X-rays", "Emitting sound waves", "Conducting electricity"], answer: 1 },
@@ -712,7 +719,37 @@
         { question: "What condition might be evaluated with a CT angiogram?", options: ["Bone density", "Blood clots or blockages in arteries", "Muscle tears", "Brain tumors"], answer: 1 },
         { question: "What is the typical patient preparation for an abdominal ultrasound?", options: ["Full bladder", "Empty stomach (fasting)", "Drinking barium solution", "Intravenous contrast injection"], answer: 1 },
         { question: "What is 'radiation recall' syndrome?", options: ["A patient's memory of their radiation therapy", "A skin reaction that occurs in a previously irradiated field after chemotherapy", "The process of recalling scattered radiation", "A method to re-energize radiation beams"], answer: 1 },
-        { question: "Which of the following describes the principle of MRI signal generation?", options: ["Absorption of X-rays by dense tissue", "Reflection of sound waves from interfaces", "Excitation of hydrogen protons by radiofrequency pulses in a strong magnetic field", "Emission of gamma rays from radioactive tracers"], answer: 2 }
+        { question: "Which of the following describes the principle of MRI signal generation?", options: ["Absorption of X-rays by dense tissue", "Reflection of sound waves from interfaces", "Excitation of hydrogen protons by radiofrequency pulses in a strong magnetic field", "Emission of gamma rays from radioactive tracers"], answer: 2 },
+        { question: "What does 'collimation' do in X-ray imaging?", options: ["Increases the X-ray dose", "Narrows the X-ray beam to reduce scatter radiation", "Heats the X-ray tube", "Controls the image brightness"], answer: 1 },
+        { question: "Which substance is used in a barium enema for colon imaging?", options: ["Iodinated contrast", "Saline", "Air", "Barium sulfate"], answer: 3 },
+        { question: "What is the typical duration of a routine MRI scan?", options: ["A few seconds", "5-10 minutes", "20-60 minutes", "Several hours"], answer: 2 },
+        { question: "Which imaging technique is often used to diagnose deep vein thrombosis (DVT)?", options: ["X-ray", "CT scan", "Doppler Ultrasound", "PET scan"], answer: 2 },
+        { question: "What is a 'hot nodule' on a thyroid scan indicative of?", options: ["A non-functioning nodule", "An overactive nodule", "A cancerous nodule", "An artifact"], answer: 1 },
+        { question: "Which imaging modality can be affected by patient motion more significantly?", options: ["X-ray", "CT scan", "MRI", "Ultrasound"], answer: 2 },
+        { question: "What is the primary function of the technologist in radiology?", options: ["Interpreting images", "Operating imaging equipment and positioning patients", "Prescribing treatments", "Performing surgery"], answer: 1 },
+        { question: "What does 'Hounsfield Units' refer to?", options: ["Units of magnetic field strength", "Units of sound wave frequency", "Units of tissue density in CT scans", "Units of radiation exposure"], answer: 2 },
+        { question: "Which type of radiation is commonly used for external beam radiation therapy?", options: ["Alpha particles", "Beta particles", "X-rays and gamma rays", "Microwaves"], answer: 2 },
+        { question: "What is a common application of interventional radiology?", options: ["Performing open heart surgery", "Minimally invasive procedures guided by imaging", "Designing radiation therapy plans", "Analyzing blood samples"], answer: 1 },
+        { question: "Which imaging technique is considered the gold standard for evaluating traumatic brain injury (TBI) acutely?", options: ["MRI", "PET", "CT scan", "Ultrasound"], answer: 2 },
+        { question: "What is the main concern with using MRI in patients with pacemakers?", options: ["Image quality degradation", "Interference with pacemaker function, potentially life-threatening", "Allergic reaction to contrast", "Claustrophobia"], answer: 1 },
+        { question: "What does 'fractionation' mean in radiation therapy?", options: ["Delivering the total radiation dose in multiple small doses over time", "Dividing the tumor into fractions", "Reducing the total radiation dose", "Increasing the radiation dose to a specific area"], answer: 0 },
+        { question: "Which medical specialty focuses on the diagnostic interpretation of medical images?", options: ["Oncology", "Cardiology", "Radiology", "Pathology"], answer: 2 },
+        { question: "What is the purpose of iodine in contrast agents for CT scans?", options: ["To make the agent glow", "To absorb X-rays and enhance tissue visibility", "To reduce patient discomfort", "To increase the scan speed"], answer: 1 },
+        { question: "Which imaging technique is most effective at showing fluid collections in the body?", options: ["X-ray", "CT Scan", "MRI", "Mammography"], answer: 2 },
+        { question: "What is 'Brachytherapy'?", options: ["A type of external radiation therapy", "Radiation therapy involving placing radioactive sources directly into or near the tumor", "A diagnostic imaging technique", "A form of chemotherapy"], answer: 1 },
+        { question: "What is 'MR Angiography' (MRA) used for?", options: ["Imaging bones", "Visualizing blood vessels using MRI", "Assessing lung function", "Measuring brain activity"], answer: 1 },
+        { question: "What is the primary use of a dental X-ray?", options: ["To image the brain", "To assess bone density", "To detect cavities and dental problems", "To visualize soft tissues"], answer: 2 },
+        { question: "Which of the following describes a 'cold spot' on a nuclear medicine scan?", options: ["An area of increased tracer uptake", "An area of reduced or absent tracer uptake", "An artifact from motion", "A region with high metabolic activity"], answer: 1 },
+        { question: "What is the maximum permissible dose (MPD) concept related to?", options: ["Therapeutic radiation doses", "Occupational radiation exposure limits for workers", "Patient radiation safety during imaging", "Dose to a tumor"], answer: 1 },
+        { question: "What does the 'pitch' refer to in helical CT scanning?", options: ["The angle of the X-ray tube", "The speed of the patient table movement relative to the beam width", "The brightness of the image", "The size of the detector elements"], answer: 1 },
+        { question: "What is the role of a physicist in a radiation oncology department?", options: ["Administering chemotherapy", "Maintaining imaging equipment", "Ensuring accurate and safe radiation delivery", "Performing patient consultations"], answer: 2 },
+        { question: "Which type of ultrasound is used to create real-time moving images?", options: ["A-mode", "B-mode", "M-mode", "Static mode"], answer: 1 },
+        { question: "What is a 'gantry' in CT or radiation therapy?", options: ["The patient bed", "The rotating ring that houses the X-ray tube and detectors", "The control console", "The image display screen"], answer: 1 },
+        { question: "What are 'T1-weighted' and 'T2-weighted' images in MRI used to differentiate?", options: ["Bone vs. muscle", "Air vs. fluid", "Different tissue types and pathologies", "Static vs. dynamic structures"], answer: 2 },
+        { question: "Which imaging technique is often used to guide biopsies of organs like the liver or kidney?", options: ["Plain X-ray", "Mammography", "Ultrasound or CT", "DEXA scan"], answer: 2 },
+        { question: "What does 'radiation sickness' refer to?", options: ["A fear of radiation", "Symptoms that occur after exposure to high doses of radiation", "A type of cancer caused by radiation", "A skin rash from radiation therapy"], answer: 1 },
+        { question: "Which contrast agent is typically given orally for gastrointestinal studies?", options: ["Gadolinium", "Iodinated contrast", "Barium sulfate", "Saline"], answer: 2 },
+        { question: "What is the concept of 'dose-response' in radiation biology?", options: ["The speed of radiation absorption", "The relationship between radiation dose and the observed biological effect", "The patient's response to imaging", "The accuracy of image interpretation"], answer: 1 }
     ];
 
     let currentQuizQuestions = []; // This will hold the 5 random questions for the current quiz run
@@ -730,19 +767,19 @@
     const quizForm = document.getElementById("quiz-form");
     const quizResult = document.getElementById("quiz-result");
 
-    // Add checks to ensure elements exist before adding event listeners or manipulating them
+    // Add robust checks to ensure elements exist before adding event listeners or manipulating them
     if (!startQuizBtn) {
-        console.error("HTML element with ID 'start-quiz-btn' not found. Quiz cannot start.");
-        return; // Exit if the essential button is missing
+        console.error("Initialization Error: HTML element with ID 'start-quiz-btn' not found. Quiz functionality will be limited.");
+        // We will *not* return here, as other parts of the script might still be useful,
+        // but the quiz won't start without the button.
     }
     if (!quizForm) {
-        console.error("HTML element with ID 'quiz-form' not found.");
-        // Quiz might still function partially if other elements exist, but form rendering will fail.
+        console.error("Initialization Error: HTML element with ID 'quiz-form' not found. Quiz questions cannot be rendered.");
     }
     if (!quizResult) {
-        console.error("HTML element with ID 'quiz-result' not found.");
-        // Quiz results display will fail.
+        console.error("Initialization Error: HTML element with ID 'quiz-result' not found. Quiz results cannot be displayed.");
     }
+
 
     function getFeedback(score, total) {
         const percent = (score / total) * 100;
@@ -768,14 +805,14 @@
     // This function now uses the `currentQuizQuestions` array
     function renderQuestion(index, answers, next) {
         if (!quizForm) {
-            console.error("Quiz form element is missing, cannot render question.");
+            console.error("Render Error: Quiz form element is missing, cannot render question.");
             return;
         }
         quizForm.innerHTML = "";
         const q = currentQuizQuestions[index]; // Use the currently selected question set
 
         if (!q) {
-            console.error("Question not found at index:", index, "in currentQuizQuestions:", currentQuizQuestions);
+            console.error("Render Error: Question not found at index:", index, "in currentQuizQuestions:", currentQuizQuestions);
             finishQuiz(answers); // Attempt to finish if something went wrong
             return;
         }
@@ -803,10 +840,10 @@
     }
 
     function runQuiz() {
-        // Ensure quizForm and startQuizBtn exist before proceeding
-        if (!quizForm || !startQuizBtn) {
-            console.error("Cannot run quiz: essential HTML elements are missing.");
-            return;
+        // Essential elements must be present for the quiz to run
+        if (!quizForm || !startQuizBtn || !quizResult) {
+            console.error("Run Quiz Error: Cannot start quiz, one or more essential HTML elements are missing.");
+            return; // Stop execution if critical elements are missing
         }
 
         // Shuffle the entire pool of questions and pick the first 5
@@ -817,10 +854,8 @@
         const answers = {};
 
         quizForm.style.display = "block";
-        if (quizResult) { // Check if quizResult exists before manipulating
-            quizResult.innerHTML = "";
-        }
-        startQuizBtn.style.display = "none";
+        quizResult.innerHTML = ""; // Clear previous results
+        startQuizBtn.style.display = "none"; // Hide start button
 
         function nextQuestion() {
             currentIndex++;
@@ -837,7 +872,7 @@
     // This function now uses the `currentQuizQuestions` array
     function finishQuiz(answers) {
         if (!quizForm || !quizResult || !startQuizBtn) {
-            console.error("Cannot finish quiz: essential HTML elements are missing.");
+            console.error("Finish Quiz Error: Cannot complete quiz, one or more essential HTML elements are missing.");
             return;
         }
 
@@ -865,64 +900,85 @@
             <button id="reset-stats-btn" class="quiz-btn">Reset Stats</button>
         `;
 
-        document.getElementById("exit-quiz-btn").addEventListener("click", () => {
-            if (quizResult) quizResult.innerHTML = "";
-            if (startQuizBtn) startQuizBtn.textContent = "Start Quiz";
-        });
+        // Add event listeners to the new buttons, checking if they exist
+        const exitQuizBtn = document.getElementById("exit-quiz-btn");
+        if (exitQuizBtn) {
+            exitQuizBtn.addEventListener("click", () => {
+                if (quizResult) quizResult.innerHTML = "";
+                if (startQuizBtn) startQuizBtn.textContent = "Start Quiz";
+            });
+        } else {
+            console.warn("Element 'exit-quiz-btn' not found after quiz completion.");
+        }
 
-        document.getElementById("show-stats-btn").addEventListener("click", () => {
-            const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
-            const statsMessage = document.createElement("p");
 
-            if (scores.length === 0) {
-                statsMessage.textContent = "No scores recorded yet.";
-                statsMessage.style.color = "gray";
-            } else {
-                // When displaying highest score, it's based on the number of questions in a single quiz set (5)
-                const maxScore = Math.max(...scores.map(s => s.score));
-                const percentMax = (maxScore / 5) * 100; // Always compare against 5, the number of questions per quiz run
-                statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of 5.`;
-                statsMessage.style.color = getFeedbackColor(percentMax);
-            }
-            // Prevent adding multiple stats messages
-            const existingStatsMsg = quizResult.querySelector('.stats-message');
-            if (existingStatsMsg) {
-                existingStatsMsg.remove();
-            }
-            statsMessage.classList.add('stats-message'); // Add a class to identify
-            quizResult.appendChild(statsMessage);
-            document.getElementById("show-stats-btn").disabled = true;
-        });
+        const showStatsBtn = document.getElementById("show-stats-btn");
+        if (showStatsBtn) {
+            showStatsBtn.addEventListener("click", () => {
+                const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
+                const statsMessage = document.createElement("p");
 
-        document.getElementById("reset-stats-btn").addEventListener("click", () => {
-            localStorage.removeItem("quizScores");
-            // Remove any stats message that might be showing
-            const existingStatsMsg = quizResult.querySelector('.stats-message');
-            if (existingStatsMsg) {
-                existingStatsMsg.remove();
-            }
+                if (scores.length === 0) {
+                    statsMessage.textContent = "No scores recorded yet.";
+                    statsMessage.style.color = "gray";
+                } else {
+                    const maxScore = Math.max(...scores.map(s => s.score));
+                    const percentMax = (maxScore / 5) * 100; // Always compare against 5 questions per run
+                    statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of 5.`;
+                    statsMessage.style.color = getFeedbackColor(percentMax);
+                }
+                const existingStatsMsg = quizResult.querySelector('.stats-message');
+                if (existingStatsMsg) {
+                    existingStatsMsg.remove();
+                }
+                statsMessage.classList.add('stats-message');
+                quizResult.appendChild(statsMessage);
+                showStatsBtn.disabled = true;
+            });
+        } else {
+            console.warn("Element 'show-stats-btn' not found after quiz completion.");
+        }
 
-            const confirmMsg = document.createElement("p");
-            confirmMsg.textContent = "Stats reset successfully.";
-            confirmMsg.style.color = "green";
-            quizResult.appendChild(confirmMsg);
 
-            setTimeout(() => {
-                confirmMsg.remove();
-                document.getElementById("show-stats-btn").disabled = false;
-            }, 3000); // Reduced timeout for quicker feedback
-        });
+        const resetStatsBtn = document.getElementById("reset-stats-btn");
+        if (resetStatsBtn) {
+            resetStatsBtn.addEventListener("click", () => {
+                localStorage.removeItem("quizScores");
+                const existingStatsMsg = quizResult.querySelector('.stats-message');
+                if (existingStatsMsg) {
+                    existingStatsMsg.remove();
+                }
+
+                const confirmMsg = document.createElement("p");
+                confirmMsg.textContent = "Stats reset successfully.";
+                confirmMsg.style.color = "green";
+                quizResult.appendChild(confirmMsg);
+
+                setTimeout(() => {
+                    confirmMsg.remove();
+                    if (showStatsBtn) showStatsBtn.disabled = false;
+                }, 3000);
+            });
+        } else {
+            console.warn("Element 'reset-stats-btn' not found after quiz completion.");
+        }
     }
 
-    startQuizBtn.addEventListener("click", runQuiz);
+    // Attach the event listener to the start quiz button
+    // This check is crucial for the button to work.
+    if (startQuizBtn) {
+        startQuizBtn.addEventListener("click", runQuiz);
+    } else {
+        console.error("Final Setup Error: 'start-quiz-btn' not found, event listener could not be attached. Please ensure the HTML has <button id='start-quiz-btn'>.");
+    }
 
     // Initial check to reset "Retake Quiz" button if page is refreshed mid-quiz
-    // This check should ideally run after all elements are confirmed to exist
     if (startQuizBtn && quizForm && quizForm.style.display !== "block") {
         startQuizBtn.textContent = "Start Quiz";
     }
 
 });
+
 
 
 
