@@ -577,22 +577,41 @@
             }
         }
 
-      document.addEventListener('DOMContentLoaded', () => {
+     document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM Content Loaded: Initializing quiz script.');
 
     const headerTitle = document.querySelector('header h1');
     const navLinks = document.querySelector('nav.nav-links');
-    const menuToggle = document.querySelector('.menu-toggle');
+    const menuToggle = document.querySelector('.menu-toggle'); // Keep if used elsewhere for mobile menu
     const header = document.querySelector('header');
 
+    // Robustness: Centralize checks for critical header elements
     if (!headerTitle || !navLinks || !header) {
-        console.warn('Required header elements for mobile menu not found. Some header functionalities might be impacted.');
+        console.warn('Required header elements for mobile menu or scrolling not found. Some header functionalities might be impacted.');
+    }
+
+    // Refinement: Add a check for menuToggle if it's meant to be functional
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            // Example: Toggle a class on navLinks or header for mobile menu visibility
+            if (navLinks) {
+                navLinks.classList.toggle('active');
+            }
+            // You might also toggle an 'active' class on the menuToggle itself for animation
+            menuToggle.classList.toggle('active');
+        });
     }
 
     if (navLinks) {
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                // Mobile menu toggle logic if needed here
+                // Refinement: Close mobile menu when a nav link is clicked (common UX)
+                if (navLinks.classList.contains('active')) { // Check if mobile menu is open
+                    navLinks.classList.remove('active');
+                    if (menuToggle) {
+                        menuToggle.classList.remove('active');
+                    }
+                }
             });
         });
     }
@@ -600,10 +619,12 @@
     const sections = document.querySelectorAll('section, #radiation-animation');
     const highlightActiveSection = () => {
         let currentActive = null;
+        // Ensure header exists before trying to get its offsetHeight
         const headerHeight = header ? header.offsetHeight : 0;
 
         sections.forEach(section => {
-            const sectionTop = section.offsetTop - headerHeight - 50;
+            // Refinement: Adjust scroll position slightly for better active section detection
+            const sectionTop = section.offsetTop - headerHeight - 60; // Slightly more buffer
             const sectionBottom = sectionTop + section.offsetHeight;
 
             if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
@@ -641,11 +662,13 @@
     }
 
     window.addEventListener('scroll', throttle(highlightActiveSection, 100));
-    highlightActiveSection();
+    highlightActiveSection(); // Call on load to set initial active section
 
-    // --- Quiz Data and Logic ---
+    ---
 
-    // Full pool of 100 questions
+    ## Quiz Data and Logic
+
+    // Full pool of 100 questions (your original data, omitted for brevity)
     const allQuizData = [
         { question: "What does MRI primarily use to generate images?", options: ["X-rays", "Magnetic fields & radio waves", "Sound waves", "Gamma rays"], answer: 1 },
         { question: "What tracer is commonly used in PET scans?", options: ["Iodine-131", "Technetium-99m", "Fluorodeoxyglucose (FDG)", "Gadolinium"], answer: 2 },
@@ -749,39 +772,51 @@
         { question: "What is the concept of 'dose-response' in radiation biology?", options: ["The speed of radiation absorption", "A relationship between radiation dose and the observed biological effect", "The patient's response to imaging", "The accuracy of image interpretation"], answer: 1 }
     ];
 
-    let currentQuizQuestions = [];
+    let currentQuizQuestions = []; // Stores the 5 questions for the current quiz
 
+    /**
+     * Shuffles an array using the Fisher-Yates (Knuth) algorithm.
+     * @param {Array} array - The array to shuffle.
+     * @returns {Array} The shuffled array.
+     */
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+            [array[i], array[j]] = [array[j], array[i]]; // ES6 swap
         }
         return array;
     }
 
+    // Get references to quiz elements
     const startQuizBtn = document.getElementById("start-quiz-btn");
     const quizForm = document.getElementById("quiz-form");
     const quizResult = document.getElementById("quiz-result");
 
-    // CRITICAL: Log the elements immediately to see if they are found
+    // Critical: Log elements immediately to confirm their presence in the DOM
     console.log('startQuizBtn element:', startQuizBtn);
     console.log('quizForm element:', quizForm);
     console.log('quizResult element:', quizResult);
 
-    // Initial checks for essential elements
+    // Initial checks for essential elements. If not found, quiz cannot function.
     if (!startQuizBtn) {
-        console.error("Initialization Error: HTML element with ID 'start-quiz-btn' not found. Quiz functionality will be severely limited.");
-        // Do not return here to allow other parts of the script to potentially run,
-        // but the quiz won't start without the button.
+        console.error("Initialization Error: HTML element with ID 'start-quiz-btn' not found. Quiz functionality will not be available.");
+        return; // Exit script if critical button is missing
     }
     if (!quizForm) {
         console.error("Initialization Error: HTML element with ID 'quiz-form' not found. Quiz questions cannot be rendered.");
+        return; // Exit script if quiz form is missing
     }
     if (!quizResult) {
         console.error("Initialization Error: HTML element with ID 'quiz-result' not found. Quiz results cannot be displayed.");
+        return; // Exit script if results area is missing
     }
 
-
+    /**
+     * Provides feedback message based on quiz score percentage.
+     * @param {number} score - The number of correct answers.
+     * @param {number} total - The total number of questions.
+     * @returns {string} The feedback message.
+     */
     function getFeedback(score, total) {
         const percent = (score / total) * 100;
         if (percent === 100) return "Outstanding! You're a radiology genius!";
@@ -790,29 +825,49 @@
         return "Keep learning — knowledge saves lives!";
     }
 
+    /**
+     * Returns a color string based on the score percentage for feedback.
+     * @param {number} percent - The percentage score.
+     * @returns {string} CSS color name (green, orange, red).
+     */
     function getFeedbackColor(percent) {
         if (percent >= 80) return "green";
         else if (percent >= 50) return "orange";
         else return "red";
     }
 
+    /**
+     * Saves the current quiz score to local storage.
+     * @param {number} score - The score achieved.
+     * @param {number} total - The total questions in the quiz.
+     */
     function saveScore(score, total) {
         const entry = { score, total, timestamp: new Date().toISOString() };
+        // Ensure 'quizScores' item is an array; initialize if null
         const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
         scores.push(entry);
         localStorage.setItem("quizScores", JSON.stringify(scores));
     }
 
+    /**
+     * Renders a single quiz question to the form.
+     * @param {number} index - The index of the question in currentQuizQuestions.
+     * @param {Object} answers - Object to store user's answers.
+     * @param {Function} next - Callback function to advance to the next question.
+     */
     function renderQuestion(index, answers, next) {
+        // Already checked for quizForm, but defensive check inside function is fine
         if (!quizForm) {
             console.error("Render Error: Quiz form element is missing, cannot render question.");
             return;
         }
-        quizForm.innerHTML = "";
-        const q = currentQuizQuestions[index];
 
+        quizForm.innerHTML = ""; // Clear previous question
+
+        const q = currentQuizQuestions[index];
         if (!q) {
-            console.error("Render Error: Question not found at index:", index, "in currentQuizQuestions:", currentQuizQuestions);
+            // If somehow no question exists at this index, finish the quiz
+            console.warn("Render Warning: Question not found at index", index, ". Finishing quiz.");
             finishQuiz(answers);
             return;
         }
@@ -823,52 +878,67 @@
 
         q.options.forEach((opt, i) => {
             const label = document.createElement("label");
+            label.className = "quiz-option-label"; // Add a class for potential styling
             const input = document.createElement("input");
             input.type = "radio";
-            input.name = `q${index}`;
+            input.name = `q${index}`; // Group radio buttons for this question
             input.value = i;
-            input.id = `q${index}-option${i}`;
+            input.id = `q${index}-option${i}`; // Unique ID for each option
+
             label.appendChild(input);
-            label.append(` ${opt}`);
+            label.append(` ${opt}`); // Use append for mixed content (text node)
             quizForm.appendChild(label);
 
+            // Auto-advance after selection
             input.addEventListener("change", () => {
                 answers[index] = parseInt(input.value);
-                setTimeout(next, 300);
+                setTimeout(next, 300); // Small delay for visual feedback
             });
         });
     }
 
+    /**
+     * Starts a new quiz session. Shuffles and selects 5 questions.
+     */
     function runQuiz() {
-        console.log('runQuiz function called.');
+        console.log('runQuiz function called: Starting a new quiz.');
+        // Defensive checks, though main ones are at DOMContentLoaded
         if (!quizForm || !startQuizBtn || !quizResult) {
             console.error("Run Quiz Error: Cannot start quiz, one or more essential HTML elements are missing.");
             return;
         }
 
-        const shuffledQuestions = shuffleArray([...allQuizData]);
-        currentQuizQuestions = shuffledQuestions.slice(0, 5);
+        // --- Core Quiz Shuffling and Selection ---
+        const shuffledQuestions = shuffleArray([...allQuizData]); // Shallow copy and shuffle
+        currentQuizQuestions = shuffledQuestions.slice(0, 5); // Select first 5 random questions
+        console.log('Selected 5 random questions for this quiz:', currentQuizQuestions.map(q => q.question));
 
         let currentIndex = 0;
-        const answers = {};
+        const answers = {}; // Store user answers
 
+        // Prepare UI for quiz
         quizForm.style.display = "block";
-        quizResult.innerHTML = "";
-        startQuizBtn.style.display = "none";
+        quizResult.innerHTML = ""; // Clear any previous results
+        startQuizBtn.style.display = "none"; // Hide start button during quiz
 
         function nextQuestion() {
             currentIndex++;
             if (currentIndex < currentQuizQuestions.length) {
                 renderQuestion(currentIndex, answers, nextQuestion);
             } else {
-                finishQuiz(answers);
+                finishQuiz(answers); // All questions answered
             }
         }
 
-        renderQuestion(currentIndex, answers, nextQuestion);
+        renderQuestion(currentIndex, answers, nextQuestion); // Render the first question
     }
 
+    /**
+     * Calculates the score, displays results, and manages post-quiz buttons.
+     * @param {Object} answers - The user's answers.
+     */
     function finishQuiz(answers) {
+        // Defensive checks
         if (!quizForm || !quizResult || !startQuizBtn) {
             console.error("Finish Quiz Error: Cannot complete quiz, one or more essential HTML elements are missing.");
             return;
@@ -876,69 +946,79 @@
 
         let score = 0;
         currentQuizQuestions.forEach((q, idx) => {
-            if (answers[idx] === q.answer) score++;
+            // Ensure an answer was provided for the question
+            if (answers.hasOwnProperty(idx) && answers[idx] === q.answer) {
+                score++;
+            }
         });
 
         const total = currentQuizQuestions.length;
-        const percent = (score / total) * 100;
+        const percent = (total > 0) ? (score / total) * 100 : 0; // Prevent division by zero
         const feedback = getFeedback(score, total);
         const color = getFeedbackColor(percent);
 
-        saveScore(score, total);
+        saveScore(score, total); // Save this quiz attempt's score
 
+        // Update UI
         quizForm.style.display = "none";
         startQuizBtn.style.display = "inline-block";
-        startQuizBtn.textContent = "Retake Quiz";
+        startQuizBtn.textContent = "Retake Quiz"; // Prompt for another attempt
 
         quizResult.innerHTML = `
-            <p>You scored ${score} out of ${total}.</p>
-            <p style="color:${color};">${feedback}</p>
-            <button id="exit-quiz-btn" class="quiz-btn">Exit Quiz</button>
-            <button id="show-stats-btn" class="quiz-btn">Show Highest Score</button>
-            <button id="reset-stats-btn" class="quiz-btn">Reset Stats</button>
+            <p>You scored **${score}** out of **${total}**.</p>
+            <p style="color:${color}; font-weight: bold;">${feedback}</p>
+            <div class="quiz-actions">
+                <button id="exit-quiz-btn" class="quiz-btn">Exit Quiz</button>
+                <button id="show-stats-btn" class="quiz-btn">Show Highest Score</button>
+                <button id="reset-stats-btn" class="quiz-btn">Reset Stats</button>
+            </div>
         `;
 
+        // --- Post-Quiz Button Event Listeners ---
         const exitQuizBtn = document.getElementById("exit-quiz-btn");
         if (exitQuizBtn) {
             exitQuizBtn.addEventListener("click", () => {
-                if (quizResult) quizResult.innerHTML = "";
-                if (startQuizBtn) startQuizBtn.textContent = "Start Quiz";
+                quizResult.innerHTML = ""; // Clear results
+                startQuizBtn.textContent = "Start Quiz"; // Reset button text
+                startQuizBtn.style.display = "inline-block"; // Ensure it's visible
             });
-        } else {
-            console.warn("Element 'exit-quiz-btn' not found after quiz completion.");
         }
 
         const showStatsBtn = document.getElementById("show-stats-btn");
         if (showStatsBtn) {
             showStatsBtn.addEventListener("click", () => {
                 const scores = JSON.parse(localStorage.getItem("quizScores") || "[]");
-                const statsMessage = document.createElement("p");
+                let statsMessage = document.createElement("p");
+                statsMessage.classList.add('stats-message'); // Add class for easy targeting
 
                 if (scores.length === 0) {
                     statsMessage.textContent = "No scores recorded yet.";
                     statsMessage.style.color = "gray";
                 } else {
-                    const maxScore = Math.max(...scores.map(s => s.score));
-                    const percentMax = (maxScore / 5) * 100;
-                    statsMessage.textContent = `Your Highest Score so far is: ${maxScore} out of 5.`;
+                    // Ensure maxScore calculation is robust for different 'total' values if quizzes vary
+                    // For fixed 5 questions, this is fine:
+                    const maxScoreEntry = scores.reduce((prev, current) => (prev.score > current.score ? prev : current), {score: 0, total: 5});
+                    const percentMax = (maxScoreEntry.score / maxScoreEntry.total) * 100;
+                    statsMessage.textContent = `Your Highest Score so far is: **${maxScoreEntry.score}** out of ${maxScoreEntry.total}.`;
                     statsMessage.style.color = getFeedbackColor(percentMax);
                 }
+
+                // Remove previous stats message if it exists
                 const existingStatsMsg = quizResult.querySelector('.stats-message');
                 if (existingStatsMsg) {
                     existingStatsMsg.remove();
                 }
-                statsMessage.classList.add('stats-message');
                 quizResult.appendChild(statsMessage);
-                showStatsBtn.disabled = true;
+                showStatsBtn.disabled = true; // Disable after showing stats to prevent spamming
             });
-        } else {
-            console.warn("Element 'show-stats-btn' not found after quiz completion.");
         }
 
         const resetStatsBtn = document.getElementById("reset-stats-btn");
         if (resetStatsBtn) {
             resetStatsBtn.addEventListener("click", () => {
-                localStorage.removeItem("quizScores");
+                localStorage.removeItem("quizScores"); // Clear all saved scores
+
+                // Remove any displayed stats message
                 const existingStatsMsg = quizResult.querySelector('.stats-message');
                 if (existingStatsMsg) {
                     existingStatsMsg.remove();
@@ -947,35 +1027,31 @@
                 const confirmMsg = document.createElement("p");
                 confirmMsg.textContent = "Stats reset successfully.";
                 confirmMsg.style.color = "green";
+                confirmMsg.classList.add('stats-confirmation-message'); // Add class
                 quizResult.appendChild(confirmMsg);
 
+                // Temporarily disable reset button and re-enable show stats button
+                resetStatsBtn.disabled = true;
+                if (showStatsBtn) {
+                    showStatsBtn.disabled = false; // Re-enable show stats button
+                }
+
                 setTimeout(() => {
-                    confirmMsg.remove();
-                    if (showStatsBtn) showStatsBtn.disabled = false;
+                    confirmMsg.remove(); // Remove confirmation message after a delay
+                    resetStatsBtn.disabled = false; // Re-enable reset button
                 }, 3000);
             });
-        } else {
-            console.warn("Element 'reset-stats-btn' not found after quiz completion.");
         }
     }
 
-    // Attempt to attach event listener with a try-catch for better error reporting
-    try {
-        if (startQuizBtn) {
-            startQuizBtn.addEventListener("click", runQuiz);
-            console.log('Event listener attached to startQuizBtn.');
-        } else {
-            console.error("Final Setup Error: 'start-quiz-btn' not found, event listener could not be attached. Please ensure the HTML has <button id='start-quiz-btn'> and it's present in the DOM.");
-        }
-    } catch (e) {
-        console.error("Error attaching event listener to startQuizBtn:", e);
-    }
+    // Attach event listener to the main start quiz button
+    startQuizBtn.addEventListener("click", runQuiz);
+    console.log('Event listener attached to startQuizBtn.');
 
-    // Initial check to reset "Retake Quiz" button if page is refreshed mid-quiz
-    if (startQuizBtn && quizForm && quizForm.style.display !== "block") {
+    // Initial state check: if the page is refreshed after a quiz, ensure button text is correct
+    if (quizForm.style.display !== "block") { // If quiz form is not active, ensure button says "Start Quiz"
         startQuizBtn.textContent = "Start Quiz";
     }
-
 });
 
 
