@@ -999,7 +999,7 @@ const TUMOR = {
     INITIAL_SIZE: 20,       // Initial visual size in pixels (width and height)
     MIN_SIZE_FACTOR: 0.0,   // Tumor shrinks to 0% of its initial size (fully destroyed)
     // Adjusted to ensure complete destruction over 4 angles (4 * 0.25 = 1.0)
-    DOSE_REDUCTION_FACTOR: 0.25 
+    DOSE_REDUCTION_FACTOR: 0.25
 };
 
 // Defines timing and performance parameters for the animation
@@ -1193,10 +1193,15 @@ async function startRadiationSimulation() {
     isSimulationActive = false; // Mark simulation as complete
     startSimulationBtn.disabled = false; // Re-enable the button
 
-    // The tumor should be fully destroyed at this point
-    startSimulationBtn.textContent = 'Start Treatment Simulation'; // Always reset to "Start" after completion
+    // Show "Treatment Complete!" message for 2 seconds
+    startSimulationBtn.textContent = 'Treatment Complete!';
+    tumor.style.opacity = '0'; // Ensure tumor is completely invisible if not already
 
-    console.log('Radiation treatment simulation completed. Tumor fully destroyed.');
+    setTimeout(() => {
+        // After 2 seconds, revert button text to "Start Treatment Simulation"
+        startSimulationBtn.textContent = 'Start Treatment Simulation';
+        console.log('Radiation treatment simulation completed. Tumor fully destroyed.');
+    }, 2000); // 2000 milliseconds = 2 seconds
 }
 
 // --- Event Listener ---
