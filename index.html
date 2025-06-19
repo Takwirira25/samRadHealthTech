@@ -978,8 +978,7 @@
             }
 
 
-
-// --- Radiation Animation Logic (Polished Version) ---
+// --- Radiation Animation Logic (Polished and Final Version) ---
 
 // --- Core Animation Elements Selection ---
 const gantryCircle = document.querySelector('.gantry-circle');
@@ -998,8 +997,9 @@ const GANTRY = {
 // Defines properties for the tumor's initial size and how it shrinks
 const TUMOR = {
     INITIAL_SIZE: 20,       // Initial visual size in pixels (width and height)
-    MIN_SIZE_FACTOR: 0.25,  // Tumor shrinks to 25% of its initial size
-    DOSE_REDUCTION_FACTOR: 0.1 // Amount the tumor scale reduces per "radiation shot"
+    MIN_SIZE_FACTOR: 0.0,   // Tumor shrinks to 0% of its initial size (fully destroyed)
+    // Adjusted to ensure complete destruction over 4 angles (4 * 0.25 = 1.0)
+    DOSE_REDUCTION_FACTOR: 0.25 
 };
 
 // Defines timing and performance parameters for the animation
@@ -1011,7 +1011,7 @@ const ANIMATION = {
 
 // Specific angles (in degrees) from which radiation will be delivered
 // A real system would have many more, carefully chosen angles.
-const TREATMENT_ANGLES = [0, 90, 180, 270];
+const TREATMENT_ANGLES = [0, 90, 180, 270]; // Four angles for complete destruction with 0.25 dose factor
 
 // --- Animation State Variables ---
 let animationIntervalId = null;   // Stores the ID of the current setInterval for rotation
@@ -1073,7 +1073,7 @@ function resetSimulation() {
 
     // Reset Start Button state
     startSimulationBtn.disabled = false;
-    startSimulationBtn.textContent = 'Start Simulation';
+    startSimulationBtn.textContent = 'Start Treatment Simulation'; // Always reset to "Start"
 }
 
 /**
@@ -1149,10 +1149,10 @@ function animateAndDeliverRadiation(targetAngle) {
                 // Apply shrinkage with CSS transitions for smooth visual effect
                 tumor.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
                 tumor.style.transform = `translate(-50%, -50%) scale(${currentTumorScale})`;
-                // Adjust tumor opacity as it shrinks
-                tumor.style.opacity = 0.5 + (currentTumorScale * 0.5);
+                // Adjust tumor opacity as it shrinks, fading it out completely at MIN_SIZE_FACTOR
+                tumor.style.opacity = currentTumorScale === TUMOR.MIN_SIZE_FACTOR ? '0' : (0.5 + (currentTumorScale * 0.5));
 
-                // --- Beam Fade-out and Cleanup ---
+
                 setTimeout(() => {
                     // Hide beam after its duration
                     beam.style.width = '0';
@@ -1173,9 +1173,9 @@ function animateAndDeliverRadiation(targetAngle) {
  */
 async function startRadiationSimulation() {
     // If a simulation is already active, calling it again will reset it
+    // and then start a new one.
     if (isSimulationActive) {
-        resetSimulation();
-        return;
+        resetSimulation(); // Reset current active simulation
     }
 
     isSimulationActive = true; // Set flag to true to indicate simulation is running
@@ -1193,15 +1193,10 @@ async function startRadiationSimulation() {
     isSimulationActive = false; // Mark simulation as complete
     startSimulationBtn.disabled = false; // Re-enable the button
 
-    // Update button text based on tumor's final state
-    if (currentTumorScale <= TUMOR.MIN_SIZE_FACTOR + 0.01) { // Check if tumor is fully "treated" (with tolerance)
-        startSimulationBtn.textContent = 'Treatment Complete! (Restart)';
-        tumor.style.opacity = '0.2'; // Make it very faint to indicate completion
-    } else {
-        startSimulationBtn.textContent = 'Restart Simulation';
-    }
+    // The tumor should be fully destroyed at this point
+    startSimulationBtn.textContent = 'Start Treatment Simulation'; // Always reset to "Start" after completion
 
-    console.log('Radiation treatment simulation completed.');
+    console.log('Radiation treatment simulation completed. Tumor fully destroyed.');
 }
 
 // --- Event Listener ---
@@ -1213,7 +1208,6 @@ startSimulationBtn.addEventListener('click', startRadiationSimulation);
 // If you have other DOMContentLoaded listeners, consider combining them.
 document.addEventListener('DOMContentLoaded', resetSimulation);
 
-// ... (rest of your quiz and other scripts would go here)
 
 
             // Optional: Recalculate beam on window resize to keep it aligned
