@@ -136,7 +136,14 @@
             height: 3px;
             background: #007bff;
         }
-
+        /* Add this new rule to target the section containing the contact details */
+        /* This will ensure consistent padding above the heading within the section */
+        section#contact {
+            padding-top: 2rem; /* Match other section padding-top values */
+            padding-bottom: 2rem; /* Maintain consistent bottom padding */
+            /* You might want to remove the specific h2 styling for border/padding if it causes issues */
+            /* Or encapsulate the h2 styling into a class that only applies to sections needing the border */
+        }
         /* Sections */
         section {
             margin-bottom: 3.5rem;
