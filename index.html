@@ -21,176 +21,186 @@
         }
 
         /* Header */
-        header {
-            background: linear-gradient(to right, #001f3f, #003366); /* Deeper blue gradient */
-            color: #fff;
-            padding: 0.3rem 1.5rem; /* Constant, minimal padding */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column; /* Stacks title and nav vertically for desktop */
-            align-items: center;
-            text-align: center;
-        }
+header {
+    background: linear-gradient(to right, #001f3f, #003366); /* Deeper blue gradient */
+    color: #fff;
+    padding: 0.3rem 1.5rem; /* Constant, minimal padding */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Stacks title and nav vertically for desktop */
+    align-items: center;
+    text-align: center;
+}
 
-        header h1 {
-            margin: 0; /* Remove default margin to reduce vertical space */
-            font-size: 2.0rem; /* Fixed, minimal font size for constant header */
-            color: #c9e6ff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3),
-                         4px 4px 8px rgba(0,0,0,0.2),
-                         6px 6px 12px rgba(0,0,0,0.1);
-            letter-spacing: 0.05rem;
-            line-height: 1.2; /* Adjust line height to reduce space above/below text */
-            white-space: nowrap; /* Keep the title on one line */
-        }
-        
-        /* Navigation (Desktop) */
-        nav.nav-links {
-            margin-top: 0.5rem; /* Minimal margin from title */
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
+header h1 {
+    margin: 0; /* Remove default margin to reduce vertical space */
+    font-size: 2.0rem; /* Fixed, minimal font size for constant header */
+    color: #c9e6ff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3),
+                 4px 4px 8px rgba(0,0,0,0.2),
+                 6px 6px 12px rgba(0,0,0,0.1);
+    letter-spacing: 0.05rem;
+    line-height: 1.2; /* Adjust line height to reduce space above/below text */
+    white-space: nowrap; /* Keep the title on one line */
+}
 
-        nav a {
-            color: #e0f2f7;
-            text-decoration: none;
-            font-weight: 600;
-            position: relative;
-            white-space: nowrap;
-            padding-bottom: 5px;
-            transition: color 0.2s ease;
-            font-size: 0.95rem;
-        }
+/* Navigation (Desktop) */
+nav.nav-links {
+    margin-top: 0.5rem; /* Minimal margin from title */
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
 
-        nav a::after {
-            content: '';
-            display: block;
-            width: 0;
-            height: 2px;
-            background: #89cff0;
-            transition: width 0.2s ease-in-out;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
+nav a {
+    color: #e0f2f7;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    white-space: nowrap;
+    padding-bottom: 5px;
+    transition: color 0.2s ease;
+    font-size: 0.95rem;
+}
 
-        nav a:hover,
-        nav a.active {
-            color: #fff;
-        }
+nav a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #89cff0;
+    transition: width 0.2s ease-in-out;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
 
-        nav a:hover::after,
-        nav a.active::after {
-            width: 100%;
-        }
+nav a:hover,
+nav a.active {
+    color: #fff;
+}
 
-        /* Mobile Menu Toggle (hidden by default on desktop) */
-        .menu-toggle {
-            display: none;  
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background-color 0.2s ease, margin-top 0.2s ease-out;
-        }
+nav a:hover::after,
+nav a.active::after {
+    width: 100%;
+}
 
-        /* Main Container */
-        .container {
-            padding: 3rem 6vw;
-            max-width: 1300px;
-            margin: 0 auto;
-            animation: fadeIn 1.2s ease-out;
-        }
+/* Mobile Menu Toggle (hidden by default on desktop) */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, margin-top 0.2s ease-out;
+}
 
-        /* Headings */
-        h1, h2 {
-            color: #001f3f;
-            margin-bottom: 1.2rem;
-        }
+/* Main Container */
+.container {
+    padding: 3rem 6vw;
+    max-width: 1300px;
+    margin: 0 auto;
+    animation: fadeIn 1.2s ease-out;
+}
 
-        h2 {
-            color: #001f3f;
-            font-size: 2rem;
-            border-bottom: 2px solid #d0e0f0;
-            padding-bottom: 0.7rem;
-            position: relative;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2),
-                         2px 2px 4px rgba(0,0,0,0.15);
-        }
+/* Headings */
+h1, h2 {
+    color: #001f3f;
+    margin-bottom: 1.2rem;
+}
 
-        h2::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: #007bff;
-        }
-        /* Add this new rule to target the section containing the contact details */
-        /* This will ensure consistent padding above the heading within the section */
-        section#contact {
-            padding-top: 2rem; /* Match other section padding-top values */
-            padding-bottom: 2rem; /* Maintain consistent bottom padding */
-            /* You might want to remove the specific h2 styling for border/padding if it causes issues */
-            /* Or encapsulate the h2 styling into a class that only applies to sections needing the border */
-        }
-        /* Sections */
-        section {
-            margin-bottom: 3.5rem;
-            padding: 2rem;
-            border-radius: 12px;
-            background-color: #ffffff;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: all 0.4s ease;
-        }
+h2 {
+    color: #001f3f;
+    font-size: 2rem;
+    border-bottom: 2px solid #d0e0f0;
+    padding-bottom: 0.7rem;
+    position: relative;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2),
+                 2px 2px 4px rgba(0,0,0,0.15);
+}
 
-        section.active-section {
-            background: #eef7ff;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
+h2::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #007bff;
+}
 
-        /* Services Grid */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
+/* Add this new rule to target the section containing the contact details */
+/* This will ensure consistent padding above the heading within the section */
+section#contact {
+    padding-top: 2rem; /* Match other section padding-top values */
+    padding-bottom: 2rem; /* Maintain consistent bottom padding */
+    /* Add flexbox to center content horizontally if desired */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* Ensures text inside is centered */
+}
 
-        .service-card {
-            background: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border-left: 6px solid #007bff;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+/* Add this to remove default h2 top margin specifically within the contact section */
+section#contact h2 {
+    margin-top: 0;
+}
 
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-        }
+/* Sections */
+section {
+    margin-bottom: 3.5rem;
+    padding: 2rem;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+}
 
-        .service-card h3 {
-            margin-top: 0;
-            color: #001f3f;
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-        }
+section.active-section {
+    background: #eef7ff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
 
-        .service-card p {
-            color: #555;
-        }
+/* Services Grid */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.service-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-left: 6px solid #007bff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.service-card h3 {
+    margin-top: 0;
+    color: #001f3f;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+}
+
+.service-card p {
+    color: #555;
+}
 
         /* Buttons */
         button {
