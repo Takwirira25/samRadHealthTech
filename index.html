@@ -226,21 +226,44 @@
             cursor: pointer;
             font-size: 1.05rem;
             color: #444;
-            transition: color 0.2s ease;
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            padding: 0.7rem 1rem; /* Added padding for easier click target */
+            border-radius: 8px; /* Slightly rounded corners */
+            background-color: #f9f9f9; /* Light background for options */
+            border: 1px solid #eee; /* Subtle border */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
         }
 
         #quiz-form label:hover {
             color: #007bff;
+            background-color: #eef7ff; /* Lighter background on hover */
+            border-color: #cce0f0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         #quiz-form label input[type="radio"] {
             margin-right: 0.8rem;
             transform: scale(1.2);
+            /* Make radio button itself less prominent for click target, label handles it */
+            pointer-events: none; /* Disable direct clicks on radio, let label handle it */
         }
+        /* Style for checked radio button labels */
+        #quiz-form label input[type="radio"]:checked + span {
+            font-weight: 700;
+            color: #001f3f;
+        }
+
 
         #quiz-result p {
             margin-bottom: 0.8rem;
             font-size: 1.1rem;
+        }
+
+        #highest-score-display {
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0056b3;
         }
 
         /* Mobile Responsiveness */
@@ -412,6 +435,7 @@
                 <button id="start-quiz-btn" class="mt-8 px-8 py-4 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">Start Quiz</button>
                 <div id="quiz-form" class="mt-4"></div>
                 <div id="quiz-result" class="mt-4"></div>
+                <div id="highest-score-display" class="mt-4"></div>
             </div>
         </section>
 
@@ -426,7 +450,93 @@
         <p>&copy; 2025 samRad Health Technologies. All rights reserved.</p>
     </footer>
 
-    <script>
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration (using provided values and global variables)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyBjIeqwWVoVKmaw_FBX4r9TVVtwurZegLE",
+            authDomain: "samrad-974d2.firebaseapp.com",
+            projectId: "samrad-974d2",
+            storageBucket: "samrad-974d2.firebasestorage.app",
+            messagingSenderId: "847594732342",
+            appId: "1:847594732342:web:c231043fa5e95a6de8d197",
+            measurementId: "G-CE1KVWE2T6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let userId = null; // To store the authenticated user ID
+        let highestScoreDisplay = null; // Declare globally to be accessible
+
+        // Function to listen for highest score changes from Firestore
+        function listenForHighestScore() {
+            if (!db) {
+                console.error("Firestore instance is not available yet. Cannot listen for scores.");
+                return;
+            }
+            if (!highestScoreDisplay) {
+                highestScoreDisplay = document.getElementById('highest-score-display');
+                if (!highestScoreDisplay) {
+                    console.error("Element with ID 'highest-score-display' not found.");
+                    return;
+                }
+            }
+
+            console.log("Attempting to listen for highest score...");
+            const quizResultsCollectionRef = collection(db, `artifacts/${appId}/public/data/quiz_results`);
+            const q = query(quizResultsCollectionRef); // No orderBy to avoid index issues
+
+            onSnapshot(q, (snapshot) => {
+                console.log("Received Firestore snapshot for quiz results.");
+                let highestPercentage = 0;
+                if (snapshot.empty) {
+                    console.log("No quiz results found in Firestore.");
+                    highestScoreDisplay.innerHTML = "Highest Quiz Score Globally: <span style='color: #555;'>N/A (No results yet)</span>";
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    console.log("Processing quiz result:", data);
+                    if (data.percentage !== undefined && data.percentage > highestPercentage) {
+                        highestPercentage = data.percentage;
+                    }
+                });
+                highestScoreDisplay.innerHTML = `Highest Quiz Score Globally: <span style="color: #28a745;">${highestPercentage}%</span>`;
+            }, (error) => {
+                console.error("Error listening for highest score from Firestore:", error);
+                highestScoreDisplay.innerHTML = "Error loading highest score.";
+            });
+        }
+
+
+        // Authenticate user and then start listening for highest score
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                console.log("Firebase authenticated. User ID:", userId);
+                listenForHighestScore(); // Call after userId is set
+            } else {
+                try {
+                    const userCredential = await signInAnonymously(auth);
+                    userId = userCredential.user.uid;
+                    console.log("Signed in anonymously. User ID:", userId);
+                    listenForHighestScore(); // Call after userId is set
+                } catch (error) {
+                    console.error("Error signing in anonymously:", error);
+                }
+            }
+        });
+
+        // Function to throttle scroll events for performance
         function throttle(func, limit) {
             let inThrottle;
             return function() {
@@ -441,12 +551,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded: Initializing quiz script.');
+            console.log('DOM Content Loaded: Initializing website scripts.');
 
             const headerTitle = document.querySelector('header h1');
             const navLinks = document.querySelector('nav.nav-links');
             const menuToggle = document.querySelector('.menu-toggle');
             const header = document.querySelector('header');
+
+            // Initialize highestScoreDisplay here, as it's a DOM element
+            highestScoreDisplay = document.getElementById('highest-score-display');
+
 
             if (!headerTitle || !navLinks || !header) {
                 console.warn('Required header elements for mobile menu or scrolling not found. Some header functionalities might be impacted.');
@@ -474,21 +588,27 @@
                 });
             }
 
-            const sections = document.querySelectorAll('section'); // Removed #radiation-animation
+            const sections = document.querySelectorAll('section'); // Selects all sections
             const highlightActiveSection = () => {
                 let currentActive = null;
                 const headerHeight = header ? header.offsetHeight : 0;
 
                 sections.forEach(section => {
-                    const sectionTop = section.offsetTop - headerHeight - 60;
+                    // Calculate section top relative to the viewport, considering scroll position
+                    const sectionTop = section.offsetTop - headerHeight - 60; // Offset for header and some padding
                     const sectionBottom = sectionTop + section.offsetHeight;
 
                     if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
                         currentActive = section.id;
                     }
-                    section.classList.remove('active-section');
                 });
 
+                // Remove 'active' class from all nav links first
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Add 'active' class to the current section's nav link
                 if (currentActive) {
                     const activeLink = document.querySelector(`nav.nav-links a[href="#${currentActive}"]`);
                     if (activeLink) {
@@ -504,6 +624,7 @@
             const startQuizBtn = document.getElementById('start-quiz-btn');
             const quizFormDiv = document.getElementById('quiz-form');
             const quizResultDiv = document.getElementById('quiz-result');
+
 
             const quizQuestions = [
                 {
@@ -556,23 +677,26 @@
                     const q = quizQuestions[currentQuestionIndex];
                     quizFormDiv.innerHTML = `
                         <p class="text-xl font-semibold mb-4">${currentQuestionIndex + 1}. ${q.question}</p>
-                        ${q.options.map((option, index) => `
+                        ${q.options.map((option) => `
                             <label>
-                                <input type="radio" name="quiz-option" value="${option}" ${index === 0 ? 'checked' : ''}>
-                                ${option}
+                                <input type="radio" name="quiz-option" value="${option}">
+                                <span>${option}</span>
                             </label>
                         `).join('')}
-                        <button id="submit-answer-btn" class="mt-6">Submit Answer</button>
                     `;
-                    document.getElementById('submit-answer-btn').addEventListener('click', checkAnswer);
+                    // Add event listeners to radio buttons for immediate check
+                    quizFormDiv.querySelectorAll('input[name="quiz-option"]').forEach(radio => {
+                        radio.addEventListener('change', checkAnswer);
+                    });
                     quizResultDiv.innerHTML = ''; // Clear previous result
                 } else {
                     displayFinalResult();
                 }
             }
 
-            function checkAnswer() {
-                const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
+            function checkAnswer(event) {
+                // Get the selected option from the event target
+                const selectedOption = event.target;
                 if (selectedOption) {
                     const userAnswer = selectedOption.value;
                     const correctAnswer = quizQuestions[currentQuestionIndex].answer;
@@ -584,10 +708,35 @@
                         quizResultDiv.innerHTML = `<p class="text-red-600 font-bold">Incorrect. The correct answer was: ${correctAnswer}</p>`;
                     }
 
+                    // Disable all radio buttons for the current question after an answer is selected
+                    quizFormDiv.querySelectorAll('input[name="quiz-option"]').forEach(radio => {
+                        radio.disabled = true;
+                    });
+
                     currentQuestionIndex++;
                     setTimeout(displayQuestion, 1500); // Wait a bit before showing next question
-                } else {
-                    quizResultDiv.innerHTML = '<p class="text-yellow-600">Please select an answer.</p>';
+                }
+            }
+
+            async function saveQuizResult(finalScore, totalQuestions) {
+                if (!userId) {
+                    console.error("User not authenticated. Cannot save quiz result.");
+                    return;
+                }
+                const percentage = (finalScore / totalQuestions) * 100;
+                try {
+                    // Public data path: /artifacts/{appId}/public/data/{your_collection_name}
+                    const quizResultsCollectionRef = collection(db, `artifacts/${appId}/public/data/quiz_results`);
+                    await addDoc(quizResultsCollectionRef, {
+                        userId: userId,
+                        score: finalScore,
+                        totalQuestions: totalQuestions,
+                        percentage: parseFloat(percentage.toFixed(2)), // Store with 2 decimal places
+                        timestamp: new Date()
+                    });
+                    console.log("Quiz result saved successfully!");
+                } catch (e) {
+                    console.error("Error adding document: ", e);
                 }
             }
 
@@ -601,8 +750,13 @@
                 document.getElementById('restart-quiz-btn').addEventListener('click', () => {
                     currentQuestionIndex = 0;
                     score = 0;
-                    displayQuestion();
+                    startQuizBtn.style.display = 'inline-block'; // Show start button again
+                    quizResultDiv.innerHTML = ''; // Clear result
+                    quizFormDiv.innerHTML = ''; // Clear quiz form
                 });
+
+                // Save the result to Firebase
+                saveQuizResult(score, quizQuestions.length);
             }
 
             startQuizBtn.addEventListener('click', () => {
