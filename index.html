@@ -243,155 +243,6 @@
             font-size: 1.1rem;
         }
 
-        /* Radiation Animation Styles */
-        #animation-container-horizontal {
-            position: relative;
-            width: 100%;
-            max-width: 450px;
-            height: 300px;
-            margin: 2.5rem auto;
-            background: #f0f7ff; /* This is the background for the entire scene */
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid #cce0f0;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .gantry-circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(0deg);
-            width: 240px; /* This is now the OUTER diameter of the ring */
-            height: 240px; /* This is now the OUTER diameter of the ring */
-            border-radius: 50%;
-            z-index: 4;
-            transition: transform 0.1s linear;
-            /* --- CRITICAL CHANGE: Use multiple inset box-shadows to create the ring --- */
-            background: transparent; /* Ensures the center of the div is transparent */
-            border: none; /* Remove any default border */
-            box-shadow:
-                inset 0 0 0 15px #555, /* Innermost part of the ring */
-                inset 0 0 0 30px #444, /* Outer part of the ring for a gradient-like effect */
-                0 0 15px rgba(0,0,0,0.3); /* Outer shadow for depth */
-        }
-
-        .gantry-head {
-            width: 35px;
-            height: 35px;
-            background: #222;
-            border-radius: 50%;
-            position: absolute;
-            /* Adjust top to account for the new gantry ring thickness (approx 30px total for the visual ring) */
-            top: -27px; /* (Roughly: (gantry_visual_radius - head_radius/2) to place on outer edge of ring) */
-            left: calc(50% - 17.5px);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        /* Styling for the container that holds the human figure */
-        .human-body-silhouette {
-            position: relative;
-            width: 80px; /* Base width of the human figure's area */
-            height: 180px; /* Base height of the human figure's area */
-            z-index: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Styling for the SVG element itself within the container */
-        .human-body-silhouette svg {
-            width: 100%; /* Makes the SVG take up the full width of its container */
-            height: 100%; /* Makes the SVG take up the full height of its container */
-            stroke: #d9a78b; /* This is a fallback outline color, though the path will use the gradient */
-            stroke-width: 2px; /* This stroke-width applies to any other SVG paths, not the main stick figure */
-            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.2)); /* Subtle drop shadow for depth */
-        }
-
-        /* --- THIS IS THE KEY PART FOR THE STICK FIGURE'S THICKNESS --- */
-        /* Styling specifically for the <path> element that draws the stick figure */
-        .human-body-silhouette svg path:first-of-type {
-            fill: none; /* Ensures the stick figure is just lines, not filled */
-            stroke: url(#humanGradient); /* Applies the cool-toned gradient to the lines */
-            stroke-width: 25; /* <<-- MUCH THICKER NOW! */
-        }
-
-        .tumor {
-            position: absolute;
-            width: 20px; /* Increased initial size */
-            height: 20px; /* Increased initial size */
-            background: radial-gradient(circle, #cc0000, #800000);
-            border-radius: 50%;
-            z-index: 3;
-            box-shadow: 0 0 12px 2px rgba(200,0,0,0.8); /* Adjusted shadow for larger size */
-            transform: scale(1);
-            opacity: 1;
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-            top: 55%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .tumor.glowing {
-            animation: tumorGlow 0.8s infinite alternate ease-in-out;
-        }
-
-        @keyframes tumorGlow {
-            from { box-shadow: 0 0 12px 2px rgba(200,0,0,0.8); } /* Adjusted glow for larger size */
-            to { box-shadow: 0 0 25px 5px rgba(255,50,50,0.9); } /* Brighter, larger glow */
-        }
-
-        .beam {
-            position: absolute;
-            height: 12px; /* Increased beam height for visibility */
-            width: 0;
-            /* More intense reddish-orange gradient */
-            background: linear-gradient(to right, rgba(255, 100, 0, 0.95), rgba(255, 20, 0, 1));
-            top: 50%;
-            left: 50%;
-            /* transform-origin will be set by JS */
-            transform: translateY(-50%) rotate(0deg); /* Explicitly set to 0deg for a straight horizontal line */
-            box-shadow: 0 0 50px rgba(255, 50, 0, 1.2); /* More intense glow */
-            border-radius: 6px; /* Slightly larger border-radius for thicker beam */
-            z-index: 4;
-            opacity: 0;
-            transition: width 0.1s linear, opacity 0.1s linear;
-        }
-
-        .beam.firing {
-            animation: beamPulse 0.3s infinite alternate; /* Pulsating effect */
-        }
-
-        @keyframes beamPulse {
-            from { box-shadow: 0 0 40px rgba(255, 100, 0, 1); } /* More intense pulse glow */
-            to { box-shadow: 0 0 80px 10px rgba(255, 20, 0, 1.5); } /* More intense pulse glow */
-        }
-
-        .patient-table {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background-color: #777;
-            border-top: 10px solid #555;
-            z-index: 1;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.2); /* Inner shadow for depth */
-        }
-        .patient-table::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 20%;
-            width: 60%;
-            height: 10px;
-            background-color: #aaa;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             header {
@@ -493,7 +344,6 @@
             <a href="#continuous-improvement">Advancements</a>
             <a href="#certifications">Certifications</a>
             <a href="#quiz">Imaging & Quiz</a>
-            <a href="#radiation-animation">Radiation Simulation</a>
             <a href="#contact">Contact</a>
         </nav>
     </header>
@@ -531,7 +381,7 @@
         <section id="continuous-improvement" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md mt-8">
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-4xl font-extrabold mb-6">Advancements</h2>
-                <p class="text-lg leading-relaxed mx-auto">At samRad Health Technologies, our mission centers on <strong>precision</strong>&mdash;a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the <strong>crucial role of accurate targeting</strong> in modern cancer treatment and is a core example of the advancements we are working to bring to cancer care.</p>
+                <p class="text-lg leading-relaxed mx-auto">At samRad Health Technologies, our mission centers on <strong>precision</strong> in cancer detection and treatment. We are constantly working to bring advancements to cancer care through intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with precision and ease.</p>
             </div>
         </section>
 
@@ -564,39 +414,6 @@
                 <div id="quiz-result" class="mt-4"></div>
             </div>
         </section>
-
-        <div id="radiation-animation" class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-8">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-extrabold mb-6">Radiation Beam Simulation</h2>
-                <p class="text-lg leading-relaxed mx-auto">At samRad Health Technologies, our mission centers on <strong>precision</strong>&mdash;a quality vividly demonstrated in this radiation beam simulation. The gantry, the rotating arm of a radiation machine, precisely delivers a targeted beam to the tumor, minimizing exposure to healthy tissue. This animation highlights the <strong>crucial role of accurate targeting</strong> in modern cancer treatment and is a core example of the advancements we are working to bring to cancer care.</p>
-            </div>
-
-            <div id="animation-container-horizontal">
-                <div class="gantry-circle">
-                    <div class="gantry-head"></div>
-                </div>
-                <div class="human-body-silhouette" id="human-target">
-                    <svg viewBox="0 0 100 200" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <linearGradient id="humanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#b0c4de;stop-opacity:1" />
-                                <stop offset="50%" style="stop-color:#a0b4ce;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#90a4be;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M50,20 A15,15 0 1 1 50,50 A15,15 0 1 1 50,20 Z
-                                 M50,50 L50,120
-                                 M50,70 L20,90 M50,70 L80,90
-                                 M50,120 L35,180 M50,120 L65,180"
-                            fill="none" stroke="url(#humanGradient)" stroke-width="4"></path>
-                    </svg>
-                    <div class="tumor"></div>
-                </div>
-                <div class="beam"></div>
-                <div class="patient-table"></div>
-            </div>
-            <button id="start-animation-btn" style="margin-top: 1.5rem;">Start Treatment Simulation</button>
-        </div>
 
         <section id="contact">
             <h2>Contact Us</h2>
@@ -657,7 +474,7 @@
                 });
             }
 
-            const sections = document.querySelectorAll('section, #radiation-animation');
+            const sections = document.querySelectorAll('section'); // Removed #radiation-animation
             const highlightActiveSection = () => {
                 let currentActive = null;
                 const headerHeight = header ? header.offsetHeight : 0;
@@ -673,285 +490,125 @@
                 });
 
                 if (currentActive) {
-                    const activeSectionElement = document.getElementById(currentActive);
-                    if (activeSectionElement) {
-                        activeSectionElement.classList.add('active-section');
-                    }
-                    if (navLinks) {
-                        navLinks.querySelectorAll('a').forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${currentActive}`) {
-                                link.classList.add('active');
-                            }
-                        });
+                    const activeLink = document.querySelector(`nav.nav-links a[href="#${currentActive}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
                     }
                 }
             };
 
             window.addEventListener('scroll', throttle(highlightActiveSection, 100));
-            highlightActiveSection(); // Call on load to set initial active section
+            highlightActiveSection(); // Initial call to set active section on load
 
-            // --- Quiz Data and Logic ---
-
-            const allQuizData = [
-                { question: "What does MRI primarily use to generate images?", options: ["X-rays", "Magnetic fields & radio waves", "Sound waves", "Gamma rays"], answer: 1 },
-                { question: "What tracer is commonly used in PET scans?", options: ["Iodine-131", "Technetium-99m", "Fluorodeoxyglucose (FDG)", "Gadolinium"], answer: 2 },
-                { question: "CT scans are best for visualizing:", options: ["Soft tissues", "Bone fractures", "Ligaments", "Muscle tears"], answer: 1 },
-                { question: "Radiation therapy aims to:", options: ["Cure viral infections", "Kill cancer cells using ionizing radiation", "Deliver chemotherapy", "Visualize tumors"], answer: 1 },
-                { question: "Which imaging technique does NOT use ionizing radiation?", options: ["CT", "PET", "MRI", "X-ray"], answer: 2 },
-                { question: "PET-CT combines functional imaging with:", options: ["MRI detail", "CT detail", "Ultrasound mapping", "Bone scan"], answer: 1 },
-                { question: "Which of the following is a late side effect of radiation therapy?", options: ["Hair loss", "Skin redness", "Fibrosis", "Nausea"], answer: 2 },
-                { question: "MRI contrast agents often contain:", options: ["Lead", "Barium", "Gadolinium", "Iodine"], answer: 2 },
-                { question: "Which scan is most sensitive for brain soft tissue detail?", options: ["X-ray", "CT", "PET", "MRI"], answer: 3 },
-                { question: "Which of the following improves MRI resolution?", options: ["Higher magnetic field strength", "More X-ray dose", "Lower radiofrequency", "Using ultrasound gel"], answer: 0 },
-                { question: "What is the primary danger associated with excessive exposure to ionizing radiation?", options: ["Dehydration", "Hearing loss", "Cellular damage and cancer risk", "Muscle atrophy"], answer: 2 },
-                { question: "Which imaging modality is commonly used to diagnose gallstones?", options: ["MRI", "CT Scan", "Ultrasound", "X-ray"], answer: 2 },
-                { question: "In X-ray imaging, what appears white on the image?", options: ["Air", "Fat", "Water", "Bone"], answer: 3 },
-                { question: "What does PACS stand for in radiology?", options: ["Patient Access Control System", "Picture Archiving and Communication System", "Physical Assessment and Clinical Study", "Portable Anatomy Classification System"], answer: 1 },
-                { question: "Which type of radiation is used in nuclear medicine scans?", options: ["Alpha particles", "Beta particles", "Gamma ray"], answer: 2 } // Added missing answer for the last question
-            ];
-
-            let currentQuizData = [];
-            let currentQuestionIndex = 0;
-            let score = 0;
-
+            // Quiz functionality
             const startQuizBtn = document.getElementById('start-quiz-btn');
             const quizFormDiv = document.getElementById('quiz-form');
             const quizResultDiv = document.getElementById('quiz-result');
 
-            if (startQuizBtn) {
-                startQuizBtn.addEventListener('click', startQuiz);
-            } else {
-                console.warn('Start Quiz button not found.');
-            }
-
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
+            const quizQuestions = [
+                {
+                    question: "What does MRI stand for?",
+                    options: [
+                        "Magnetic Resonance Imaging",
+                        "Medical Radiation Instrument",
+                        "Molecular Resonance Induction",
+                        "Magnetic Resonance Information"
+                    ],
+                    answer: "Magnetic Resonance Imaging"
+                },
+                {
+                    question: "Which imaging technique uses X-rays to create cross-sectional images of the body?",
+                    options: [
+                        "MRI",
+                        "Ultrasound",
+                        "CT Scan",
+                        "PET Scan"
+                    ],
+                    answer: "CT Scan"
+                },
+                {
+                    question: "What is the primary purpose of a PET scan in cancer diagnosis?",
+                    options: [
+                        "To create detailed anatomical images",
+                        "To measure bone density",
+                        "To detect metabolic activity and identify cancerous cells",
+                        "To visualize blood flow"
+                    ],
+                    answer: "To detect metabolic activity and identify cancerous cells"
+                },
+                {
+                    question: "Early detection of cancer generally leads to:",
+                    options: [
+                        "More aggressive treatments",
+                        "Fewer treatment options",
+                        "Improved treatment outcomes and survival rates",
+                        "No significant change in prognosis"
+                    ],
+                    answer: "Improved treatment outcomes and survival rates"
                 }
-                return array;
-            }
+            ];
 
-            function startQuiz() {
-                currentQuizData = shuffleArray([...allQuizData]).slice(0, 5); // Take 5 random questions
-                currentQuestionIndex = 0;
-                score = 0;
-                quizResultDiv.innerHTML = ''; // Clear previous results
-                startQuizBtn.style.display = 'none'; // Hide start button
-                displayQuestion();
-            }
+            let currentQuestionIndex = 0;
+            let score = 0;
 
             function displayQuestion() {
-                if (currentQuestionIndex < currentQuizData.length) {
-                    const questionData = currentQuizData[currentQuestionIndex];
-                    let questionHtml = `
-                        <div class="question-container">
-                            <h3>${currentQuestionIndex + 1}. ${questionData.question}</h3>
-                            <form id="current-question-form">
-                    `;
-                    questionData.options.forEach((option, index) => {
-                        questionHtml += `
+                if (currentQuestionIndex < quizQuestions.length) {
+                    const q = quizQuestions[currentQuestionIndex];
+                    quizFormDiv.innerHTML = `
+                        <p class="text-xl font-semibold mb-4">${currentQuestionIndex + 1}. ${q.question}</p>
+                        ${q.options.map((option, index) => `
                             <label>
-                                <input type="radio" name="answer" value="${index}">
+                                <input type="radio" name="quiz-option" value="${option}" ${index === 0 ? 'checked' : ''}>
                                 ${option}
                             </label>
-                        `;
-                    });
-                    questionHtml += `
-                                <button type="submit">Submit Answer</button>
-                            </form>
-                        </div>
+                        `).join('')}
+                        <button id="submit-answer-btn" class="mt-6">Submit Answer</button>
                     `;
-                    quizFormDiv.innerHTML = questionHtml;
-
-                    const currentQuestionForm = document.getElementById('current-question-form');
-                    if (currentQuestionForm) {
-                        currentQuestionForm.addEventListener('submit', handleAnswerSubmission);
-                    } else {
-                        console.error('Quiz form not found after display.');
-                    }
+                    document.getElementById('submit-answer-btn').addEventListener('click', checkAnswer);
+                    quizResultDiv.innerHTML = ''; // Clear previous result
                 } else {
-                    showQuizResults();
+                    displayFinalResult();
                 }
             }
 
-            function handleAnswerSubmission(event) {
-                event.preventDefault();
-                const selectedOption = document.querySelector('input[name="answer"]:checked');
-
+            function checkAnswer() {
+                const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
                 if (selectedOption) {
-                    const userAnswer = parseInt(selectedOption.value);
-                    const correctAnswer = currentQuizData[currentQuestionIndex].answer;
+                    const userAnswer = selectedOption.value;
+                    const correctAnswer = quizQuestions[currentQuestionIndex].answer;
 
                     if (userAnswer === correctAnswer) {
                         score++;
-                        quizResultDiv.innerHTML = '<p style="color: green; font-weight: bold;">Correct!</p>';
+                        quizResultDiv.innerHTML = '<p class="text-green-600 font-bold">Correct!</p>';
                     } else {
-                        quizResultDiv.innerHTML = `<p style="color: red; font-weight: bold;">Incorrect. The correct answer was: ${currentQuizData[currentQuestionIndex].options[correctAnswer]}</p>`;
+                        quizResultDiv.innerHTML = `<p class="text-red-600 font-bold">Incorrect. The correct answer was: ${correctAnswer}</p>`;
                     }
 
                     currentQuestionIndex++;
-                    // Short delay before showing next question or results
-                    setTimeout(() => {
-                        displayQuestion();
-                    }, 1000); // 1 second delay
+                    setTimeout(displayQuestion, 1500); // Wait a bit before showing next question
                 } else {
-                    quizResultDiv.innerHTML = '<p style="color: orange;">Please select an answer.</p>';
+                    quizResultDiv.innerHTML = '<p class="text-yellow-600">Please select an answer.</p>';
                 }
             }
 
-            function showQuizResults() {
-                quizFormDiv.innerHTML = ''; // Clear quiz form
+            function displayFinalResult() {
+                quizFormDiv.innerHTML = '';
                 quizResultDiv.innerHTML = `
-                    <p style="font-size: 1.2rem; font-weight: bold;">Quiz Complete!</p>
-                    <p>You scored ${score} out of ${currentQuizData.length} questions.</p>
-                    <button id="retake-quiz-btn">Retake Quiz</button>
+                    <p class="text-2xl font-bold text-blue-800">Quiz Complete!</p>
+                    <p class="text-xl mt-2">You scored ${score} out of ${quizQuestions.length}.</p>
+                    <button id="restart-quiz-btn" class="mt-6">Restart Quiz</button>
                 `;
-                const retakeQuizBtn = document.getElementById('retake-quiz-btn');
-                if (retakeQuizBtn) {
-                    retakeQuizBtn.addEventListener('click', startQuiz);
-                }
-                startQuizBtn.style.display = 'block'; // Show start button again
+                document.getElementById('restart-quiz-btn').addEventListener('click', () => {
+                    currentQuestionIndex = 0;
+                    score = 0;
+                    displayQuestion();
+                });
             }
 
-            // --- Radiation Animation Logic ---
-            const gantryCircle = document.querySelector('.gantry-circle');
-            const gantryHead = document.querySelector('.gantry-head');
-            const beam = document.querySelector('.beam');
-            const tumor = document.querySelector('.tumor');
-            const startAnimationBtn = document.getElementById('start-animation-btn');
-
-            let animationInterval;
-            let currentAngle = 0;
-            let targetAngle = 0;
-            let tumorShrinkScale = 1;
-            let tumorOpacity = 1;
-            const shrinkFactor = 0.05; // How much tumor shrinks per hit
-            const opacityDecrease = 0.05; // How much opacity decreases per hit
-            let hitCount = 0;
-            const maxHits = 5; // Number of hits to make tumor disappear
-
-            // Initial tumor position relative to animation container center
-            const initialTumorX = 0; // Centered
-            const initialTumorY = 0; // Centered
-
-            // Function to reset animation state
-            function resetAnimation() {
-                clearInterval(animationInterval);
-                currentAngle = 0;
-                tumorShrinkScale = 1;
-                tumorOpacity = 1;
-                hitCount = 0;
-                gantryCircle.style.transform = `translate(-50%, -50%) rotate(0deg)`;
-                beam.style.width = '0';
-                beam.style.opacity = '0';
-                beam.classList.remove('firing');
-                tumor.style.transform = `translate(-50%, -50%) scale(1)`;
-                tumor.style.opacity = '1';
-                tumor.classList.remove('glowing');
-                startAnimationBtn.textContent = 'Start Treatment Simulation';
-                startAnimationBtn.disabled = false;
-            }
-
-            // Function to calculate position of gantry head
-            function getGantryHeadPosition(angle) {
-                const radius = 120; // Half of gantry-circle width/height (240px / 2)
-                const headOffset = 27; // From gantry-head's top: -27px
-                // Adjust radius to be the effective radius of the head's center from the gantry's center
-                const effectiveRadius = radius + headOffset - (gantryHead.offsetWidth / 2);
-
-                const radians = (angle - 90) * Math.PI / 180; // -90 to start at top
-                const x = effectiveRadius * Math.cos(radians);
-                const y = effectiveRadius * Math.sin(radians);
-                return { x, y };
-            }
-
-            // Function to update beam based on gantry head and tumor position
-            function updateBeam() {
-                const gantryHeadRect = gantryHead.getBoundingClientRect();
-                const tumorRect = tumor.getBoundingClientRect();
-                const animContainerRect = document.getElementById('animation-container-horizontal').getBoundingClientRect();
-
-                // Calculate center of gantry head relative to animation container
-                const headCenterX = (gantryHeadRect.left + gantryHeadRect.right) / 2 - animContainerRect.left;
-                const headCenterY = (gantryHeadRect.top + gantryHeadRect.bottom) / 2 - animContainerRect.top;
-
-                // Calculate center of tumor relative to animation container
-                const tumorCenterX = (tumorRect.left + tumorRect.right) / 2 - animContainerRect.left;
-                const tumorCenterY = (tumorRect.top + tumorRect.bottom) / 2 - animContainerRect.top;
-
-                // Calculate distance and angle between head and tumor
-                const dx = tumorCenterX - headCenterX;
-                const dy = tumorCenterY - headCenterY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-                beam.style.width = `${distance}px`;
-                beam.style.transform = `translateY(-50%) rotate(${angle}deg)`;
-                beam.style.transformOrigin = `0 50%`; // Pivot from the gantry head side
-                beam.style.left = `${headCenterX}px`;
-                beam.style.top = `${headCenterY}px`;
-            }
-
-            function startAnimation() {
-                resetAnimation(); // Ensure a clean start
-                startAnimationBtn.textContent = 'Treatment in Progress...';
-                startAnimationBtn.disabled = true;
-                tumor.classList.add('glowing');
-
-                animationInterval = setInterval(() => {
-                    // Rotate gantry
-                    currentAngle = (currentAngle + 5) % 360; // Rotate by 5 degrees each step
-                    gantryCircle.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
-
-                    // Check if gantry head is pointing at the tumor (within a tolerance)
-                    const gantryHeadAngleRad = (currentAngle - 90) * Math.PI / 180; // Angle for gantry head
-                    const tumorAngleRad = Math.atan2(initialTumorY, initialTumorX); // Tumor is at 0,0 relative to center
-
-                    const angleDiff = Math.abs((currentAngle % 360) - (Math.atan2(initialTumorY, initialTumorX) * 180 / Math.PI + 90 + 360) % 360); // Adjusted for 0-360 range
-                    const tolerance = 10; // Degrees
-
-                    if (angleDiff <= tolerance || angleDiff >= (360 - tolerance)) {
-                        // Gantry is aligned, fire beam
-                        beam.style.opacity = '1';
-                        beam.classList.add('firing');
-                        updateBeam(); // Ensure beam is correctly drawn
-
-                        hitCount++;
-                        tumorShrinkScale -= shrinkFactor;
-                        tumorOpacity -= opacityDecrease;
-
-                        tumor.style.transform = `translate(-50%, -50%) scale(${tumorShrinkScale})`;
-                        tumor.style.opacity = `${tumorOpacity}`;
-
-                        if (hitCount >= maxHits) {
-                            // Tumor fully treated
-                            clearInterval(animationInterval);
-                            tumor.style.transform = `translate(-50%, -50%) scale(0)`;
-                            tumor.style.opacity = '0';
-                            beam.style.opacity = '0';
-                            beam.classList.remove('firing');
-                            tumor.classList.remove('glowing');
-                            startAnimationBtn.textContent = 'Treatment Complete! (Click to Restart)';
-                            startAnimationBtn.disabled = false;
-                        }
-                    } else {
-                        // Gantry not aligned, hide beam
-                        beam.style.opacity = '0';
-                        beam.classList.remove('firing');
-                    }
-                }, 100); // Update every 100ms
-            }
-
-            if (startAnimationBtn) {
-                startAnimationBtn.addEventListener('click', startAnimation);
-            } else {
-                console.warn('Start Animation button not found.');
-            }
-
-            // Initial call to update beam position on load (if needed, or after first rotation)
-            // updateBeam(); // This might be called once the gantry starts moving
+            startQuizBtn.addEventListener('click', () => {
+                startQuizBtn.style.display = 'none'; // Hide start button
+                displayQuestion();
+            });
         });
     </script>
 </body>
