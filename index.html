@@ -625,8 +625,8 @@
             const quizFormDiv = document.getElementById('quiz-form');
             const quizResultDiv = document.getElementById('quiz-result');
 
-
-            const quizQuestions = [
+            // Expanded list of quiz questions
+            const allQuizQuestions = [
                 {
                     question: "What does MRI stand for?",
                     options: [
@@ -666,15 +666,146 @@
                         "No significant change in prognosis"
                     ],
                     answer: "Improved treatment outcomes and survival rates"
+                },
+                {
+                    question: "What type of radiation is typically used in radiation therapy for cancer treatment?",
+                    options: [
+                        "Alpha particles",
+                        "Beta particles",
+                        "Gamma rays or X-rays",
+                        "Ultraviolet light"
+                    ],
+                    answer: "Gamma rays or X-rays"
+                },
+                {
+                    question: "Which professional is primarily responsible for ensuring the accurate delivery of radiation dose in cancer treatment?",
+                    options: [
+                        "Oncologist",
+                        "Radiation Therapist",
+                        "Medical Physicist",
+                        "Radiologist"
+                    ],
+                    answer: "Medical Physicist"
+                },
+                {
+                    question: "What is the unit of absorbed radiation dose?",
+                    options: [
+                        "Becquerel (Bq)",
+                        "Gray (Gy)",
+                        "Sievert (Sv)",
+                        "Curie (Ci)"
+                    ],
+                    answer: "Gray (Gy)"
+                },
+                {
+                    question: "Which of the following is NOT a common type of external beam radiation therapy?",
+                    options: [
+                        "Intensity-Modulated Radiation Therapy (IMRT)",
+                        "Proton Therapy",
+                        "Brachytherapy",
+                        "Stereotactic Body Radiation Therapy (SBRT)"
+                    ],
+                    answer: "Brachytherapy"
+                },
+                {
+                    question: "What is the main advantage of proton therapy over traditional X-ray therapy?",
+                    options: [
+                        "It is less expensive",
+                        "It causes no side effects",
+                        "It delivers a more precise dose to the tumor with less exit dose",
+                        "It uses lower radiation doses"
+                    ],
+                    answer: "It delivers a more precise dose to the tumor with less exit dose"
+                },
+                {
+                    question: "What is the purpose of a CT simulation in radiation oncology?",
+                    options: [
+                        "To diagnose new tumors",
+                        "To plan the radiation treatment by mapping the tumor and surrounding organs",
+                        "To monitor the patient's response to chemotherapy",
+                        "To perform surgery"
+                    ],
+                    answer: "To plan the radiation treatment by mapping the tumor and surrounding organs"
+                },
+                {
+                    question: "Which principle states that radiation dose should be kept as low as reasonably achievable?",
+                    options: [
+                        "ALARA (As Low As Reasonably Achievable)",
+                        "LNT (Linear No-Threshold)",
+                        "ORM (Occupational Radiation Monitoring)",
+                        "RSO (Radiation Safety Officer)"
+                    ],
+                    answer: "ALARA (As Low As Reasonably Achievable)"
+                },
+                {
+                    question: "What is the role of a dosimetrist in a radiation oncology department?",
+                    options: [
+                        "To operate the radiation therapy machine",
+                        "To prescribe the radiation dose",
+                        "To design the radiation treatment plan and calculate dose distributions",
+                        "To provide psychological support to patients"
+                    ],
+                    answer: "To design the radiation treatment plan and calculate dose distributions"
+                },
+                {
+                    question: "Which type of radiation is emitted from radioactive isotopes used in brachytherapy?",
+                    options: [
+                        "Microwaves",
+                        "Radio waves",
+                        "Gamma rays or Beta particles",
+                        "Infrared light"
+                    ],
+                    answer: "Gamma rays or Beta particles"
+                },
+                {
+                    question: "What is image-guided radiation therapy (IGRT) used for?",
+                    options: [
+                        "To take pictures of the tumor before treatment",
+                        "To adjust patient position and target delivery in real-time during treatment",
+                        "To identify the type of cancer",
+                        "To reduce the need for radiation"
+                    ],
+                    answer: "To adjust patient position and target delivery in real-time during treatment"
+                },
+                {
+                    question: "The half-life of a radioactive isotope refers to the time it takes for:",
+                    options: [
+                        "Half of the original atoms to decay",
+                        "All of the original atoms to decay",
+                        "The radiation to stop being harmful",
+                        "The patient to recover from treatment"
+                    ],
+                    answer: "Half of the original atoms to decay"
                 }
             ];
+
+            const QUIZ_QUESTIONS_PER_SESSION = 10;
+            let currentQuizQuestions = []; // Array to hold the questions for the current quiz session
 
             let currentQuestionIndex = 0;
             let score = 0;
 
+            // Fisher-Yates (Knuth) shuffle algorithm
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+                }
+                return array;
+            }
+
+            function startNewQuiz() {
+                // Shuffle all questions and select the first 10
+                currentQuizQuestions = shuffleArray([...allQuizQuestions]).slice(0, QUIZ_QUESTIONS_PER_SESSION);
+                currentQuestionIndex = 0;
+                score = 0;
+                startQuizBtn.style.display = 'none'; // Ensure start button is hidden
+                displayQuestion();
+            }
+
             function displayQuestion() {
-                if (currentQuestionIndex < quizQuestions.length) {
-                    const q = quizQuestions[currentQuestionIndex];
+                if (currentQuestionIndex < currentQuizQuestions.length) {
+                    const q = currentQuizQuestions[currentQuestionIndex];
                     quizFormDiv.innerHTML = `
                         <p class="text-xl font-semibold mb-4">${currentQuestionIndex + 1}. ${q.question}</p>
                         ${q.options.map((option) => `
@@ -699,7 +830,7 @@
                 const selectedOption = event.target;
                 if (selectedOption) {
                     const userAnswer = selectedOption.value;
-                    const correctAnswer = quizQuestions[currentQuestionIndex].answer;
+                    const correctAnswer = currentQuizQuestions[currentQuestionIndex].answer;
 
                     if (userAnswer === correctAnswer) {
                         score++;
@@ -725,6 +856,7 @@
                 }
                 const percentage = (finalScore / totalQuestions) * 100;
                 try {
+                    console.log("Attempting to save quiz result to Firestore...");
                     // Public data path: /artifacts/{appId}/public/data/{your_collection_name}
                     const quizResultsCollectionRef = collection(db, `artifacts/${appId}/public/data/quiz_results`);
                     await addDoc(quizResultsCollectionRef, {
@@ -736,7 +868,9 @@
                     });
                     console.log("Quiz result saved successfully!");
                 } catch (e) {
-                    console.error("Error adding document: ", e);
+                    console.error("Error adding document to Firestore:", e);
+                    // Provide user feedback on failure
+                    quizResultDiv.innerHTML += `<p class="text-red-600">Error saving your score: ${e.message}. Please check console for details.</p>`;
                 }
             }
 
@@ -744,24 +878,19 @@
                 quizFormDiv.innerHTML = '';
                 quizResultDiv.innerHTML = `
                     <p class="text-2xl font-bold text-blue-800">Quiz Complete!</p>
-                    <p class="text-xl mt-2">You scored ${score} out of ${quizQuestions.length}.</p>
+                    <p class="text-xl mt-2">You scored ${score} out of ${currentQuizQuestions.length}.</p>
                     <button id="restart-quiz-btn" class="mt-6">Restart Quiz</button>
                 `;
                 document.getElementById('restart-quiz-btn').addEventListener('click', () => {
-                    currentQuestionIndex = 0;
-                    score = 0;
-                    startQuizBtn.style.display = 'inline-block'; // Show start button again
-                    quizResultDiv.innerHTML = ''; // Clear result
-                    quizFormDiv.innerHTML = ''; // Clear quiz form
+                    startNewQuiz(); // Directly start a new quiz
                 });
 
                 // Save the result to Firebase
-                saveQuizResult(score, quizQuestions.length);
+                saveQuizResult(score, currentQuizQuestions.length);
             }
 
             startQuizBtn.addEventListener('click', () => {
-                startQuizBtn.style.display = 'none'; // Hide start button
-                displayQuestion();
+                startNewQuiz();
             });
         });
     </script>
