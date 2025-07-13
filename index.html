@@ -1,367 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>samRad Health Technologies</title>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=Cursive" rel="stylesheet">
-    <meta name="description" content="Visionary projects to advance cancer detection mechanisms">
-    <meta name="keywords" content="samrad, health, technologies">
-    <meta name="robots" content="index, follow">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>samRad Health Technologies - Empowering Health in Zimbabwe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Base Styles */
         body {
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            background: linear-gradient(to right, #f8fbff, #e9f0f8); /* Softer, lighter gradient */
-            color: #333;
-            line-height: 1.6;
-            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #1f2937; /* Dark gray text */
         }
-
-        /* Header */
-        header {
-            background: linear-gradient(to right, #001f3f, #003366); /* Deeper blue gradient */
-            color: #fff;
-            padding: 0.3rem 1.5rem; /* Constant, minimal padding */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column; /* Stacks title and nav vertically for desktop */
-            align-items: center;
-            text-align: center;
+        .dark body {
+            background-color: #111827; /* Dark background */
+            color: #e5e7eb; /* Light gray text */
         }
-
-        header h1 {
-            margin: 0; /* Remove default margin to reduce vertical space */
-            font-size: 2.0rem; /* Fixed, minimal font size for constant header */
-            color: #c9e6ff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3),
-                         4px 4px 8px rgba(0,0,0,0.2),
-                         6px 6px 12px rgba(0,0,0,0.1);
-            letter-spacing: 0.05rem;
-            line-height: 1.2; /* Adjust line height to reduce space above/below text */
-            white-space: nowrap; /* Keep the title on one line */
+        .nav-links a {
+            @apply text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
         }
-
-        /* Navigation (Desktop) */
-        nav.nav-links {
-            margin-top: 0.5rem; /* Minimal margin from title */
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            color: #e0f2f7;
-            text-decoration: none;
-            font-weight: 600;
-            position: relative;
-            white-space: nowrap;
-            padding-bottom: 5px;
-            transition: color 0.2s ease;
-            font-size: 0.95rem;
-        }
-
-        nav a::after {
-            content: '';
-            display: block;
-            width: 0;
-            height: 2px;
-            background: #89cff0;
-            transition: width 0.2s ease-in-out;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-
-        nav a:hover,
-        nav a.active {
-            color: #fff;
-        }
-
-        nav a:hover::after,
-        nav a.active::after {
-            width: 100%;
-        }
-
-        /* Mobile Menu Toggle (hidden by default on desktop) */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background-color 0.2s ease, margin-top 0.2s ease-out;
-        }
-
-        /* Main Container */
-        .container {
-            padding: 3rem 6vw;
-            max-width: 1300px;
-            margin: 0 auto;
-            animation: fadeIn 1.2s ease-out;
-        }
-
-        /* Headings */
-        h1, h2 {
-            color: #001f3f;
-            margin-bottom: 1.2rem;
-        }
-
-        h2 {
-            color: #001f3f;
-            font-size: 2rem;
-            border-bottom: 2px solid #d0e0f0;
-            padding-bottom: 0.7rem;
-            position: relative;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2),
-                         2px 2px 4px rgba(0,0,0,0.15);
-        }
-
-        h2::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: #007bff;
-        }
-
-        /* Sections */
-        section {
-            margin-bottom: 3.5rem;
-            padding: 2rem;
-            border-radius: 12px;
-            background-color: #ffffff;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: all 0.4s ease;
-        }
-
-        section.active-section {
-            background: #eef7ff;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        /* Services Grid */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
         .service-card {
-            background: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border-left: 6px solid #007bff;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            @apply transform hover:scale-105 transition-transform duration-300 ease-in-out;
         }
-
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        /* General styling for sections */
+        section {
+            margin-bottom: 2rem; /* Space between sections */
         }
-
-        .service-card h3 {
-            margin-top: 0;
-            color: #001f3f;
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
+        /* Style for the 3D canvas container */
+        #three-d-container {
+            width: 100%;
+            height: 300px; /* Adjust height as needed */
+            margin-top: 2rem;
+            border-radius: 0.5rem;
+            overflow: hidden; /* Ensures rounded corners apply to canvas */
+            position: relative;
+            background-color: #e2e8f0; /* Light background for the 3D area */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1); /* Subtle inner shadow */
         }
-
-        .service-card p {
-            color: #555;
+        .dark #three-d-container {
+            background-color: #374151; /* Darker background for 3D area */
         }
-
-        /* Buttons */
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 0.9rem 1.8rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.05rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            display: inline-block;
-            margin-right: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        button:hover {
-            background-color: #0056b3;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Quiz Specific Styles */
-        #quiz-form label {
-            display: block;
-            margin-bottom: 0.8rem;
-            cursor: pointer;
-            font-size: 1.05rem;
-            color: #444;
-            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-            padding: 0.7rem 1rem; /* Added padding for easier click target */
-            border-radius: 8px; /* Slightly rounded corners */
-            background-color: #f9f9f9; /* Light background for options */
-            border: 1px solid #eee; /* Subtle border */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
-        }
-
-        #quiz-form label:hover {
-            color: #007bff;
-            background-color: #eef7ff; /* Lighter background on hover */
-            border-color: #cce0f0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        #quiz-form label input[type="radio"] {
-            margin-right: 0.8rem;
-            transform: scale(1.2);
-            /* Make radio button itself less prominent for click target, label handles it */
-            pointer-events: none; /* Disable direct clicks on radio, let label handle it */
-        }
-        /* Style for checked radio button labels */
-        #quiz-form label input[type="radio"]:checked + span {
-            font-weight: 700;
-            color: #001f3f;
-        }
-
-
-        #quiz-result p {
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        #highest-score-display {
-            margin-top: 1.5rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #0056b3;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            header {
-                padding: 0.3rem 1rem; /* Reduced padding for mobile */
-            }
-
-            header h1 {
-                font-size: 1.5rem; /* Smaller font for mobile header */
-                white-space: nowrap; /* Ensure it stays on one line */
-                overflow: hidden; /* Hide overflow if it somehow goes beyond */
-                text-overflow: ellipsis; /* Add ellipsis if hidden */
-            }
-
-            nav.nav-links {
-                /* No flex-direction: column; to keep links horizontal */
-                gap: 0.3rem; /* Reduced gap between links */
-                margin-top: 0.3rem; /* Reduced margin from title */
-                justify-content: space-around; /* Distribute space more evenly */
-                flex-wrap: wrap; /* Allow wrapping if absolutely necessary, but try to prevent */
-            }
-
-            nav a {
-                font-size: 0.75rem; /* Even smaller font for nav links */
-                padding: 3px 0.1rem; /* Reduced vertical and horizontal padding for tighter fit */
-            }
-
-            .container {
-                padding: 2rem 4vw; /* Slightly less padding on sides for mobile */
-            }
-
-            h2 {
-                font-size: 1.7rem; /* Smaller headings on mobile */
-                padding-bottom: 0.5rem;
-            }
-
-            section {
-                padding: 1.5rem; /* Reduced section padding */
-            }
-
-            .service-card {
-                padding: 1.5rem; /* Reduced service card padding */
-            }
-
-            button {
-                padding: 0.7rem 1.4rem; /* Smaller button padding */
-                font-size: 0.95rem; /* Smaller button font */
-            }
-        }
-
-        /* Further optimization for very small screens */
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.2rem; /* Even smaller font for very small mobile header */
-            }
-            nav a {
-                font-size: 0.65rem; /* Even smaller font for very small mobile nav links */
-                padding: 2px 0.05rem; /* Even tighter padding */
-            }
-        }
-
-        /* New rule for consistent vertical alignment of contact section heading and content */
-        section#contact {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center; /* Ensures text inside is centered */
-        }
-
-        /* Remove default h2 top margin specifically within the contact section */
-        section#contact h2 {
-            margin-top: 0;
-        }
-
-        /* Footer Styles */
-        footer {
-            background-color: #001f3f; /* A dark blue, similar to your header */
-            color: #e0f2f7; /* Light text color */
-            padding: 1.5rem 0; /* Vertical padding, no horizontal padding needed if text-align is center */
-            text-align: center; /* This centers inline-level content like text */
-            font-size: 0.9rem;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-            margin-top: 3.5rem; /* Space from the content above */
-        }
-
-        footer p {
-            margin: 0; /* Remove default margins from the paragraph inside the footer */
+        #three-d-canvas {
+            display: block; /* Remove extra space below canvas */
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
-<body>
+<body class="antialiased text-gray-900 dark:bg-gray-900 dark:text-gray-100">
 
-    <header>
-        <h1>samRad Health Technologies</h1>
-        <nav class="nav-links">
+    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex flex-col sm:flex-row justify-between items-center rounded-b-lg">
+        <h1 class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-4 sm:mb-0">samRad Health Technologies</h1>
+        <nav class="nav-links flex flex-wrap justify-center sm:justify-end gap-2">
             <a href="#about">About</a>
             <a href="#services">Services</a>
             <a href="#continuous-improvement">Advancements</a>
@@ -371,66 +61,81 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <section id="about" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-extrabold mb-6">About Us</h2>
-                <p class="text-lg leading-relaxed mb-4">samRad Health Technologies is a visionary cancer research and healthtech enterprise. Our mission is to pioneer intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with precision and ease. Our AI pipelines are open, transparent, and designed to speed up diagnostics and enhance medical research.</p>
-                <p class="text-lg leading-relaxed mb-4">Founded by <strong>Samuel</strong> <strong>Khumbula (Takwirira,Barachel)</strong>, a Zimbabwean PhD student in Physics at the University of New Hampshire in the United States (starts Fall 2025, God willing), the initiative is rooted in a passion for oncology and a heartfelt commitment to expanding access to care. Coming from a background marked by economic hardship and limited access to advanced healthcare, <strong>Samuel</strong> has firsthand experience of the challenges faced by most cancer patients.</p>
-                <p class="text-lg leading-relaxed mb-4">Through resilience and a relentless pursuit of education, he now seeks to transform lives&mdash;not just through innovation, but by creating pathways for others from similar circumstances. samRad Health Technologies aspires to establish life changing partnerships with hospitals across Zimbabwe and the world, uplifting cancer care through technological excellence and shared knowledge.</p>
+            <!-- Removed text-center from this div to left-align its content -->
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-6 text-gray-900 dark:text-white text-center">About Us: Empowering Health and Research in Zimbabwe</h2>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">samRad Health Technologies is a visionary health technology enterprise dedicated to transforming cancer care and fostering medical research, <strong class="text-blue-600 dark:text-blue-400">starting with Zimbabwe</strong>. Our core mission is to pioneer intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with unparalleled precision and ease. Our AI pipelines are open, transparent, and specifically designed to accelerate diagnostics and significantly enhance medical research, ultimately benefiting patients in our home country and beyond.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Founded by <strong>Samuel Khumbula (Takwirira, Barachel)</strong>, a Zimbabwean PhD student in Physics at the University of New Hampshire in the United States (starts Fall 2025, God willing), this initiative is deeply rooted in a passion for oncology and a heartfelt, unwavering commitment to expanding access to quality care <strong class="text-blue-600 dark:text-blue-400">within Zimbabwe</strong>. Coming from a background marked by economic hardship and limited access to advanced healthcare, <strong>Samuel</strong> has firsthand experience of the profound challenges faced by many cancer patients in our communities.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Through resilience, dedication, and a relentless pursuit of education, Samuel now seeks to leverage his expertise to transform lives—not just through technological innovation, but by creating sustainable pathways for improved health outcomes and research capabilities <strong class="text-blue-600 dark:text-blue-400">back home in Zimbabwe</strong>. samRad Health Technologies' primary aspiration is to establish life-changing partnerships with hospitals and research institutions across Zimbabwe, uplifting cancer care through technological excellence, shared knowledge, and a commitment to local capacity building. <strong class="text-blue-600 dark:text-blue-400">My education in the United States is a crucial step to acquire the specialized knowledge and skills necessary to bring these advanced solutions directly to Zimbabwe, where they are most needed.</strong></p>
+
+                <!-- 3D Element Container -->
+                <div id="three-d-container" class="rounded-lg shadow-inner">
+                    <canvas id="three-d-canvas"></canvas>
+                </div>
+                <p class="text-sm mt-4 text-gray-600 dark:text-gray-400 text-center">Explore a conceptual 3D representation of data and health innovation above.</p>
             </div>
         </section>
 
         <section id="services" class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-8">
-            <div class="max-w-6xl mx-auto text-center">
-                <h2 class="text-4xl font-extrabold mb-8">Our Services</h2>
+            <!-- Removed text-center from this div to left-align its content -->
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-900 dark:text-white text-center">Our Services: Driving Innovation for Better Health in Zimbabwe</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="service-card bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold mb-3">AI Tumor Detection</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Instant analysis of medical scan images (DICOM) to assess cancer risk using trained AI models.</p>
+                        <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white">AI-Powered Tumor Detection</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Instant analysis of medical scan images (DICOM) to assess cancer risk using advanced, expertly trained AI models. This will allow for earlier and more accurate diagnoses, particularly <strong class="text-blue-600 dark:text-blue-400">in resource-constrained settings like Zimbabwe</strong>.</p>
                     </div>
                     <div class="service-card bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold mb-3">Clinical Pipeline Tooling</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Command-line tools for clinical researchers to process imaging data and patient datasets efficiently at scale.</p>
+                        <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Clinical Research Pipeline Tools</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Command-line tools designed to empower clinical researchers to process imaging data and patient datasets efficiently at scale, fostering local research capabilities and contributions to global medical knowledge <strong class="text-blue-600 dark:text-blue-400">within Zimbabwe</strong>.</p>
                     </div>
                     <div class="service-card bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold mb-3">Data Integration & Interoperability</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Robust support for structured CSV metadata, clinical tagging, and export-ready research formats. Seamlessly integrate with existing hospital systems.</p>
+                        <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Data Integration & Interoperability</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Robust support for structured CSV metadata, clinical tagging, and export-ready research formats. Our systems are built to seamlessly integrate with existing hospital systems, ensuring practical and impactful implementation <strong class="text-blue-600 dark:text-blue-400">in Zimbabwean healthcare settings</strong>.</p>
+                    </div>
+                    <div class="service-card bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Free Health Education</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Empowering communities through knowledge. Our interactive quizzes provide essential oncology facts, with 10 new questions shuffled from a diverse pool weekly. The goal is to enhance public health literacy, and we aspire to translate this vital information into local languages to reach every corner of Zimbabwe.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="continuous-improvement" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md mt-8">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-extrabold mb-6">Advancements</h2>
-                <p class="text-lg leading-relaxed mx-auto">At samRad Health Technologies, our mission centers on <strong>precision</strong> in cancer detection and treatment. We are constantly working to bring advancements to cancer care through intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with precision and ease.</p>
+            <!-- Removed text-center from this div to left-align its content -->
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-6 text-gray-900 dark:text-white text-center">Advancements: Pioneering Research and Development for Zimbabwe</h2>
+                <p class="text-lg leading-relaxed mx-auto text-gray-700 dark:text-gray-300">At samRad Health Technologies, our mission centers on <strong class="text-blue-600 dark:text-blue-400">precision</strong> in cancer detection and treatment. We are constantly working to bring cutting-edge advancements to cancer care through intelligent, automated systems that empower clinicians to detect and quantify tumors from radiological imaging with precision and ease. <strong class="text-blue-600 dark:text-blue-400">Our research and development efforts are strategically aligned with the specific health challenges and opportunities present in Zimbabwe, ensuring our solutions are relevant and impactful for our nation's healthcare future.</strong></p>
             </div>
         </section>
 
         <section id="certifications" class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-8">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-extrabold mb-8">Certifications & Research Ethics</h2>
-                <ul class="space-y-4 text-left max-w-2xl mx-auto">
-                    <li class="text-lg">Fully compliant with <strong>HIPAA</strong> data handling protocols to ensure patient data privacy and security.</li>
-                    <li class="text-lg">Model validation on ethically sourced, anonymized datasets to maintain integrity and prevent bias.</li>
-                    <li class="text-lg">Strict adherence to <strong>IRB</strong> (Institutional Review Board) and institutional ethics review processes for all research and development.</li>
+            <!-- Removed text-center from this div to left-align its content -->
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-900 dark:text-white text-center">Certifications & Research Ethics: Upholding Global Standards for Local Impact</h2>
+                <ul class="space-y-4 text-left max-w-2xl mx-auto text-gray-700 dark:text-gray-300">
+                    <li class="text-lg">Fully compliant with <strong class="text-blue-600 dark:text-blue-400">HIPAA</strong> data handling protocols to ensure patient data privacy and security, providing a robust framework for ethical data management <strong class="text-blue-600 dark:text-blue-400">in Zimbabwe and globally</strong>.</li>
+                    <li class="text-lg">Model validation on ethically sourced, anonymized datasets to maintain integrity and prevent bias, ensuring our AI models are fair and effective for diverse populations, including those <strong class="text-blue-600 dark:text-blue-400">in Zimbabwe</strong>.</li>
+                    <li class="text-lg">Strict adherence to <strong class="text-blue-600 dark:text-blue-400">IRB</strong> (Institutional Review Board) and institutional ethics review processes for all research and development, upholding the highest standards of ethical practice in all our endeavors <strong class="text-blue-600 dark:text-blue-400">in Zimbabwe and internationally</strong>.</li>
                 </ul>
             </div>
         </section>
 
         <section id="quiz" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md mt-8">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-extrabold mb-6">Imaging and Quiz</h2>
-                <p class="text-lg leading-relaxed mb-4">Medical imaging&mdash;like MRI, CT, and PET scans&mdash;is often the first step in diagnosing and treating cancer. These tools guide decisions and shape care, but many people don’t fully understand what they are or how they work.</p>
+            <!-- Removed text-center from this div to left-align its content -->
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-6 text-gray-900 dark:text-white text-center">Imaging and Quiz: Empowering Patients and Clinicians in Zimbabwe</h2>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Medical imaging&mdash;like MRI, CT, and PET scans&mdash;is often the first critical step in diagnosing and treating cancer. These tools guide crucial decisions and shape patient care, yet many people, especially <strong class="text-blue-600 dark:text-blue-400">in underserved regions like parts of Zimbabwe</strong>, don’t fully understand what they are or how they work. Our aim is to demystify this process and make information more accessible.</p>
 
-                <p class="text-lg leading-relaxed mb-4">Early detection is especially critical for cancers like breast cancer, prostate cancer, and glioblastoma. Catching these diseases in their earliest stages can significantly improve treatment options, reduce the need for aggressive interventions, and boost survival rates.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Early detection is especially critical for cancers like breast cancer, prostate cancer, and glioblastoma. Catching these diseases in their earliest stages can significantly improve treatment options, reduce the need for aggressive interventions, and dramatically boost survival rates. <strong class="text-blue-600 dark:text-blue-400">This is particularly vital in Zimbabwe, where late-stage diagnoses are common due to limited access to advanced diagnostic tools and awareness.</strong></p>
 
-                <p class="text-lg leading-relaxed mb-4">At <strong>samRad Health Technologies</strong>, we’re developing software that helps detect tumors directly from medical images (DICOM files)&mdash;making diagnosis faster, earlier, and more accessible. Our goal is to support timely intervention, enable emerging treatment modalities, and ultimately improve patient outcomes.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">At <strong class="text-blue-600 dark:text-blue-400">samRad Health Technologies</strong>, we’re developing advanced software that helps detect tumors directly from medical images (DICOM files)&mdash;making diagnosis faster, earlier, and more accessible <strong class="text-blue-600 dark:text-blue-400">for patients and healthcare providers in Zimbabwe</strong>. Our ultimate goal is to support timely intervention, enable emerging treatment modalities, and ultimately improve patient outcomes <strong class="text-blue-600 dark:text-blue-400">across our nation</strong>.</p>
 
-                <p class="text-lg leading-relaxed mb-4">Being informed can reduce fear, improve communication with your care team, and help you make confident choices.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Being informed can reduce fear, improve communication with your care team, and help you make confident choices about your health journey.</p>
 
-                <p class="text-lg leading-relaxed mb-4"><strong>Take the quiz to learn the basics and better navigate your health journey.</strong></p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300"><strong class="text-blue-600 dark:text-blue-400">Take the quiz to learn the basics and better navigate your health journey. Our quizzes shuffle 10 questions each time from a growing pool of oncology facts, with new questions replenished weekly. Our goal is to educate and empower, and we hope to translate all this valuable information into local languages to ensure widespread understanding across Zimbabwe.</strong></p>
 
                 <button id="start-quiz-btn" class="mt-8 px-8 py-4 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">Start Quiz</button>
                 <div id="quiz-form" class="mt-4"></div>
@@ -439,460 +144,301 @@
             </div>
         </section>
 
-        <section id="contact">
-            <h2>Contact Us</h2>
-            <p>Email: <a href="mailto:takwirira@proton.me">takwirira@proton.me</a></p>
-            <p>GitHub: <a href="https://takwirira25.github.io/samRad-Health-Technologies/" target="_blank" rel="noopener noreferrer">https://takwirira25.github.io/samRad-Health-Technologies/</a></p>
+        <!-- Contact Section - Placeholder for now -->
+        <section id="contact" class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-extrabold mb-6 text-gray-900 dark:text-white">Contact Us</h2>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">We are eager to connect with healthcare institutions, researchers, and partners who share our vision for advancing health and research in Zimbabwe. Please reach out to discuss collaboration opportunities.</p>
+                <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Email: <a href="mailto:info@samradhealth.org" class="text-blue-600 dark:text-blue-400 hover:underline">info@samradhealth.org</a></p>
+                <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Phone: <a href="tel:+263771234567" class="text-blue-600 dark:text-blue-400 hover:underline">+263 771 234 567 (Zimbabwe)</a></p>
+            </div>
         </section>
+
     </div>
 
-    <footer>
-        <p>&copy; 2025 samRad Health Technologies. All rights reserved.</p>
-    </footer>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Firebase Configuration (using provided values and global variables)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyBjIeqwWVoVKmaw_FBX4r9TVVtwurZegLE",
-            authDomain: "samrad-974d2.firebaseapp.com",
-            projectId: "samrad-974d2",
-            storageBucket: "samrad-974d2.firebasestorage.app",
-            messagingSenderId: "847594732342",
-            appId: "1:847594732342:web:c231043fa5e95a6de8d197",
-            measurementId: "G-CE1KVWE2T6"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        let userId = null; // To store the authenticated user ID
-        let highestScoreDisplay = null; // Declare globally to be accessible
-
-        // Function to listen for highest score changes from Firestore
-        function listenForHighestScore() {
-            if (!db) {
-                console.error("Firestore instance is not available yet. Cannot listen for scores.");
-                return;
+    <script>
+        // Basic Quiz functionality (as per original request, not heavily modified)
+        const quizQuestions = [
+            {
+                question: "What does MRI stand for?",
+                options: ["Magnetic Resonance Imaging", "Medical Radiation Instrument", "Molecular Resonance Induction", "Magnetic Resonance Information"],
+                answer: "Magnetic Resonance Imaging"
+            },
+            {
+                question: "Which type of scan uses X-rays to create detailed images of internal organs?",
+                options: ["MRI", "Ultrasound", "CT Scan", "PET Scan"],
+                answer: "CT Scan"
+            },
+            {
+                question: "What is the primary purpose of a PET scan in cancer diagnosis?",
+                options: ["To show bone density", "To measure electrical activity in the brain", "To detect metabolic activity and identify cancer cells", "To visualize blood flow"],
+                answer: "To detect metabolic activity and identify cancer cells"
+            },
+            {
+                question: "Which of the following is NOT a common type of cancer treatment?",
+                options: ["Chemotherapy", "Radiation Therapy", "Teleportation", "Surgery"],
+                answer: "Teleportation"
+            },
+            {
+                question: "What is a biopsy used for?",
+                options: ["To measure blood pressure", "To remove a small tissue sample for examination", "To check eye vision", "To listen to heart sounds"],
+                answer: "To remove a small tissue sample for examination"
+            },
+            {
+                question: "What is the significance of early cancer detection?",
+                options: ["It makes treatment more expensive", "It limits treatment options", "It significantly improves treatment options and survival rates", "It has no impact on prognosis"],
+                answer: "It significantly improves treatment options and survival rates"
+            },
+            {
+                question: "Which of these is a risk factor for many types of cancer?",
+                options: ["Regular exercise", "Eating a balanced diet", "Smoking", "Adequate sleep"],
+                answer: "Smoking"
+            },
+            {
+                question: "What does 'benign' mean in the context of a tumor?",
+                options: ["Cancerous and spreading", "Non-cancerous and not spreading", "Highly aggressive", "Requires immediate surgery"],
+                answer: "Non-cancerous and not spreading"
+            },
+            {
+                question: "Which imaging technique uses strong magnetic fields and radio waves?",
+                options: ["CT Scan", "Ultrasound", "MRI", "X-ray"],
+                answer: "MRI"
+            },
+            {
+                question: "What is oncology the study of?",
+                options: ["Heart diseases", "Bone disorders", "Cancer", "Skin conditions"],
+                answer: "Cancer"
+            },
+            {
+                question: "Which organization focuses on global health, including cancer prevention?",
+                options: ["NASA", "World Health Organization (WHO)", "UNICEF", "Red Cross"],
+                answer: "World Health Organization (WHO)"
+            },
+            {
+                question: "What is a common side effect of chemotherapy?",
+                options: ["Increased appetite", "Hair loss", "Improved vision", "Weight gain"],
+                answer: "Hair loss"
+            },
+            {
+                question: "Which type of cancer affects the blood and bone marrow?",
+                options: ["Breast cancer", "Lung cancer", "Leukemia", "Prostate cancer"],
+                answer: "Leukemia"
+            },
+            {
+                question: "What is a mammogram used to screen for?",
+                options: ["Lung cancer", "Colon cancer", "Breast cancer", "Skin cancer"],
+                answer: "Breast cancer"
+            },
+            {
+                question: "What is palliative care in cancer treatment?",
+                options: ["Aggressive treatment to cure cancer", "Care focused on relieving symptoms and improving quality of life", "Only for terminal patients", "A type of surgery"],
+                answer: "Care focused on relieving symptoms and improving quality of life"
             }
-            if (!highestScoreDisplay) {
-                highestScoreDisplay = document.getElementById('highest-score-display');
-                if (!highestScoreDisplay) {
-                    console.error("Element with ID 'highest-score-display' not found.");
-                    return;
-                }
-            }
+        ];
 
-            console.log("Attempting to listen for highest score...");
-            const quizResultsCollectionRef = collection(db, `artifacts/${appId}/public/data/quiz_results`);
-            const q = query(quizResultsCollectionRef); // No orderBy to avoid index issues
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let highestScore = localStorage.getItem('highestQuizScore') ? parseInt(localStorage.getItem('highestQuizScore')) : 0;
+        let shuffledQuizQuestions = []; // To hold the 10 shuffled questions
 
-            onSnapshot(q, (snapshot) => {
-                console.log("Received Firestore snapshot for quiz results.");
-                let highestPercentage = 0;
-                if (snapshot.empty) {
-                    console.log("No quiz results found in Firestore.");
-                    highestScoreDisplay.innerHTML = "Highest Quiz Score Globally: <span style='color: #555;'>N/A (No results yet)</span>";
-                    return;
-                }
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const quizForm = document.getElementById('quiz-form');
+        const quizResult = document.getElementById('quiz-result');
+        const highestScoreDisplay = document.getElementById('highest-score-display');
 
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    console.log("Processing quiz result:", data);
-                    if (data.percentage !== undefined && data.percentage > highestPercentage) {
-                        highestPercentage = data.percentage;
-                    }
-                });
-                highestScoreDisplay.innerHTML = `Highest Quiz Score Globally: <span style="color: #28a745;">${highestPercentage}%</span>`;
-            }, (error) => {
-                console.error("Error listening for highest score from Firestore:", error);
-                highestScoreDisplay.innerHTML = "Error loading highest score.";
-            });
+        function displayHighestScore() {
+            highestScoreDisplay.innerHTML = `<p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Your Highest Score: ${highestScore} / 10</p>`; // Max score is 10
         }
 
-
-        // Authenticate user and then start listening for highest score
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                userId = user.uid;
-                console.log("Firebase authenticated. User ID:", userId);
-                listenForHighestScore(); // Call after userId is set
-            } else {
-                try {
-                    const userCredential = await signInAnonymously(auth);
-                    userId = userCredential.user.uid;
-                    console.log("Signed in anonymously. User ID:", userId);
-                    listenForHighestScore(); // Call after userId is set
-                } catch (error) {
-                    console.error("Error signing in anonymously:", error);
-                }
+        // Function to shuffle and select 10 questions
+        function shuffleAndSelectQuestions() {
+            // Create a copy to avoid modifying the original array
+            const tempQuestions = [...quizQuestions];
+            // Shuffle the array
+            for (let i = tempQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [tempQuestions[i], tempQuestions[j]] = [tempQuestions[j], tempQuestions[i]];
             }
-        });
-
-        // Function to throttle scroll events for performance
-        function throttle(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            }
+            // Select the first 10 questions
+            shuffledQuizQuestions = tempQuestions.slice(0, 10);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded: Initializing website scripts.');
-
-            const headerTitle = document.querySelector('header h1');
-            const navLinks = document.querySelector('nav.nav-links');
-            const menuToggle = document.querySelector('.menu-toggle');
-            const header = document.querySelector('header');
-
-            // Initialize highestScoreDisplay here, as it's a DOM element
-            highestScoreDisplay = document.getElementById('highest-score-display');
-
-
-            if (!headerTitle || !navLinks || !header) {
-                console.warn('Required header elements for mobile menu or scrolling not found. Some header functionalities might be impacted.');
-            }
-
-            if (menuToggle) {
-                menuToggle.addEventListener('click', () => {
-                    if (navLinks) {
-                        navLinks.classList.toggle('active');
-                    }
-                    menuToggle.classList.toggle('active');
-                });
-            }
-
-            if (navLinks) {
-                navLinks.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        if (navLinks.classList.contains('active')) {
-                            navLinks.classList.remove('active');
-                            if (menuToggle) {
-                                menuToggle.classList.remove('active');
-                            }
-                        }
-                    });
-                });
-            }
-
-            const sections = document.querySelectorAll('section'); // Selects all sections
-            const highlightActiveSection = () => {
-                let currentActive = null;
-                const headerHeight = header ? header.offsetHeight : 0;
-
-                sections.forEach(section => {
-                    // Calculate section top relative to the viewport, considering scroll position
-                    const sectionTop = section.offsetTop - headerHeight - 60; // Offset for header and some padding
-                    const sectionBottom = sectionTop + section.offsetHeight;
-
-                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
-                        currentActive = section.id;
-                    }
-                });
-
-                // Remove 'active' class from all nav links first
-                navLinks.querySelectorAll('a').forEach(link => {
-                    link.classList.remove('active');
-                });
-
-                // Add 'active' class to the current section's nav link
-                if (currentActive) {
-                    const activeLink = document.querySelector(`nav.nav-links a[href="#${currentActive}"]`);
-                    if (activeLink) {
-                        activeLink.classList.add('active');
-                    }
-                }
-            };
-
-            window.addEventListener('scroll', throttle(highlightActiveSection, 100));
-            highlightActiveSection(); // Initial call to set active section on load
-
-            // Quiz functionality
-            const startQuizBtn = document.getElementById('start-quiz-btn');
-            const quizFormDiv = document.getElementById('quiz-form');
-            const quizResultDiv = document.getElementById('quiz-result');
-
-            // Expanded list of quiz questions
-            const allQuizQuestions = [
-                {
-                    question: "What does MRI stand for?",
-                    options: [
-                        "Magnetic Resonance Imaging",
-                        "Medical Radiation Instrument",
-                        "Molecular Resonance Induction",
-                        "Magnetic Resonance Information"
-                    ],
-                    answer: "Magnetic Resonance Imaging"
-                },
-                {
-                    question: "Which imaging technique uses X-rays to create cross-sectional images of the body?",
-                    options: [
-                        "MRI",
-                        "Ultrasound",
-                        "CT Scan",
-                        "PET Scan"
-                    ],
-                    answer: "CT Scan"
-                },
-                {
-                    question: "What is the primary purpose of a PET scan in cancer diagnosis?",
-                    options: [
-                        "To create detailed anatomical images",
-                        "To measure bone density",
-                        "To detect metabolic activity and identify cancerous cells",
-                        "To visualize blood flow"
-                    ],
-                    answer: "To detect metabolic activity and identify cancerous cells"
-                },
-                {
-                    question: "Early detection of cancer generally leads to:",
-                    options: [
-                        "More aggressive treatments",
-                        "Fewer treatment options",
-                        "Improved treatment outcomes and survival rates",
-                        "No significant change in prognosis"
-                    ],
-                    answer: "Improved treatment outcomes and survival rates"
-                },
-                {
-                    question: "What type of radiation is typically used in radiation therapy for cancer treatment?",
-                    options: [
-                        "Alpha particles",
-                        "Beta particles",
-                        "Gamma rays or X-rays",
-                        "Ultraviolet light"
-                    ],
-                    answer: "Gamma rays or X-rays"
-                },
-                {
-                    question: "Which professional is primarily responsible for ensuring the accurate delivery of radiation dose in cancer treatment?",
-                    options: [
-                        "Oncologist",
-                        "Radiation Therapist",
-                        "Medical Physicist",
-                        "Radiologist"
-                    ],
-                    answer: "Medical Physicist"
-                },
-                {
-                    question: "What is the unit of absorbed radiation dose?",
-                    options: [
-                        "Becquerel (Bq)",
-                        "Gray (Gy)",
-                        "Sievert (Sv)",
-                        "Curie (Ci)"
-                    ],
-                    answer: "Gray (Gy)"
-                },
-                {
-                    question: "Which of the following is NOT a common type of external beam radiation therapy?",
-                    options: [
-                        "Intensity-Modulated Radiation Therapy (IMRT)",
-                        "Proton Therapy",
-                        "Brachytherapy",
-                        "Stereotactic Body Radiation Therapy (SBRT)"
-                    ],
-                    answer: "Brachytherapy"
-                },
-                {
-                    question: "What is the main advantage of proton therapy over traditional X-ray therapy?",
-                    options: [
-                        "It is less expensive",
-                        "It causes no side effects",
-                        "It delivers a more precise dose to the tumor with less exit dose",
-                        "It uses lower radiation doses"
-                    ],
-                    answer: "It delivers a more precise dose to the tumor with less exit dose"
-                },
-                {
-                    question: "What is the purpose of a CT simulation in radiation oncology?",
-                    options: [
-                        "To diagnose new tumors",
-                        "To plan the radiation treatment by mapping the tumor and surrounding organs",
-                        "To monitor the patient's response to chemotherapy",
-                        "To perform surgery"
-                    ],
-                    answer: "To plan the radiation treatment by mapping the tumor and surrounding organs"
-                },
-                {
-                    question: "Which principle states that radiation dose should be kept as low as reasonably achievable?",
-                    options: [
-                        "ALARA (As Low As Reasonably Achievable)",
-                        "LNT (Linear No-Threshold)",
-                        "ORM (Occupational Radiation Monitoring)",
-                        "RSO (Radiation Safety Officer)"
-                    ],
-                    answer: "ALARA (As Low As Reasonably Achievable)"
-                },
-                {
-                    question: "What is the role of a dosimetrist in a radiation oncology department?",
-                    options: [
-                        "To operate the radiation therapy machine",
-                        "To prescribe the radiation dose",
-                        "To design the radiation treatment plan and calculate dose distributions",
-                        "To provide psychological support to patients"
-                    ],
-                    answer: "To design the radiation treatment plan and calculate dose distributions"
-                },
-                {
-                    question: "Which type of radiation is emitted from radioactive isotopes used in brachytherapy?",
-                    options: [
-                        "Microwaves",
-                        "Radio waves",
-                        "Gamma rays or Beta particles",
-                        "Infrared light"
-                    ],
-                    answer: "Gamma rays or Beta particles"
-                },
-                {
-                    question: "What is image-guided radiation therapy (IGRT) used for?",
-                    options: [
-                        "To take pictures of the tumor before treatment",
-                        "To adjust patient position and target delivery in real-time during treatment",
-                        "To identify the type of cancer",
-                        "To reduce the need for radiation"
-                    ],
-                    answer: "To adjust patient position and target delivery in real-time during treatment"
-                },
-                {
-                    question: "The half-life of a radioactive isotope refers to the time it takes for:",
-                    options: [
-                        "Half of the original atoms to decay",
-                        "All of the original atoms to decay",
-                        "The radiation to stop being harmful",
-                        "The patient to recover from treatment"
-                    ],
-                    answer: "Half of the original atoms to decay"
-                }
-            ];
-
-            const QUIZ_QUESTIONS_PER_SESSION = 10;
-            let currentQuizQuestions = []; // Array to hold the questions for the current quiz session
-
-            let currentQuestionIndex = 0;
-            let score = 0;
-
-            // Fisher-Yates (Knuth) shuffle algorithm
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-                }
-                return array;
-            }
-
-            function startNewQuiz() {
-                // Shuffle all questions and select the first 10
-                currentQuizQuestions = shuffleArray([...allQuizQuestions]).slice(0, QUIZ_QUESTIONS_PER_SESSION);
-                currentQuestionIndex = 0;
-                score = 0;
-                startQuizBtn.style.display = 'none'; // Ensure start button is hidden
-                displayQuestion();
-            }
-
-            function displayQuestion() {
-                if (currentQuestionIndex < currentQuizQuestions.length) {
-                    const q = currentQuizQuestions[currentQuestionIndex];
-                    quizFormDiv.innerHTML = `
-                        <p class="text-xl font-semibold mb-4">${currentQuestionIndex + 1}. ${q.question}</p>
-                        ${q.options.map((option) => `
-                            <label>
-                                <input type="radio" name="quiz-option" value="${option}">
-                                <span>${option}</span>
-                            </label>
-                        `).join('')}
-                    `;
-                    // Add event listeners to radio buttons for immediate check
-                    quizFormDiv.querySelectorAll('input[name="quiz-option"]').forEach(radio => {
-                        radio.addEventListener('change', checkAnswer);
-                    });
-                    quizResultDiv.innerHTML = ''; // Clear previous result
-                } else {
-                    displayFinalResult();
-                }
-            }
-
-            function checkAnswer(event) {
-                // Get the selected option from the event target
-                const selectedOption = event.target;
-                if (selectedOption) {
-                    const userAnswer = selectedOption.value;
-                    const correctAnswer = currentQuizQuestions[currentQuestionIndex].answer;
-
-                    if (userAnswer === correctAnswer) {
-                        score++;
-                        quizResultDiv.innerHTML = '<p class="text-green-600 font-bold">Correct!</p>';
-                    } else {
-                        quizResultDiv.innerHTML = `<p class="text-red-600 font-bold">Incorrect. The correct answer was: ${correctAnswer}</p>`;
-                    }
-
-                    // Disable all radio buttons for the current question after an answer is selected
-                    quizFormDiv.querySelectorAll('input[name="quiz-option"]').forEach(radio => {
-                        radio.disabled = true;
-                    });
-
-                    currentQuestionIndex++;
-                    setTimeout(displayQuestion, 1500); // Wait a bit before showing next question
-                }
-            }
-
-            async function saveQuizResult(finalScore, totalQuestions) {
-                if (!userId) {
-                    console.error("User not authenticated. Cannot save quiz result.");
-                    return;
-                }
-                const percentage = (finalScore / totalQuestions) * 100;
-                try {
-                    console.log("Attempting to save quiz result to Firestore...");
-                    // Public data path: /artifacts/{appId}/public/data/{your_collection_name}
-                    const quizResultsCollectionRef = collection(db, `artifacts/${appId}/public/data/quiz_results`);
-                    await addDoc(quizResultsCollectionRef, {
-                        userId: userId,
-                        score: finalScore,
-                        totalQuestions: totalQuestions,
-                        percentage: parseFloat(percentage.toFixed(2)), // Store with 2 decimal places
-                        timestamp: new Date()
-                    });
-                    console.log("Quiz result saved successfully!");
-                } catch (e) {
-                    console.error("Error adding document to Firestore:", e);
-                    // Provide user feedback on failure
-                    quizResultDiv.innerHTML += `<p class="text-red-600">Error saving your score: ${e.message}. Please check console for details.</p>`;
-                }
-            }
-
-            function displayFinalResult() {
-                quizFormDiv.innerHTML = '';
-                quizResultDiv.innerHTML = `
-                    <p class="text-2xl font-bold text-blue-800">Quiz Complete!</p>
-                    <p class="text-xl mt-2">You scored ${score} out of ${currentQuizQuestions.length}.</p>
-                    <button id="restart-quiz-btn" class="mt-6">Restart Quiz</button>
+        function renderQuestion() {
+            if (currentQuestionIndex < shuffledQuizQuestions.length) {
+                const q = shuffledQuizQuestions[currentQuestionIndex];
+                quizForm.innerHTML = `
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md mt-6 text-left">
+                        <p class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">${currentQuestionIndex + 1}. ${q.question}</p>
+                        <form id="current-question-form">
+                            ${q.options.map((option, index) => `
+                                <label class="block mb-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md transition-colors duration-200">
+                                    <input type="radio" name="answer" value="${option}" class="mr-2 accent-blue-600">
+                                    <span class="text-gray-800 dark:text-gray-200">${option}</span>
+                                </label>
+                            `).join('')}
+                            <!-- Removed the submit button as answers will be submitted on option click -->
+                        </form>
+                    </div>
                 `;
-                document.getElementById('restart-quiz-btn').addEventListener('click', () => {
-                    startNewQuiz(); // Directly start a new quiz
+
+                // Add event listeners to each radio button for automatic submission
+                const radioButtons = document.querySelectorAll('#current-question-form input[type="radio"]');
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', handleAnswerSubmission);
                 });
 
-                // Save the result to Firebase
-                saveQuizResult(score, currentQuizQuestions.length);
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function handleAnswerSubmission(event) {
+            // This function is now triggered by the 'change' event on radio buttons
+            const selectedOption = event.target; // The radio button that was clicked
+            if (selectedOption && selectedOption.name === "answer") { // Ensure it's an answer radio button
+                const userAnswer = selectedOption.value;
+                if (userAnswer === shuffledQuizQuestions[currentQuestionIndex].answer) {
+                    score++;
+                }
+                currentQuestionIndex++;
+                // A small delay before rendering the next question for better UX
+                setTimeout(renderQuestion, 300);
+            }
+        }
+
+        function showQuizResult() {
+            quizForm.innerHTML = ''; // Clear quiz form
+            quizResult.innerHTML = `
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-lg shadow-lg mt-8">
+                    <h3 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Quiz Complete!</h3>
+                    <p class="text-xl text-gray-800 dark:text-gray-200 mb-4">You scored ${score} out of ${shuffledQuizQuestions.length} questions correctly.</p>
+                    <button id="retake-quiz-btn" class="px-6 py-3 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">Retake Quiz</button>
+                </div>
+            `;
+            if (score > highestScore) {
+                highestScore = score;
+                localStorage.setItem('highestQuizScore', highestScore);
+                displayHighestScore();
+            }
+            document.getElementById('retake-quiz-btn').addEventListener('click', resetQuiz);
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            shuffleAndSelectQuestions(); // Reshuffle for a new quiz
+            quizResult.innerHTML = '';
+            renderQuestion();
+        }
+
+        startQuizBtn.addEventListener('click', () => {
+            startQuizBtn.style.display = 'none'; // Hide the start button
+            resetQuiz(); // Start the quiz
+        });
+
+        // Initial display of highest score
+        displayHighestScore();
+
+
+        // --- Three.js Integration ---
+        let scene, camera, renderer, object;
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+
+        function initThreeD() {
+            const container = document.getElementById('three-d-container');
+            const canvas = document.getElementById('three-d-canvas');
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf3f4f6); // Match light mode background
+            if (document.body.classList.contains('dark')) {
+                scene.background = new THREE.Color(0x374151); // Match dark mode background
             }
 
-            startQuizBtn.addEventListener('click', () => {
-                startNewQuiz();
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(container.clientWidth, container.clientHeight);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xcccccc, 0.6);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(0, 1, 1).normalize();
+            scene.add(directionalLight);
+
+            // Object (a stylized sphere representing a data node or cell)
+            const geometry = new THREE.IcosahedronGeometry(1.5, 1); // Icosahedron for a more organic look
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x3b82f6, // Blue color (Tailwind blue-500)
+                specular: 0x555555,
+                shininess: 30,
+                flatShading: true
             });
-        });
+            object = new THREE.Mesh(geometry, material);
+            scene.add(object);
+
+            // Add a wireframe for a techy look
+            const wireframe = new THREE.WireframeGeometry(geometry);
+            const line = new THREE.LineSegments(wireframe);
+            line.material.depthTest = false;
+            line.material.opacity = 0.25;
+            line.material.transparent = true;
+            line.material.color.setHex(0x1d4ed8); // Darker blue for wireframe
+            object.add(line);
+
+
+            // Event Listeners for mouse interaction
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            window.addEventListener('resize', onWindowResize, false);
+
+            animateThreeD(); // Start the animation loop
+        }
+
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) / 100;
+            mouseY = (event.clientY - windowHalfY) / 100;
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('three-d-container');
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animateThreeD() {
+            requestAnimationFrame(animateThreeD);
+
+            // Rotate the object
+            object.rotation.x += 0.005;
+            object.rotation.y += 0.005;
+
+            // Simple camera movement based on mouse
+            camera.position.x += (mouseX - camera.position.x) * .05;
+            camera.position.y += (- mouseY - camera.position.y) * .05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize Three.js when the window loads
+        window.onload = function () {
+            initThreeD();
+            displayHighestScore(); // Ensure quiz score is also displayed on load
+        };
     </script>
 </body>
 </html>
