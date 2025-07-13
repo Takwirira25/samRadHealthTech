@@ -593,10 +593,21 @@ section.active-section {
         </section>
     </div>
 
-    <footer>
-        <p>&copy; 2025 samRad Health Technologies. All rights reserved.</p>
-    </footer>
-
+       footer {
+        text-align: center; /* This centers inline-level content like text */
+        /* Add other styling for your footer (background, color, padding, etc.) */
+        /* Example: */
+        background-color: #001f3f; /* A dark blue, similar to your header */
+        color: #e0f2f7; /* Light text color */
+        padding: 1.5rem 0; /* Vertical padding, no horizontal padding needed if text-align is center */
+        font-size: 0.9rem;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        margin-top: 3.5rem; /* Space from the content above */
+    }
+    
+    footer p {
+        margin: 0; /* Remove default margins from the paragraph inside the footer */
+    }
     <script>
         function throttle(func, limit) {
             let inThrottle;
