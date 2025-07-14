@@ -80,6 +80,7 @@
             <a href="#continuous-improvement">Advancements</a>
             <a href="#certifications">Certifications</a>
             <a href="#quiz">Imaging & Quiz</a>
+            <a href="#fighting-cancer">Fighting Cancer</a>
             <a href="#contact">Contact</a>
         </nav>
     </header>
@@ -159,6 +160,15 @@
                 <div id="quiz-form" class="mt-4"></div>
                 <div id="quiz-result" class="mt-4"></div>
                 <div id="highest-score-display" class="mt-4"></div>
+            </div>
+        </section>
+
+        <section id="fighting-cancer" class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 rounded-lg shadow-md mt-8">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-extrabold mb-6 text-gray-900 dark:text-white text-center">Fighting Cancer: Our Commitment to Awareness and Support</h2>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">At <strong class="text-emerald-600 dark:text-emerald-400">samRad Health Technologies</strong>, our mission extends beyond technology to a deep commitment to the fight against cancer. We believe that <span class="subtle-underline">awareness</span> and <span class="subtle-underline">education</span> are powerful tools in preventing and managing this disease, especially in communities where access to information and healthcare resources can be limited.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">We are dedicated to fostering a culture of <span class="subtle-underline">proactive health</span> and providing accessible resources that empower individuals to understand cancer risks, recognize early symptoms, and seek timely medical attention. Our initiatives aim to bridge the knowledge gap and support patients through their journey, from diagnosis to recovery.</p>
+                <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Through partnerships with local health organizations and community leaders <strong class="text-emerald-600 dark:text-emerald-400">across Zimbabwe</strong>, we strive to amplify messages of hope and resilience. We advocate for improved screening programs, provide educational materials, and support research that leads to better outcomes for all. Together, we can make a significant impact in reducing the burden of cancer and building healthier futures.</p>
             </div>
         </section>
 
@@ -391,12 +401,14 @@
         // --- Three.js Integration ---
         let scene, camera, renderer, icosahedron, samRadText;
         let mouseX = 0, mouseY = 0;
-        let windowHalfX = window.innerWidth / 2;
-        let windowHalfY = window.innerHeight / 2;
+        let containerRect; // Declare globally to store the bounding rectangle of the 3D container
 
         function initThreeD() {
             const container = document.getElementById('three-d-container');
             const canvas = document.getElementById('three-d-canvas');
+
+            // Get initial bounding rectangle for mouse calculations
+            containerRect = container.getBoundingClientRect();
 
             // Scene
             scene = new THREE.Scene();
@@ -472,14 +484,17 @@
         }
 
         function onDocumentMouseMove(event) {
-            mouseX = (event.clientX - windowHalfX) / 100;
-            mouseY = (event.clientY - windowHalfY) / 100;
+            // Calculate mouse position relative to the canvas container's center
+            // event.clientX/Y are relative to the viewport
+            // containerRect.left/top are the container's position relative to the viewport
+            mouseX = ((event.clientX - containerRect.left) - containerRect.width / 2) / 100;
+            mouseY = ((event.clientY - containerRect.top) - containerRect.height / 2) / 100;
         }
 
         function onWindowResize() {
             const container = document.getElementById('three-d-container');
-            windowHalfX = window.innerWidth / 2;
-            windowHalfY = container.clientHeight / 2;
+            // Update the bounding rectangle on resize
+            containerRect = container.getBoundingClientRect();
 
             camera.aspect = container.clientWidth / container.clientHeight;
             camera.updateProjectionMatrix();
